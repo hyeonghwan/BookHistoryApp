@@ -16,6 +16,7 @@
 		96477D33291A24EB00830EFB /* CustomTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D32291A24EB00830EFB /* CustomTextView.swift */; };
 		96512BCB291B8CA00090F90B /* CustomLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96512BCA291B8CA00090F90B /* CustomLayoutManager.swift */; };
 		965AED95291E3EF0005B616F /* ColorBlockManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965AED94291E3EF0005B616F /* ColorBlockManager.swift */; };
+		965AED97291E80A9005B616F /* CustomTextStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965AED96291E80A9005B616F /* CustomTextStorage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		96477D32291A24EB00830EFB /* CustomTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextView.swift; sourceTree = "<group>"; };
 		96512BCA291B8CA00090F90B /* CustomLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayoutManager.swift; sourceTree = "<group>"; };
 		965AED94291E3EF0005B616F /* ColorBlockManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorBlockManager.swift; sourceTree = "<group>"; };
+		965AED96291E80A9005B616F /* CustomTextStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextStorage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 				96477D1D291A041D00830EFB /* SceneDelegate.swift */,
 				96477D1F291A041D00830EFB /* ViewController.swift */,
 				96477D32291A24EB00830EFB /* CustomTextView.swift */,
+				965AED96291E80A9005B616F /* CustomTextStorage.swift */,
 				965AED94291E3EF0005B616F /* ColorBlockManager.swift */,
 				96512BCA291B8CA00090F90B /* CustomLayoutManager.swift */,
 				96477D24291A041F00830EFB /* Assets.xcassets */,
@@ -153,6 +156,7 @@
 			files = (
 				96477D20291A041D00830EFB /* ViewController.swift in Sources */,
 				965AED95291E3EF0005B616F /* ColorBlockManager.swift in Sources */,
+				965AED97291E80A9005B616F /* CustomTextStorage.swift in Sources */,
 				96477D1C291A041D00830EFB /* AppDelegate.swift in Sources */,
 				96512BCB291B8CA00090F90B /* CustomLayoutManager.swift in Sources */,
 				96477D33291A24EB00830EFB /* CustomTextView.swift in Sources */,
