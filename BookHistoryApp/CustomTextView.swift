@@ -26,6 +26,9 @@ class CustomTextView: UITextView, NSTextLayoutManagerDelegate {
 
         self.settingCusor(UIColor.black)
         
+        self.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        
+        
 //        self.alwaysBounceVertical = true
 //        self.isUserInteractionEnabled = true
 //        self.showsVerticalScrollIndicator = true
@@ -80,6 +83,8 @@ class CustomTextView: UITextView, NSTextLayoutManagerDelegate {
 
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.headIndent = 20
+        
+        
         
         // Note that setting paragraphStyle.firstLineHeadIndent
         // doesn't use the background color for the first line's
@@ -238,7 +243,14 @@ extension CustomTextView: UITextPasteDelegate{
 
 extension CustomTextView: NSLayoutManagerDelegate{
     
-    
+    func layoutManager(_ layoutManager: NSLayoutManager,
+                       boundingBoxForControlGlyphAt glyphIndex: Int,
+                       for textContainer: NSTextContainer,
+                       proposedLineFragment proposedRect: CGRect,
+                       glyphPosition: CGPoint,
+                       characterIndex charIndex: Int) -> CGRect {
+        return CGRect(x: 0, y: 0, width: 100, height: 100)
+    }
     
     func layoutManager(_ layoutManager: NSLayoutManager,
                        shouldSetLineFragmentRect lineFragmentRect: UnsafeMutablePointer<CGRect>, lineFragmentUsedRect: UnsafeMutablePointer<CGRect>,
