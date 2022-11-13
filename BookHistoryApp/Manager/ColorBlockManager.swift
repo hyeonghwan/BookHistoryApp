@@ -19,8 +19,6 @@ class ColorBlockManager {
         
     }
     
-    
-    
     static func settingColorString(_ color: UIColor) -> [NSAttributedString.Key : Any] {
         let richText = NSMutableAttributedString()
         

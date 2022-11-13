@@ -44,12 +44,20 @@ class ViewController: UIViewController {
         scrollView.addSubview(container)
         container.addSubview(textView)
         
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(presentToSecondVC(_:)))
+        
+        
         let flexible = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)//2
         self.toolBar.setItems([flexible], animated: false)
+        self.selectedBlockButton(title: "seleted", selector: #selector(selectedTapped(_:)))
         self.deleteColorBlockButton(title: "delteBlock", selector: #selector(deleteTapped(_:)))
         self.addColorBlockButton(title: "block", selector: #selector(addColorTapped(_:)))
         self.addDoneButton(title: "Done", selector: #selector(doneButtonTapped(_:)))
+        
+        
         self.textView.inputAccessoryView = toolBar
+        
         
         scrollView.snp.makeConstraints{
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
@@ -64,6 +72,7 @@ class ViewController: UIViewController {
             $0.height.equalTo(1000).priority(.low)
         }
         
+        
         textView.snp.makeConstraints{
             $0.edges.equalToSuperview()
             $0.height.equalTo(1000).priority(.low)
@@ -75,6 +84,10 @@ class ViewController: UIViewController {
  
     func navigationSetting(){
         self.title = "TextView"
+    }
+    
+    @objc func presentToSecondVC(_ sender: Any){
+        self.present(SecondViewController(), animated: true)
     }
     
     @objc func doneButtonTapped(_ sender: Any){
@@ -90,20 +103,26 @@ class ViewController: UIViewController {
     
     @objc func deleteTapped(_ sender: Any){
         print(self.textView.selectedRange)
-        
         self.textView.removeColorForRange(theRange: self.textView.selectedRange)
     }
     
-
-
-
+    @objc func selectedTapped(_ sender: Any){
+        
+        
+    }
+    
 }
+
 extension ViewController: UITextViewDelegate{
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         
+        let allText: String = textView.text
         
-        let composeText = textView.text as NSString
+        let composeText: NSString = allText as NSString
+        
         let paragraphRange = composeText.paragraphRange(for: textView.selectedRange)
+        
+        print("paragraphRange \(paragraphRange)")
         
         let length = paragraphRange.length - (textView.selectedRange.location - paragraphRange.location)
 
@@ -117,39 +136,38 @@ extension ViewController: UITextViewDelegate{
         print("textFromRange: \(textView.text(in: textRange) ?? "nil")")
         
         
-//        textView offsetFromPosition:beginning toPosition:start];
-        let nlocation = textView.offset(from: textView.beginningOfDocument, to: textRange.start)
-        let nlength = textView.offset(from: textRange.start, to: textRange.end)
-        print("location, length : \(nlocation) \(nlength)")
-        
-        let nNewRange = NSRange(location: nlocation, length: nlength)
-        
-        
         if text == "\n",
-           let insertString = (textView.text(in: textRange)) {
+           var insertString = (textView.text(in: textRange)),
+           insertString.removeLastIfEnter(){
             
-            let attributedString = NSAttributedString(AttributedString(stringLiteral: insertString ))
+            let nlocation = textView.offset(from: textView.beginningOfDocument, to: textRange.start)
+            let nlength = textView.offset(from: textRange.start, to: textRange.end)
             
-            textView.textStorage.replaceCharacters(in: nNewRange, with: "")
+            print("location, length : \(nlocation) \(nlength)")
             
+            let nNewRange = NSRange(location: nlocation, length: nlength)
             
-            print("nNewRange: \(nNewRange)")
-            print("range.location: \(range.location)")
-            
-            textView.textStorage.insert(attributedString, at: range.location)
-            textView.removeColorForRange2(theRange: nNewRange)
+            _ = textView.textStorage.attributes(at: nNewRange.location,
+                                                             longestEffectiveRange: nil,
+                                                             in: nNewRange)
+
         }
-        
         return true
     }
+    
+    
+
     func textViewDidChange(_ textView: UITextView) {
         print("textViewDidChange")
-        
+    
+        self.textView.setNeedsDisplay()
         
     }
+    
     func textViewDidEndEditing(_ textView: UITextView) {
         print("textViewDidEndEditing")
     }
+    
     func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
         print("textViewShouldEndEditing")
         return true
@@ -166,7 +184,6 @@ extension ViewController {
         self.toolBar.items?.append(barButton)
     }
     
-    
     func addColorBlockButton(title: String, selector: Selector){
         
         let barButton = UIBarButtonItem(title: title, style: .plain, target: self, action: selector)//3
@@ -180,6 +197,14 @@ extension ViewController {
     
         self.toolBar.items?.append(barButton)
     }
+    
+    func selectedBlockButton(title: String, selector: Selector){
+        
+        let barButton = UIBarButtonItem(title: title, style: .plain, target: self, action: selector)//3
+    
+        self.toolBar.items?.append(barButton)
+    }
+    
 }
 
 

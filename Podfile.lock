@@ -1,0 +1,16 @@
+PODS:
+  - SubviewAttachingTextView (1.5.0)
+
+DEPENDENCIES:
+  - SubviewAttachingTextView
+
+SPEC REPOS:
+  trunk:
+    - SubviewAttachingTextView
+
+SPEC CHECKSUMS:
+  SubviewAttachingTextView: 4b6e2d07bc4200f1d030887ead5c705200d105d1
+
+PODFILE CHECKSUM: 643c64635ebb528de135f991d8f1e8c320e52c8a
+
+COCOAPODS: 1.11.3

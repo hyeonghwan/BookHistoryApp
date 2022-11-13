@@ -1,0 +1,6 @@
+framework module Pods_BookHistoryApp {
+  umbrella header "Pods-BookHistoryApp-umbrella.h"
+
+  export *
+  module * { export * }
+}

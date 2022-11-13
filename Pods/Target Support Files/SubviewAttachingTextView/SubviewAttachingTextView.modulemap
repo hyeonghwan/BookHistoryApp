@@ -1,0 +1,6 @@
+framework module SubviewAttachingTextView {
+  umbrella header "SubviewAttachingTextView-umbrella.h"
+
+  export *
+  module * { export * }
+}

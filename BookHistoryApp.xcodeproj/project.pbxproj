@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		75917BAF902F9D79BB4CA6FD /* Pods_BookHistoryApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A50DDEE5B459107E26A04E3E /* Pods_BookHistoryApp.framework */; };
+		962AA0A92920BF2D00C2620B /* Attribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0A82920BF2D00C2620B /* Attribute.swift */; };
+		962AA0AB2920C6AC00C2620B /* CustomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0AA2920C6AC00C2620B /* CustomColor.swift */; };
+		962AA0AD2920CEAA00C2620B /* CustomTextView-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0AC2920CEAA00C2620B /* CustomTextView-Ext.swift */; };
+		962AA0AF2920DA6400C2620B /* String-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0AE2920DA6400C2620B /* String-Ext.swift */; };
+		962AA0B22920E87C00C2620B /* UITextView-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0B12920E87C00C2620B /* UITextView-Ext.swift */; };
+		962AA0B52920E90400C2620B /* NSLayoutManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0B42920E90400C2620B /* NSLayoutManagerDelegate.swift */; };
+		962AA0B72920E97000C2620B /* EX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0B62920E97000C2620B /* EX.swift */; };
+		962AA0BC2920F61800C2620B /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0BB2920F61800C2620B /* SecondViewController.swift */; };
 		96477D1C291A041D00830EFB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D1B291A041D00830EFB /* AppDelegate.swift */; };
 		96477D1E291A041D00830EFB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D1D291A041D00830EFB /* SceneDelegate.swift */; };
 		96477D20291A041D00830EFB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D1F291A041D00830EFB /* ViewController.swift */; };
@@ -20,6 +29,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2631171D9CE1723689325DD5 /* Pods-BookHistoryApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookHistoryApp.debug.xcconfig"; path = "Target Support Files/Pods-BookHistoryApp/Pods-BookHistoryApp.debug.xcconfig"; sourceTree = "<group>"; };
+		487EA1E7BD9E25B396951AD0 /* Pods-BookHistoryApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookHistoryApp.release.xcconfig"; path = "Target Support Files/Pods-BookHistoryApp/Pods-BookHistoryApp.release.xcconfig"; sourceTree = "<group>"; };
+		962AA0A82920BF2D00C2620B /* Attribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attribute.swift; sourceTree = "<group>"; };
+		962AA0AA2920C6AC00C2620B /* CustomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColor.swift; sourceTree = "<group>"; };
+		962AA0AC2920CEAA00C2620B /* CustomTextView-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomTextView-Ext.swift"; sourceTree = "<group>"; };
+		962AA0AE2920DA6400C2620B /* String-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String-Ext.swift"; sourceTree = "<group>"; };
+		962AA0B12920E87C00C2620B /* UITextView-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView-Ext.swift"; sourceTree = "<group>"; };
+		962AA0B42920E90400C2620B /* NSLayoutManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSLayoutManagerDelegate.swift; sourceTree = "<group>"; };
+		962AA0B62920E97000C2620B /* EX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EX.swift; sourceTree = "<group>"; };
+		962AA0BB2920F61800C2620B /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
 		96477D18291A041D00830EFB /* BookHistoryApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookHistoryApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96477D1B291A041D00830EFB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96477D1D291A041D00830EFB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -31,6 +50,7 @@
 		96512BCA291B8CA00090F90B /* CustomLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayoutManager.swift; sourceTree = "<group>"; };
 		965AED94291E3EF0005B616F /* ColorBlockManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorBlockManager.swift; sourceTree = "<group>"; };
 		965AED96291E80A9005B616F /* CustomTextStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextStorage.swift; sourceTree = "<group>"; };
+		A50DDEE5B459107E26A04E3E /* Pods_BookHistoryApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookHistoryApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,17 +59,76 @@
 			buildActionMask = 2147483647;
 			files = (
 				96477D31291A073A00830EFB /* SnapKit in Frameworks */,
+				75917BAF902F9D79BB4CA6FD /* Pods_BookHistoryApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4D00F6EB9AF45B9A13172246 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A50DDEE5B459107E26A04E3E /* Pods_BookHistoryApp.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		962AA0B02920E86A00C2620B /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				962AA0A82920BF2D00C2620B /* Attribute.swift */,
+				962AA0AE2920DA6400C2620B /* String-Ext.swift */,
+				962AA0B12920E87C00C2620B /* UITextView-Ext.swift */,
+				962AA0B62920E97000C2620B /* EX.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		962AA0B32920E8E200C2620B /* CustomTextView */ = {
+			isa = PBXGroup;
+			children = (
+				96477D32291A24EB00830EFB /* CustomTextView.swift */,
+				962AA0AC2920CEAA00C2620B /* CustomTextView-Ext.swift */,
+				962AA0B42920E90400C2620B /* NSLayoutManagerDelegate.swift */,
+			);
+			path = CustomTextView;
+			sourceTree = "<group>";
+		};
+		962AA0B82920E98600C2620B /* Enum */ = {
+			isa = PBXGroup;
+			children = (
+				962AA0AA2920C6AC00C2620B /* CustomColor.swift */,
+			);
+			path = Enum;
+			sourceTree = "<group>";
+		};
+		962AA0B92920E99200C2620B /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				965AED94291E3EF0005B616F /* ColorBlockManager.swift */,
+				96512BCA291B8CA00090F90B /* CustomLayoutManager.swift */,
+				965AED96291E80A9005B616F /* CustomTextStorage.swift */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
+		962AA0BA2920F5F300C2620B /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				96477D1F291A041D00830EFB /* ViewController.swift */,
+				962AA0BB2920F61800C2620B /* SecondViewController.swift */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
 		96477D0F291A041D00830EFB = {
 			isa = PBXGroup;
 			children = (
 				96477D1A291A041D00830EFB /* BookHistoryApp */,
 				96477D19291A041D00830EFB /* Products */,
+				9AC4BBCB9E2FB5B853773F41 /* Pods */,
+				4D00F6EB9AF45B9A13172246 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -66,16 +145,25 @@
 			children = (
 				96477D1B291A041D00830EFB /* AppDelegate.swift */,
 				96477D1D291A041D00830EFB /* SceneDelegate.swift */,
-				96477D1F291A041D00830EFB /* ViewController.swift */,
-				96477D32291A24EB00830EFB /* CustomTextView.swift */,
-				965AED96291E80A9005B616F /* CustomTextStorage.swift */,
-				965AED94291E3EF0005B616F /* ColorBlockManager.swift */,
-				96512BCA291B8CA00090F90B /* CustomLayoutManager.swift */,
+				962AA0BA2920F5F300C2620B /* ViewController */,
+				962AA0B92920E99200C2620B /* Manager */,
+				962AA0B32920E8E200C2620B /* CustomTextView */,
+				962AA0B82920E98600C2620B /* Enum */,
+				962AA0B02920E86A00C2620B /* Extensions */,
 				96477D24291A041F00830EFB /* Assets.xcassets */,
 				96477D26291A041F00830EFB /* LaunchScreen.storyboard */,
 				96477D29291A041F00830EFB /* Info.plist */,
 			);
 			path = BookHistoryApp;
+			sourceTree = "<group>";
+		};
+		9AC4BBCB9E2FB5B853773F41 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				2631171D9CE1723689325DD5 /* Pods-BookHistoryApp.debug.xcconfig */,
+				487EA1E7BD9E25B396951AD0 /* Pods-BookHistoryApp.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -85,9 +173,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 96477D2C291A041F00830EFB /* Build configuration list for PBXNativeTarget "BookHistoryApp" */;
 			buildPhases = (
+				24448576A6D5EB8958B6CC5B /* [CP] Check Pods Manifest.lock */,
 				96477D14291A041D00830EFB /* Sources */,
 				96477D15291A041D00830EFB /* Frameworks */,
 				96477D16291A041D00830EFB /* Resources */,
+				CD8F77EA0FFF294A88CDA057 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -149,6 +239,48 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		24448576A6D5EB8958B6CC5B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BookHistoryApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CD8F77EA0FFF294A88CDA057 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BookHistoryApp/Pods-BookHistoryApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BookHistoryApp/Pods-BookHistoryApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BookHistoryApp/Pods-BookHistoryApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		96477D14291A041D00830EFB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -156,11 +288,19 @@
 			files = (
 				96477D20291A041D00830EFB /* ViewController.swift in Sources */,
 				965AED95291E3EF0005B616F /* ColorBlockManager.swift in Sources */,
+				962AA0AD2920CEAA00C2620B /* CustomTextView-Ext.swift in Sources */,
+				962AA0BC2920F61800C2620B /* SecondViewController.swift in Sources */,
+				962AA0AB2920C6AC00C2620B /* CustomColor.swift in Sources */,
+				962AA0B72920E97000C2620B /* EX.swift in Sources */,
 				965AED97291E80A9005B616F /* CustomTextStorage.swift in Sources */,
 				96477D1C291A041D00830EFB /* AppDelegate.swift in Sources */,
 				96512BCB291B8CA00090F90B /* CustomLayoutManager.swift in Sources */,
+				962AA0B22920E87C00C2620B /* UITextView-Ext.swift in Sources */,
 				96477D33291A24EB00830EFB /* CustomTextView.swift in Sources */,
+				962AA0A92920BF2D00C2620B /* Attribute.swift in Sources */,
+				962AA0B52920E90400C2620B /* NSLayoutManagerDelegate.swift in Sources */,
 				96477D1E291A041D00830EFB /* SceneDelegate.swift in Sources */,
+				962AA0AF2920DA6400C2620B /* String-Ext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,7 +368,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -282,7 +422,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -294,6 +434,7 @@
 		};
 		96477D2D291A041F00830EFB /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2631171D9CE1723689325DD5 /* Pods-BookHistoryApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -322,6 +463,7 @@
 		};
 		96477D2E291A041F00830EFB /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 487EA1E7BD9E25B396951AD0 /* Pods-BookHistoryApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
