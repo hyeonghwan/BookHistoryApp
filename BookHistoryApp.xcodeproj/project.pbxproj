@@ -16,6 +16,11 @@
 		962AA0B52920E90400C2620B /* NSLayoutManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0B42920E90400C2620B /* NSLayoutManagerDelegate.swift */; };
 		962AA0B72920E97000C2620B /* EX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0B62920E97000C2620B /* EX.swift */; };
 		962AA0BC2920F61800C2620B /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0BB2920F61800C2620B /* SecondViewController.swift */; };
+		962AA0BF292217AA00C2620B /* SecondTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0BE292217AA00C2620B /* SecondTextView.swift */; };
+		962AA0C12922183F00C2620B /* SecondLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0C02922183F00C2620B /* SecondLayoutManager.swift */; };
+		962AA0C329221D7900C2620B /* TextContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0C229221D7900C2620B /* TextContainer.swift */; };
+		962AA0C529222D9200C2620B /* TextStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0C429222D9200C2620B /* TextStorage.swift */; };
+		962AA0C7292233EE00C2620B /* SCTextView-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0C6292233EE00C2620B /* SCTextView-Ext.swift */; };
 		96477D1C291A041D00830EFB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D1B291A041D00830EFB /* AppDelegate.swift */; };
 		96477D1E291A041D00830EFB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D1D291A041D00830EFB /* SceneDelegate.swift */; };
 		96477D20291A041D00830EFB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D1F291A041D00830EFB /* ViewController.swift */; };
@@ -39,6 +44,11 @@
 		962AA0B42920E90400C2620B /* NSLayoutManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSLayoutManagerDelegate.swift; sourceTree = "<group>"; };
 		962AA0B62920E97000C2620B /* EX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EX.swift; sourceTree = "<group>"; };
 		962AA0BB2920F61800C2620B /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
+		962AA0BE292217AA00C2620B /* SecondTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondTextView.swift; sourceTree = "<group>"; };
+		962AA0C02922183F00C2620B /* SecondLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondLayoutManager.swift; sourceTree = "<group>"; };
+		962AA0C229221D7900C2620B /* TextContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextContainer.swift; sourceTree = "<group>"; };
+		962AA0C429222D9200C2620B /* TextStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextStorage.swift; sourceTree = "<group>"; };
+		962AA0C6292233EE00C2620B /* SCTextView-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCTextView-Ext.swift"; sourceTree = "<group>"; };
 		96477D18291A041D00830EFB /* BookHistoryApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookHistoryApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96477D1B291A041D00830EFB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96477D1D291A041D00830EFB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -122,6 +132,18 @@
 			path = ViewController;
 			sourceTree = "<group>";
 		};
+		962AA0BD2922179500C2620B /* SecondTextView */ = {
+			isa = PBXGroup;
+			children = (
+				962AA0BE292217AA00C2620B /* SecondTextView.swift */,
+				962AA0C6292233EE00C2620B /* SCTextView-Ext.swift */,
+				962AA0C02922183F00C2620B /* SecondLayoutManager.swift */,
+				962AA0C229221D7900C2620B /* TextContainer.swift */,
+				962AA0C429222D9200C2620B /* TextStorage.swift */,
+			);
+			path = SecondTextView;
+			sourceTree = "<group>";
+		};
 		96477D0F291A041D00830EFB = {
 			isa = PBXGroup;
 			children = (
@@ -146,6 +168,7 @@
 				96477D1B291A041D00830EFB /* AppDelegate.swift */,
 				96477D1D291A041D00830EFB /* SceneDelegate.swift */,
 				962AA0BA2920F5F300C2620B /* ViewController */,
+				962AA0BD2922179500C2620B /* SecondTextView */,
 				962AA0B92920E99200C2620B /* Manager */,
 				962AA0B32920E8E200C2620B /* CustomTextView */,
 				962AA0B82920E98600C2620B /* Enum */,
@@ -289,6 +312,7 @@
 				96477D20291A041D00830EFB /* ViewController.swift in Sources */,
 				965AED95291E3EF0005B616F /* ColorBlockManager.swift in Sources */,
 				962AA0AD2920CEAA00C2620B /* CustomTextView-Ext.swift in Sources */,
+				962AA0C7292233EE00C2620B /* SCTextView-Ext.swift in Sources */,
 				962AA0BC2920F61800C2620B /* SecondViewController.swift in Sources */,
 				962AA0AB2920C6AC00C2620B /* CustomColor.swift in Sources */,
 				962AA0B72920E97000C2620B /* EX.swift in Sources */,
@@ -297,6 +321,10 @@
 				96512BCB291B8CA00090F90B /* CustomLayoutManager.swift in Sources */,
 				962AA0B22920E87C00C2620B /* UITextView-Ext.swift in Sources */,
 				96477D33291A24EB00830EFB /* CustomTextView.swift in Sources */,
+				962AA0C12922183F00C2620B /* SecondLayoutManager.swift in Sources */,
+				962AA0C329221D7900C2620B /* TextContainer.swift in Sources */,
+				962AA0C529222D9200C2620B /* TextStorage.swift in Sources */,
+				962AA0BF292217AA00C2620B /* SecondTextView.swift in Sources */,
 				962AA0A92920BF2D00C2620B /* Attribute.swift in Sources */,
 				962AA0B52920E90400C2620B /* NSLayoutManagerDelegate.swift in Sources */,
 				96477D1E291A041D00830EFB /* SceneDelegate.swift in Sources */,

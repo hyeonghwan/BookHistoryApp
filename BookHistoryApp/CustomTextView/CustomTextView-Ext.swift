@@ -18,6 +18,7 @@ extension CustomTextView{
             guard let self = self else { return }
             
             let paragraphRange = composeText.paragraphRange(for: range)
+            
             print("range: \(range)")
             print("paragraphRange: \(paragraphRange)")
             
