@@ -77,6 +77,7 @@ class ViewController: UIViewController {
             $0.edges.equalToSuperview()
             $0.height.equalTo(1000).priority(.low)
         }
+       
         
         
     }
@@ -87,7 +88,9 @@ class ViewController: UIViewController {
     }
     
     @objc func presentToSecondVC(_ sender: Any){
-        self.present(SecondViewController(), animated: true)
+//        self.(SecondViewController(), animated: true)
+         let secondVC = SecondViewController()
+        self.navigationController?.pushViewController(secondVC, animated: true)
     }
     
     @objc func doneButtonTapped(_ sender: Any){
@@ -156,6 +159,7 @@ extension ViewController: UITextViewDelegate{
     }
     
     
+    
 
     func textViewDidChange(_ textView: UITextView) {
         print("textViewDidChange")
@@ -174,6 +178,7 @@ extension ViewController: UITextViewDelegate{
     }
     
 }
+
 
 extension ViewController {
   

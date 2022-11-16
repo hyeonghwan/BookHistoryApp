@@ -67,13 +67,9 @@ extension SecondTextView{
                                             NSAttributedString.Key.foregroundColor : UIColor.label,
                                             NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)
                                         ])
-        let chunk3 = NSAttributedString(string: "\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
-                                        attributes: [
-                                            NSAttributedString.Key.foregroundColor : UIColor.label,
-                                            NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)
-                                        ])
+       
         richText.append(chunk2)
-        richText.append(chunk3)
+       
         
         return richText
     }

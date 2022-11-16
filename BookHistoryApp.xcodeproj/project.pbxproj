@@ -21,6 +21,10 @@
 		962AA0C329221D7900C2620B /* TextContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0C229221D7900C2620B /* TextContainer.swift */; };
 		962AA0C529222D9200C2620B /* TextStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0C429222D9200C2620B /* TextStorage.swift */; };
 		962AA0C7292233EE00C2620B /* SCTextView-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0C6292233EE00C2620B /* SCTextView-Ext.swift */; };
+		962AA0CA29237ACF00C2620B /* TextPropertyMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0C929237ACF00C2620B /* TextPropertyMenuView.swift */; };
+		962AA0CE29237E9C00C2620B /* KeyboardSecondVC-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0CD29237E9C00C2620B /* KeyboardSecondVC-Ext.swift */; };
+		962AA0D2292384ED00C2620B /* UIApplication-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D1292384ED00C2620B /* UIApplication-Ext.swift */; };
+		962AA0D42924F48500C2620B /* KRScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D32924F48500C2620B /* KRScrollView.swift */; };
 		96477D1C291A041D00830EFB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D1B291A041D00830EFB /* AppDelegate.swift */; };
 		96477D1E291A041D00830EFB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D1D291A041D00830EFB /* SceneDelegate.swift */; };
 		96477D20291A041D00830EFB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D1F291A041D00830EFB /* ViewController.swift */; };
@@ -49,6 +53,10 @@
 		962AA0C229221D7900C2620B /* TextContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextContainer.swift; sourceTree = "<group>"; };
 		962AA0C429222D9200C2620B /* TextStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextStorage.swift; sourceTree = "<group>"; };
 		962AA0C6292233EE00C2620B /* SCTextView-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCTextView-Ext.swift"; sourceTree = "<group>"; };
+		962AA0C929237ACF00C2620B /* TextPropertyMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPropertyMenuView.swift; sourceTree = "<group>"; };
+		962AA0CD29237E9C00C2620B /* KeyboardSecondVC-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardSecondVC-Ext.swift"; sourceTree = "<group>"; };
+		962AA0D1292384ED00C2620B /* UIApplication-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication-Ext.swift"; sourceTree = "<group>"; };
+		962AA0D32924F48500C2620B /* KRScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KRScrollView.swift; sourceTree = "<group>"; };
 		96477D18291A041D00830EFB /* BookHistoryApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookHistoryApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96477D1B291A041D00830EFB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96477D1D291A041D00830EFB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -128,6 +136,8 @@
 			children = (
 				96477D1F291A041D00830EFB /* ViewController.swift */,
 				962AA0BB2920F61800C2620B /* SecondViewController.swift */,
+				962AA0D32924F48500C2620B /* KRScrollView.swift */,
+				962AA0CC29237E8A00C2620B /* VC-Ext */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -142,6 +152,22 @@
 				962AA0C429222D9200C2620B /* TextStorage.swift */,
 			);
 			path = SecondTextView;
+			sourceTree = "<group>";
+		};
+		962AA0C829237A6C00C2620B /* CustomPopUpView */ = {
+			isa = PBXGroup;
+			children = (
+				962AA0C929237ACF00C2620B /* TextPropertyMenuView.swift */,
+			);
+			path = CustomPopUpView;
+			sourceTree = "<group>";
+		};
+		962AA0CC29237E8A00C2620B /* VC-Ext */ = {
+			isa = PBXGroup;
+			children = (
+				962AA0CD29237E9C00C2620B /* KeyboardSecondVC-Ext.swift */,
+			);
+			path = "VC-Ext";
 			sourceTree = "<group>";
 		};
 		96477D0F291A041D00830EFB = {
@@ -167,10 +193,12 @@
 			children = (
 				96477D1B291A041D00830EFB /* AppDelegate.swift */,
 				96477D1D291A041D00830EFB /* SceneDelegate.swift */,
+				962AA0D1292384ED00C2620B /* UIApplication-Ext.swift */,
+				962AA0C829237A6C00C2620B /* CustomPopUpView */,
 				962AA0BA2920F5F300C2620B /* ViewController */,
 				962AA0BD2922179500C2620B /* SecondTextView */,
-				962AA0B92920E99200C2620B /* Manager */,
 				962AA0B32920E8E200C2620B /* CustomTextView */,
+				962AA0B92920E99200C2620B /* Manager */,
 				962AA0B82920E98600C2620B /* Enum */,
 				962AA0B02920E86A00C2620B /* Extensions */,
 				96477D24291A041F00830EFB /* Assets.xcassets */,
@@ -311,11 +339,15 @@
 			files = (
 				96477D20291A041D00830EFB /* ViewController.swift in Sources */,
 				965AED95291E3EF0005B616F /* ColorBlockManager.swift in Sources */,
+				962AA0D2292384ED00C2620B /* UIApplication-Ext.swift in Sources */,
 				962AA0AD2920CEAA00C2620B /* CustomTextView-Ext.swift in Sources */,
+				962AA0D42924F48500C2620B /* KRScrollView.swift in Sources */,
 				962AA0C7292233EE00C2620B /* SCTextView-Ext.swift in Sources */,
+				962AA0CA29237ACF00C2620B /* TextPropertyMenuView.swift in Sources */,
 				962AA0BC2920F61800C2620B /* SecondViewController.swift in Sources */,
 				962AA0AB2920C6AC00C2620B /* CustomColor.swift in Sources */,
 				962AA0B72920E97000C2620B /* EX.swift in Sources */,
+				962AA0CE29237E9C00C2620B /* KeyboardSecondVC-Ext.swift in Sources */,
 				965AED97291E80A9005B616F /* CustomTextStorage.swift in Sources */,
 				96477D1C291A041D00830EFB /* AppDelegate.swift in Sources */,
 				96512BCB291B8CA00090F90B /* CustomLayoutManager.swift in Sources */,

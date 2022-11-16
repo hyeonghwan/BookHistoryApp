@@ -10,11 +10,13 @@ import UIKit
 class SecondTextView: UITextView {
     
     
+    var scrollDelegate: SecondTextViewScrollDelegate?
     
-    let scTextStorage = SCTextStorage()
+    private let scTextStorage = SCTextStorage()
     
     
-    override init(frame: CGRect, textContainer: NSTextContainer? ) {
+    
+    override init(frame: CGRect, textContainer: NSTextContainer?) {
         
         let manager: TextWrapLayoutManager = TextWrapLayoutManager()
         
@@ -31,6 +33,22 @@ class SecondTextView: UITextView {
         self.delegate = self
         
         self.attributedText = testSetting()
+        
+        // 'no replacements Found popUp menu disable' when word select
+        
+        self.isScrollEnabled = false
+        
+       
+        
+        self.autocorrectionType = .no
+    }
+    
+    convenience init(frame: CGRect,
+                              textContainer: NSTextContainer?,
+                              _ delegate: SecondTextViewScrollDelegate) {
+        
+        self.init(frame: frame, textContainer: textContainer)
+        self.scrollDelegate = delegate
         
     }
     
@@ -52,16 +70,21 @@ class SecondTextView: UITextView {
         self.attributedText = mutableAttributedText
     }
     
+ 
+    
     
     override func selectionRects(for range: UITextRange) -> [UITextSelectionRect] {
         
         return super.selectionRects(for: range)
     }
     
+ 
     
 }
 
+
 extension SecondTextView {
+    
     override func caretRect(for position: UITextPosition) -> CGRect {
         var original = super.caretRect(for: position)
         
@@ -71,13 +94,44 @@ extension SecondTextView {
         
         return original
     }
+    
+    private func scrollToCursorPositionIfBelowKeyboard() {
+        let keyboardHeight: CGFloat = 295 + 44
+        print("keyboardHeight", keyboardHeight)
+
+        let caret = self.caretRect(for: self.selectedTextRange!.start)
+
+        let keyboardTopBorder = self.bounds.size.height - keyboardHeight
+
+        if caret.origin.y < keyboardTopBorder {
+
+            self.scrollRectToVisible(caret, animated: true)
+
+        }
+
+    }
+    
+    
+
 }
 
 extension SecondTextView: UITextViewDelegate{
+    
+
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         
-
         return true
+    }
+    func textViewDidChange(_ textView: UITextView) {
+        
+        
+        scrollToCursorPositionIfBelowKeyboard()
+        
+        guard let scrollDelegate = self.scrollDelegate else {return}
+        guard let textRange = self.selectedTextRange else {return}
+        
+        scrollDelegate.scrollPostion(textRange)
+        
     }
     
 }

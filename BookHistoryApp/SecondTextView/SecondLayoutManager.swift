@@ -13,11 +13,6 @@ class TextWrapLayoutManager: NSLayoutManager {
     
     override func drawBackground(forGlyphRange glyphsToShow: NSRange, at origin: CGPoint) {
         
-        print("glyphsToShow: \(glyphsToShow)")
-        print("self.numberOfGlyphs : \(self.numberOfGlyphs)")
-        
-        
-        
         self.enumerateLineFragments(forGlyphRange: NSMakeRange(0, self.numberOfGlyphs)) { (rect, usedRect, textContainer, glyphRange, Bool) in
             
             let lineBoundingRect = self.boundingRect(forGlyphRange: glyphRange, in: textContainer)

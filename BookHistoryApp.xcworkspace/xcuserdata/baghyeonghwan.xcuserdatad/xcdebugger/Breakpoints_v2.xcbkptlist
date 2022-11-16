@@ -7,48 +7,64 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "4A81F6A2-B910-488E-8797-A023D2A59151"
+            uuid = "D2398887-D670-4628-9D69-F36DCA07EC99"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BookHistoryApp/CustomTextView-Ext.swift"
+            filePath = "BookHistoryApp/ViewController/KRScrollView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "20"
-            endingLineNumber = "20"
-            landmarkName = "setBackGround(_:)"
+            startingLineNumber = "42"
+            endingLineNumber = "42"
+            landmarkName = "determineNewContentOffsetForRatio(ratio:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "9563900C-198E-4831-A5BE-016EDCC6EAA2"
+            uuid = "08DBE0EC-0793-4757-BE10-78077A4AD5D8"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BookHistoryApp/CustomTextView-Ext.swift"
+            filePath = "BookHistoryApp/ViewController/KRScrollView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "22"
-            endingLineNumber = "22"
-            landmarkName = "setBackGround(_:)"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
+            landmarkName = "determineNewContentOffsetForRatio(ratio:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "9245406D-DF61-4EE0-AE01-E612360FCC20"
+            uuid = "355E9A71-DDE5-4109-864A-DAAF024D5FE9"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BookHistoryApp/CustomTextView-Ext.swift"
+            filePath = "BookHistoryApp/ViewController/KRScrollView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "24"
-            endingLineNumber = "24"
-            landmarkName = "setBackGround(_:)"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
+            landmarkName = "determineNewContentOffsetForRatio(ratio:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0D8366F3-D37B-4802-8B56-EE938A3DE67C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BookHistoryApp/ViewController/KRScrollView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "46"
+            endingLineNumber = "46"
+            landmarkName = "determineNewContentOffsetForRatio(ratio:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

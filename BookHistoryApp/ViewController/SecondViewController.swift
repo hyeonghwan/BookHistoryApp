@@ -8,17 +8,48 @@
 import UIKit
 import SnapKit
 
+protocol SecondTextViewScrollDelegate {
+    func scrollPostion(_ range: UITextRange)
+}
+
 class SecondViewController: UIViewController {
 
+    
+    
     let toolBar = UIToolbar(frame: CGRect(x: 0.0,
                                           y: 0.0,
                                           width: UIScreen.main.bounds.size.width,
                                           height: 44.0))//1
     
+    private var keyBoardHeight: CGFloat = 0
+    
+    let textMenuView: TextPropertyMenuView = {
+       let menu = TextPropertyMenuView()
+        menu.backgroundColor = .tertiarySystemBackground
+        return menu
+    }()
+    
     
     lazy var textView: SecondTextView = {        
-        let textView = SecondTextView(frame: .zero, textContainer: CustomTextContainer(size: .zero))
+        let textView = SecondTextView(frame: .zero,
+                                      textContainer: CustomTextContainer(size: .zero),
+                                      self)
+        
+        
         return textView
+    }()
+    
+    private lazy var scrollView: KRScrollView = {
+        let scrollView = KRScrollView()
+        scrollView.contentInset = .zero
+        scrollView.showsHorizontalScrollIndicator = false
+        return scrollView
+    }()
+    
+    
+    private lazy var container: UIView =    {
+        let view = UIView()
+        return view
     }()
     
     
@@ -27,34 +58,94 @@ class SecondViewController: UIViewController {
 
         self.view.backgroundColor = .white
         
-        self.view.addSubview(textView)
+        self.view.addSubview(scrollView)
+        scrollView.contentView = container
+        scrollView.addSubview(container)
+        container.addSubview(textView)
         
-        let flexible = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)//2
-        self.toolBar.setItems([flexible], animated: false)
-        
-        self.addColorBlockButton(title: "block", selector: #selector(addColorTapped(_:)))
-        self.addDoneButton(title: "Done", selector: #selector(doneButtonTapped(_:)))
-        self.textView.inputAccessoryView = toolBar
-        
-        textView.snp.makeConstraints{
-            $0.edges.equalToSuperview()
+        scrollView.snp.makeConstraints{
+            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+
+        container.snp.makeConstraints{
+            $0.top.equalToSuperview()
+            $0.width.equalTo(self.view.snp.width).offset(-32)
+            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.bottom.equalToSuperview().inset(400)
+            $0.height.equalTo(1000).priority(.low)
         }
         
+        textView.snp.makeConstraints{
+            $0.top.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview()
+            $0.height.equalTo(1000).priority(.low)
+        }
+        
+        
+        self.settingKeyBoardNotification()
+        
+        textView.backgroundColor = .systemGray
+    
     }
-    @objc func doneButtonTapped(_ sender: Any){
-        self.view.endEditing(true)
+   
+    
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.textMenuView.removeFromSuperview()
     }
     
-    @objc func addColorTapped(_ sender: Any){
-        self.textView.textStorage.setAttributes([
-            NSAttributedString.Key.backgroundColor : UIColor.systemPink,
-            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .bold),
-            NSAttributedString.Key.foregroundColor : UIColor.systemPink
-        ], range: self.textView.selectedRange)
+    
+    func setKeyboardHeight(_ height: CGFloat){
+        self.keyBoardHeight = height
     }
     
+   
   
     
+}
+extension SecondViewController {
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        print(111)
+    }
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        print(size)
+    }
+    
+//    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+//        print("viewWillTransition")
+//        let ratio = self.scrollView.contentOffsetRatio
+//
+//
+//        coordinator.animate(alongsideTransition: { (context) in
+//           
+//        }, completion: nil)
+//    }
+    
+}
+
+extension SecondViewController: SecondTextViewScrollDelegate{
+
+    func scrollPostion(_ range: UITextRange) {
+        
+        
+        
+        
+        let caret = self.textView.caretRect(for: range.start)
+
+        let keyboardTopBorder = UIScreen.main.bounds.height - keyBoardHeight - 44
+
+        let topCaretHeight = caret.origin.y - keyboardTopBorder
+
+        print("textViewSize : \(textView.bounds.height)")
+        
+        if topCaretHeight + 128 >= self.scrollView.contentOffset.y {
+
+            self.scrollView.setContentOffset(CGPoint(x: 0, y: topCaretHeight + 128), animated: false)
+
+        }
+    }
 }
 extension SecondViewController {
     
@@ -64,6 +155,7 @@ extension SecondViewController {
         
         self.toolBar.items?.append(barButton)
     }
+    
     func addColorBlockButton(title: String, selector: Selector){
         
         let barButton = UIBarButtonItem(title: title, style: .plain, target: self, action: selector)//3
@@ -72,3 +164,5 @@ extension SecondViewController {
     }
     
 }
+
+
