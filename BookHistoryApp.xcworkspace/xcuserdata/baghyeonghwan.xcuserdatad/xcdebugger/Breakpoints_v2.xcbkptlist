@@ -7,64 +7,64 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "D2398887-D670-4628-9D69-F36DCA07EC99"
+            uuid = "D19A57FF-183A-4E80-94D7-B3BA3C076293"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BookHistoryApp/ViewController/KRScrollView.swift"
+            filePath = "BookHistoryApp/ViewController/SecondViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "42"
-            endingLineNumber = "42"
-            landmarkName = "determineNewContentOffsetForRatio(ratio:)"
+            startingLineNumber = "117"
+            endingLineNumber = "117"
+            landmarkName = "willTransition(to:with:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "08DBE0EC-0793-4757-BE10-78077A4AD5D8"
+            uuid = "E4BB8EBC-9056-4C84-AD7B-BD57B93BC225"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BookHistoryApp/ViewController/KRScrollView.swift"
+            filePath = "BookHistoryApp/ViewController/SecondViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
-            landmarkName = "determineNewContentOffsetForRatio(ratio:)"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
+            landmarkName = "viewWillTransition(to:with:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "355E9A71-DDE5-4109-864A-DAAF024D5FE9"
+            uuid = "56570BB7-7A30-4726-824D-E4A54A5CEB3C"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BookHistoryApp/ViewController/KRScrollView.swift"
+            filePath = "BookHistoryApp/ViewController/SecondViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "47"
-            endingLineNumber = "47"
-            landmarkName = "determineNewContentOffsetForRatio(ratio:)"
+            startingLineNumber = "101"
+            endingLineNumber = "101"
+            landmarkName = "viewWillDisappear(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "0D8366F3-D37B-4802-8B56-EE938A3DE67C"
+            uuid = "82A85661-6F5D-4883-98A4-5738512AE975"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BookHistoryApp/ViewController/KRScrollView.swift"
+            filePath = "BookHistoryApp/ViewController/SecondViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
-            landmarkName = "determineNewContentOffsetForRatio(ratio:)"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
+            landmarkName = "viewWillDisappear(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

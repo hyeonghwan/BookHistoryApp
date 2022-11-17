@@ -77,6 +77,29 @@ class ViewController: UIViewController {
             $0.edges.equalToSuperview()
             $0.height.equalTo(1000).priority(.low)
         }
+        
+        
+        
+        let attrStr = NSAttributedString(string: "Hello World",attributes: [
+            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .bold)
+        ])
+        
+        
+        let documentAttributes = [NSAttributedString.DocumentAttributeKey.documentType:
+                                    NSAttributedString.DocumentType.html]
+        do {
+            let htmlData = try attrStr.data(from: NSMakeRange(0, attrStr.length), documentAttributes: documentAttributes)
+            if let htmlString = String(data:htmlData, encoding: String.Encoding.utf8) {
+                print("htmlString : \(htmlString)")
+                
+            }
+        }
+        
+        
+        
+        catch {
+            print("error creating HTML from Attributed String")
+        }
        
         
         

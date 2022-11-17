@@ -17,15 +17,20 @@ class KRScrollView: UIScrollView {
     override var contentSize: CGSize {
         didSet{
             print("self.contentSize: \(self.contentSize)")
-            let ratio = self.contentOffsetRatio
-            self.determineNewContentOffsetForRatio(ratio: ratio)
+
         }
+        
     }
+    
+    
+    
     
     // When the content offset gets set, figure out what the
     // ratio is between 0 and 1
     override var contentOffset: CGPoint {
         didSet {
+            print("self.layer : \(self.layer.bounds)")
+            print("self.contentOffset : \(self.contentOffset)")
             let width = self.contentSize.width
             let height = self.contentSize.height
             let halfWidth = self.frame.size.width / 2.0
@@ -37,9 +42,19 @@ class KRScrollView: UIScrollView {
             self.contentOffsetRatio = CGPoint(
                           x: centerX, y: centerY)
         }
+        willSet{
+            
+            
+            if newValue.y == .infinity{
+                print(newValue)
+                let ratio = self.contentOffsetRatio
+                self.determineNewContentOffsetForRatio(ratio: ratio)
+            }
+        }
     }
     func determineNewContentOffsetForRatio(ratio: CGPoint) {
-        print(self.contentView)
+        
+        
         if var frame = self.contentView?.frame {
             // Adjust the frame to be zero based since it can have a
             // negative origin
@@ -52,9 +67,9 @@ class KRScrollView: UIScrollView {
         
             // Calculate the new content offset based off the
             // contentOffsetRatio
-            var offsetX = ((ratio.x * self.contentSize.width)
+            var offsetX: CGFloat = ((ratio.x * self.contentSize.width)
                            - (self.frame.size.width / 2.0))
-            var offsetY = ((ratio.y * self.contentSize.height)
+            var offsetY: CGFloat = ((ratio.y * self.contentSize.height)
                            - (self.frame.size.height / 2.0))
         
             // Create a field of view rect witch represents where
@@ -88,8 +103,14 @@ class KRScrollView: UIScrollView {
             // Preventing negative content offsets
             offsetY = offsetY > 0.0 ? offsetY : 0.0;
             offsetX = offsetX > 0.0 ? offsetX : 0.0;
-            print("offsetX, offsetY \(offsetX) , \(offsetY)")
-            self.contentOffset = CGPointMake(offsetX, offsetY);
+            
+            print("scrollView bound : \(bounds)")
+            print("contentView bound : \(contentView?.bounds)")
+            self.contentOffset.x = offsetX
+            self.contentOffset.y = offsetY
+            
+            self.layer.bounds.origin.x = offsetX
+            self.layer.bounds.origin.y = offsetY
         }
     }
 }

@@ -10,6 +10,7 @@ import SnapKit
 
 protocol SecondTextViewScrollDelegate {
     func scrollPostion(_ range: UITextRange)
+    func textDidChagned()
 }
 
 class SecondViewController: UIViewController {
@@ -23,15 +24,18 @@ class SecondViewController: UIViewController {
     
     private var keyBoardHeight: CGFloat = 0
     
-    let textMenuView: TextPropertyMenuView = {
-       let menu = TextPropertyMenuView()
+    
+    lazy var textMenuView: TextPropertyMenuView = {
+        let menu = TextPropertyMenuView(frame:  CGRect(x: 0, y: self.view.frame.size.height,
+                                                       width: UIScreen.main.bounds.size.width, height: 10))
         menu.backgroundColor = .tertiarySystemBackground
         return menu
     }()
     
     
-    lazy var textView: SecondTextView = {        
-        let textView = SecondTextView(frame: .zero,
+    lazy var textView: SecondTextView = {
+      
+        let textView = SecondTextView(frame:.zero,
                                       textContainer: CustomTextContainer(size: .zero),
                                       self)
         
@@ -53,53 +57,57 @@ class SecondViewController: UIViewController {
     }()
     
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.view.backgroundColor = .white
         
-        self.view.addSubview(scrollView)
-        scrollView.contentView = container
-        scrollView.addSubview(container)
-        container.addSubview(textView)
-        
-        scrollView.snp.makeConstraints{
-            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
-            $0.leading.trailing.bottom.equalToSuperview()
-        }
+        self.view.addSubview(textView)
 
-        container.snp.makeConstraints{
-            $0.top.equalToSuperview()
-            $0.width.equalTo(self.view.snp.width).offset(-32)
-            $0.leading.trailing.equalToSuperview().inset(16)
-            $0.bottom.equalToSuperview().inset(400)
-            $0.height.equalTo(1000).priority(.low)
-        }
+        self.addAutoLayout()
         
-        textView.snp.makeConstraints{
-            $0.top.leading.trailing.equalToSuperview()
-            $0.bottom.equalToSuperview()
-            $0.height.equalTo(1000).priority(.low)
-        }
-        
+        container.backgroundColor = .systemPink
         
         self.settingKeyBoardNotification()
         
-        textView.backgroundColor = .systemGray
+        textView.backgroundColor = .tertiarySystemBackground
+        
+        
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { [weak self] in
+            guard let self = self else {return}
+            self.textView.contentSize.height += 300
+            
+        })
     
     }
-   
+    
+    private func addAutoLayout() {
+        
+        textView.snp.makeConstraints{
+            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(12)
+            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.bottom.equalToSuperview().inset(16)
+            $0.width.equalTo(self.view.snp.width).offset(-36)
+        }
+        
+    }
     
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         self.textMenuView.removeFromSuperview()
+        
     }
     
+
     
     func setKeyboardHeight(_ height: CGFloat){
         self.keyBoardHeight = height
     }
+
     
    
   
@@ -126,26 +134,32 @@ extension SecondViewController {
 }
 
 extension SecondViewController: SecondTextViewScrollDelegate{
-
-    func scrollPostion(_ range: UITextRange) {
+    func textDidChagned() {
         
-        
-        
-        
-        let caret = self.textView.caretRect(for: range.start)
-
-        let keyboardTopBorder = UIScreen.main.bounds.height - keyBoardHeight - 44
-
-        let topCaretHeight = caret.origin.y - keyboardTopBorder
-
-        print("textViewSize : \(textView.bounds.height)")
-        
-        if topCaretHeight + 128 >= self.scrollView.contentOffset.y {
-
-            self.scrollView.setContentOffset(CGPoint(x: 0, y: topCaretHeight + 128), animated: false)
-
-        }
     }
+    
+   
+    func scrollPostion(_ range: UITextRange) {
+//        self.textView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
+        
+//        self.textView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 0, height: 0), animated: false)
+        let caret = self.textView.caretRect(for: range.start)
+        
+        let keyboardTopBorder: CGFloat = UIScreen.main.bounds.height - keyBoardHeight - 44
+        
+        let origingHeight: CGFloat = UIScreen.main.bounds.height - keyboardTopBorder - 44 - 150
+        
+        
+//        let topCaretHeight: CGFloat = caret.origin.y - keyboardTopBorder
+//
+//        print("textViewSize : \(textView.bounds.height)")
+        
+//        if caret.origin.y >= origingHeight {
+//            self.textView.scrollRectToVisible(caret, animated: true)
+//
+//        }
+    }
+    
 }
 extension SecondViewController {
     

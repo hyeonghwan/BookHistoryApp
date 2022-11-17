@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class SecondTextView: UITextView {
     
@@ -14,6 +15,19 @@ class SecondTextView: UITextView {
     
     private let scTextStorage = SCTextStorage()
     
+   
+    
+    override var bounds: CGRect{
+        didSet{
+//            self.bounds.size.height += 300
+        }
+    }
+    override var contentOffset: CGPoint{
+        didSet{
+            print("self.contentOffset TextView : \(self.contentOffset)")
+            
+        }
+    }
     
     
     override init(frame: CGRect, textContainer: NSTextContainer?) {
@@ -36,11 +50,19 @@ class SecondTextView: UITextView {
         
         // 'no replacements Found popUp menu disable' when word select
         
-        self.isScrollEnabled = false
+        self.isScrollEnabled = true
+        self.alwaysBounceVertical = false
+        self.isUserInteractionEnabled = true
+        
+        self.layer.borderColor = UIColor.gray.cgColor
+        self.layer.borderWidth = 1
         
        
+        self.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
         
         self.autocorrectionType = .no
+        
+        
     }
     
     convenience init(frame: CGRect,
@@ -57,6 +79,12 @@ class SecondTextView: UITextView {
         
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+    
+    }
+  
+    
     fileprivate func insertAtTextViewCursor(attributedString: NSAttributedString) {
         // Exit if no selected text range
         guard let selectedRange = self.selectedTextRange else {
@@ -71,8 +99,6 @@ class SecondTextView: UITextView {
     }
     
  
-    
-    
     override func selectionRects(for range: UITextRange) -> [UITextSelectionRect] {
         
         return super.selectionRects(for: range)
@@ -110,6 +136,9 @@ extension SecondTextView {
         }
 
     }
+    override func setContentOffset(_ contentOffset: CGPoint, animated: Bool) {
+        super.setContentOffset(contentOffset, animated: false)
+    }
     
     
 
@@ -124,13 +153,14 @@ extension SecondTextView: UITextViewDelegate{
     }
     func textViewDidChange(_ textView: UITextView) {
         
-        
-        scrollToCursorPositionIfBelowKeyboard()
-        
-        guard let scrollDelegate = self.scrollDelegate else {return}
+//
+//        scrollToCursorPositionIfBelowKeyboard()
+//
+//        guard let scrollDelegate = self.scrollDelegate else {return}
         guard let textRange = self.selectedTextRange else {return}
         
-        scrollDelegate.scrollPostion(textRange)
+        
+//        scrollDelegate.scrollPostion(textRange)
         
     }
     

@@ -53,10 +53,22 @@ class TextPropertyMenuView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.layer.addBorder(side: .top, thickness: CGFloat(1), color: UIColor.systemPink.cgColor)
         configure()
     }
+    
+    
     required init?(coder: NSCoder) {
         fatalError("required init fatalError")
+        
+    }
+    
+    func settingFrame(_ frame: CGRect,_ heihgt: CGFloat){
+        var beforeFrame = frame
+        beforeFrame.size.height += heihgt
+        beforeFrame.origin.y -= heihgt
+        
+        self.frame = beforeFrame
         
     }
     
@@ -71,6 +83,9 @@ private extension TextPropertyMenuView {
         [scrollView,separatorLine,keyDownButton].forEach{
             self.addSubview($0)
         }
+        
+        scrollView.addSubview(stackView)
+        
         
         scrollView.snp.makeConstraints{
             $0.leading.equalToSuperview()
@@ -90,8 +105,7 @@ private extension TextPropertyMenuView {
             $0.trailing.equalTo(keyDownButton.snp.leading)
         }
         
-        scrollView.addSubview(stackView)
-        
+     
         stackView.snp.makeConstraints{
             $0.edges.equalToSuperview()
         }
@@ -107,6 +121,7 @@ private extension TextPropertyMenuView {
                 $0.width.height.equalTo(44)
             }
         }
+        
         
     }
     

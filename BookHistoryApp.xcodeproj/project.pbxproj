@@ -25,6 +25,7 @@
 		962AA0CE29237E9C00C2620B /* KeyboardSecondVC-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0CD29237E9C00C2620B /* KeyboardSecondVC-Ext.swift */; };
 		962AA0D2292384ED00C2620B /* UIApplication-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D1292384ED00C2620B /* UIApplication-Ext.swift */; };
 		962AA0D42924F48500C2620B /* KRScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D32924F48500C2620B /* KRScrollView.swift */; };
+		962AA0D62926351D00C2620B /* CALayer-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D52926351D00C2620B /* CALayer-Ext.swift */; };
 		96477D1C291A041D00830EFB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D1B291A041D00830EFB /* AppDelegate.swift */; };
 		96477D1E291A041D00830EFB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D1D291A041D00830EFB /* SceneDelegate.swift */; };
 		96477D20291A041D00830EFB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D1F291A041D00830EFB /* ViewController.swift */; };
@@ -57,6 +58,7 @@
 		962AA0CD29237E9C00C2620B /* KeyboardSecondVC-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardSecondVC-Ext.swift"; sourceTree = "<group>"; };
 		962AA0D1292384ED00C2620B /* UIApplication-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication-Ext.swift"; sourceTree = "<group>"; };
 		962AA0D32924F48500C2620B /* KRScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KRScrollView.swift; sourceTree = "<group>"; };
+		962AA0D52926351D00C2620B /* CALayer-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer-Ext.swift"; sourceTree = "<group>"; };
 		96477D18291A041D00830EFB /* BookHistoryApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookHistoryApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96477D1B291A041D00830EFB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96477D1D291A041D00830EFB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				962AA0AE2920DA6400C2620B /* String-Ext.swift */,
 				962AA0B12920E87C00C2620B /* UITextView-Ext.swift */,
 				962AA0B62920E97000C2620B /* EX.swift */,
+				962AA0D52926351D00C2620B /* CALayer-Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -359,6 +362,7 @@
 				962AA0BF292217AA00C2620B /* SecondTextView.swift in Sources */,
 				962AA0A92920BF2D00C2620B /* Attribute.swift in Sources */,
 				962AA0B52920E90400C2620B /* NSLayoutManagerDelegate.swift in Sources */,
+				962AA0D62926351D00C2620B /* CALayer-Ext.swift in Sources */,
 				96477D1E291A041D00830EFB /* SceneDelegate.swift in Sources */,
 				962AA0AF2920DA6400C2620B /* String-Ext.swift in Sources */,
 			);
