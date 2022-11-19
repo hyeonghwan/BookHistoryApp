@@ -62,9 +62,11 @@ extension SecondTextView{
         richText.append(interlineAttributedString)
         
         
-        let chunk2 = NSAttributedString(string: "Something like this where it breaks to its own line and creates a box that goes to the edge no matter how long the text is \n",
+        let chunk2 = NSAttributedString(string: "Something like this where it breaks to its own line and creates a box that goes to the edge no matter how long the text is \n\n\n\n\n\n\n\n\n\n\n\n\n\n",
                                         attributes: [
+                                            NSAttributedString.Key.backgroundColor : UIColor.red,
                                             NSAttributedString.Key.foregroundColor : UIColor.label,
+                                            NSAttributedString.Key.paragraphStyle : para,
                                             NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)
                                         ])
        

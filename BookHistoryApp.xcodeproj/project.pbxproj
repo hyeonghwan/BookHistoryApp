@@ -26,6 +26,8 @@
 		962AA0D2292384ED00C2620B /* UIApplication-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D1292384ED00C2620B /* UIApplication-Ext.swift */; };
 		962AA0D42924F48500C2620B /* KRScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D32924F48500C2620B /* KRScrollView.swift */; };
 		962AA0D62926351D00C2620B /* CALayer-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D52926351D00C2620B /* CALayer-Ext.swift */; };
+		962AA0D82928F31A00C2620B /* BackGroundPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D72928F31900C2620B /* BackGroundPickerView.swift */; };
+		962AA0DA2928F7B400C2620B /* ColorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D92928F7B400C2620B /* ColorButton.swift */; };
 		96477D1C291A041D00830EFB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D1B291A041D00830EFB /* AppDelegate.swift */; };
 		96477D1E291A041D00830EFB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D1D291A041D00830EFB /* SceneDelegate.swift */; };
 		96477D20291A041D00830EFB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D1F291A041D00830EFB /* ViewController.swift */; };
@@ -59,6 +61,8 @@
 		962AA0D1292384ED00C2620B /* UIApplication-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication-Ext.swift"; sourceTree = "<group>"; };
 		962AA0D32924F48500C2620B /* KRScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KRScrollView.swift; sourceTree = "<group>"; };
 		962AA0D52926351D00C2620B /* CALayer-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer-Ext.swift"; sourceTree = "<group>"; };
+		962AA0D72928F31900C2620B /* BackGroundPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackGroundPickerView.swift; sourceTree = "<group>"; };
+		962AA0D92928F7B400C2620B /* ColorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorButton.swift; sourceTree = "<group>"; };
 		96477D18291A041D00830EFB /* BookHistoryApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookHistoryApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96477D1B291A041D00830EFB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96477D1D291A041D00830EFB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -173,6 +177,15 @@
 			path = "VC-Ext";
 			sourceTree = "<group>";
 		};
+		962AA0DB29291C4700C2620B /* InputView */ = {
+			isa = PBXGroup;
+			children = (
+				962AA0D72928F31900C2620B /* BackGroundPickerView.swift */,
+				962AA0D92928F7B400C2620B /* ColorButton.swift */,
+			);
+			path = InputView;
+			sourceTree = "<group>";
+		};
 		96477D0F291A041D00830EFB = {
 			isa = PBXGroup;
 			children = (
@@ -198,6 +211,7 @@
 				96477D1D291A041D00830EFB /* SceneDelegate.swift */,
 				962AA0D1292384ED00C2620B /* UIApplication-Ext.swift */,
 				962AA0C829237A6C00C2620B /* CustomPopUpView */,
+				962AA0DB29291C4700C2620B /* InputView */,
 				962AA0BA2920F5F300C2620B /* ViewController */,
 				962AA0BD2922179500C2620B /* SecondTextView */,
 				962AA0B32920E8E200C2620B /* CustomTextView */,
@@ -346,6 +360,8 @@
 				962AA0AD2920CEAA00C2620B /* CustomTextView-Ext.swift in Sources */,
 				962AA0D42924F48500C2620B /* KRScrollView.swift in Sources */,
 				962AA0C7292233EE00C2620B /* SCTextView-Ext.swift in Sources */,
+				962AA0DA2928F7B400C2620B /* ColorButton.swift in Sources */,
+				962AA0D82928F31A00C2620B /* BackGroundPickerView.swift in Sources */,
 				962AA0CA29237ACF00C2620B /* TextPropertyMenuView.swift in Sources */,
 				962AA0BC2920F61800C2620B /* SecondViewController.swift in Sources */,
 				962AA0AB2920C6AC00C2620B /* CustomColor.swift in Sources */,

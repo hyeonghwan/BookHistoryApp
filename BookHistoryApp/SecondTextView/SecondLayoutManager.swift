@@ -15,19 +15,25 @@ class TextWrapLayoutManager: NSLayoutManager {
         
         self.enumerateLineFragments(forGlyphRange: NSMakeRange(0, self.numberOfGlyphs)) { (rect, usedRect, textContainer, glyphRange, Bool) in
             
+            guard let backGroundColor = textContainer.layoutManager?.textStorage?.attribute(NSAttributedString.Key.backgroundColor,
+                                                                            at: glyphRange.location,
+                                                                            longestEffectiveRange: nil,
+                                                                                  in: glyphRange) as? UIColor else { return }
+            
+            
             let lineBoundingRect = self.boundingRect(forGlyphRange: glyphRange, in: textContainer)
-            
+
             var adjustedLineRect = lineBoundingRect.offsetBy(dx: origin.x , dy: origin.y )
-            
-            
+
+
             adjustedLineRect.size.height = self.font.lineHeight
-            
+
             adjustedLineRect.size.width = usedRect.size.width - 10
-            
+
             let fillColorPath: UIBezierPath = UIBezierPath(rect: adjustedLineRect)
-            
-            UIColor.clear.setFill()
-            
+
+            backGroundColor.setFill()
+
             fillColorPath.fill()
         }
     }

@@ -23,7 +23,7 @@ class ViewController: UIViewController {
         return scrollView
     }()
     
-    private lazy var container: UIView =    {
+    private lazy var container: UIView = {
         let view = UIView()
         return view
     }()

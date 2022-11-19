@@ -30,21 +30,10 @@ class SecondTextView: UITextView {
     }
     
     
-    override init(frame: CGRect, textContainer: NSTextContainer?) {
-        
-        let manager: TextWrapLayoutManager = TextWrapLayoutManager()
-        
-        scTextStorage.addLayoutManager(manager)
-        
-        manager.addTextContainer(textContainer!)
-        
-        super.init(frame: frame, textContainer: textContainer)
-        
+    fileprivate func settingConfiguration() {
         self.allowsEditingTextAttributes = true
-      
-        self.layoutManager.delegate = self
         
-        self.delegate = self
+        self.layoutManager.delegate = self
         
         self.attributedText = testSetting()
         
@@ -57,10 +46,24 @@ class SecondTextView: UITextView {
         self.layer.borderColor = UIColor.gray.cgColor
         self.layer.borderWidth = 1
         
-       
-        self.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
+        
+        self.contentInset = UIEdgeInsets(top: 30, left: 12, bottom: 10, right: 12)
         
         self.autocorrectionType = .no
+        
+    }
+    
+    override init(frame: CGRect, textContainer: NSTextContainer?) {
+        
+        let manager: TextWrapLayoutManager = TextWrapLayoutManager()
+        
+        scTextStorage.addLayoutManager(manager)
+        
+        manager.addTextContainer(textContainer!)
+        
+        super.init(frame: frame, textContainer: textContainer)
+        
+        settingConfiguration()
         
         
     }
@@ -74,6 +77,7 @@ class SecondTextView: UITextView {
         
     }
     
+    
     required init?(coder: NSCoder) {
         fatalError("required init fatalError")
         
@@ -85,7 +89,7 @@ class SecondTextView: UITextView {
     }
   
     
-    fileprivate func insertAtTextViewCursor(attributedString: NSAttributedString) {
+    func insertAtTextViewCursor(attributedString: NSAttributedString) {
         // Exit if no selected text range
         guard let selectedRange = self.selectedTextRange else {
             return
@@ -140,29 +144,6 @@ extension SecondTextView {
         super.setContentOffset(contentOffset, animated: false)
     }
     
-    
-
-}
-
-extension SecondTextView: UITextViewDelegate{
-    
-
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        
-        return true
-    }
-    func textViewDidChange(_ textView: UITextView) {
-        
-//
-//        scrollToCursorPositionIfBelowKeyboard()
-//
-//        guard let scrollDelegate = self.scrollDelegate else {return}
-        guard let textRange = self.selectedTextRange else {return}
-        
-        
-//        scrollDelegate.scrollPostion(textRange)
-        
-    }
     
 }
 
