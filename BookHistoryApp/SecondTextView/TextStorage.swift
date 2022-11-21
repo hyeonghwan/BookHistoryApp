@@ -25,7 +25,6 @@ class SCTextStorage: NSTextStorage{
     
     
     
-    
     override func insert(_ attrString: NSAttributedString, at loc: Int) {
         super.insert(attrString, at: loc)
         

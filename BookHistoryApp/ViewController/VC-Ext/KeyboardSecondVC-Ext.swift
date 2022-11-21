@@ -7,11 +7,15 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 extension Notification{
     static var keyDown: Notification.Name = Notification.Name("keyDown")
     
-    static var dismissKeyBoard: Notification.Name = Notification.Name("dismissKeyBoard")
+    static var changeInputView: Notification.Name = Notification.Name("changeInputView")
+    
+    static var changeOriginalKeyBoard: Notification.Name = Notification.Name("originalKeyBoard")
 }
 
 extension SecondViewController{
@@ -19,8 +23,6 @@ extension SecondViewController{
     
     /// KeyBoard notification
     func settingKeyBoardNotification() {
-        
-        
         
         NotificationCenter
             .default
@@ -36,9 +38,21 @@ extension SecondViewController{
         
         NotificationCenter
             .default
-            .addObserver(self, selector: #selector(keyBoardDismissAction), name: Notification.dismissKeyBoard, object: nil)
+            .addObserver(self, selector: #selector(keyBoardchangeInputViewAction), name: Notification.changeInputView, object: nil)
+        
+        NotificationCenter
+            .default
+            .addObserver(self, selector: #selector(keyBoardChangeOriginal), name: Notification.changeOriginalKeyBoard, object: nil)
     }
     
+    
+    @objc private func keyBoardChangeOriginal(_ notification: Notification?) -> Void {
+        
+        self.inputViewModel.inputStateObserver.onNext(.originalkeyBoard)
+        self.keyBoardDisposeBag = DisposeBag()
+        self.textView.inputView = nil
+        self.textView.reloadInputViews()
+    }
     
     @objc private func addColorTapped(_ sender: Any){
         self.textView.textStorage.setAttributes([
@@ -48,24 +62,37 @@ extension SecondViewController{
         ], range: self.textView.selectedRange)
     }
     
-    @objc private func keyBoardDismissAction(_ notification: Notification?) -> Void {
+    @objc private func keyBoardchangeInputViewAction(_ notification: Notification?) -> Void {
         
-        let backGroundPickerView = BackGroundPickerView()
-        
-        backGroundPickerView.translatesAutoresizingMaskIntoConstraints = false
-        self.textView.inputView = backGroundPickerView
-        
-        self.textView.reloadInputViews()
+        if let state = self.textMenuView.state,
+           state != .backAndForeGroundColorState{
+            
+            self.inputViewModel.inputStateObserver.onNext(.backAndForeGroundColorState)
+            
+            let backGroundPickerView = BackGroundPickerView()
+            
+            backGroundPickerView
+                .buttonObservable
+                .bind(onNext: self.colorViewModel.onColorData.onNext(_:))
+                .disposed(by: keyBoardDisposeBag)
+            
+            backGroundPickerView.translatesAutoresizingMaskIntoConstraints = false
+            
+            self.textView.inputView = backGroundPickerView
+            
+            self.textView.reloadInputViews()
+           
+        }
     }
     
     @objc private func keyDownTapped(_ notification: Notification?) -> Void {
         self.hideTextMenuView()
         
+        
     }
     
     @objc private func keyboardWillHide(_ notification: Notification?) -> Void{
     
-        
     }
     
     
@@ -105,19 +132,6 @@ extension SecondViewController{
         
     }
     //(375.0, 291.0))
-    
-    func showTextMenuView(_ kbFrame: CGRect,
-                          _ height: CGFloat) {
-        
-        //        UIApplication.shared.keyWindow?.addSubview(textMenuView)
-        if !self.view.subviews.contains(where: { view in view == textMenuView}){
-            self.view.addSubview(textMenuView)
-            textMenuView.settingFrame(kbFrame, height)
-        }
-    }
-    
-    
-    
     
     func hideTextMenuView() {
         self.view.layoutIfNeeded()

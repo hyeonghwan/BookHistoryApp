@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 class TextPropertyMenuView: UIView {
     
@@ -15,14 +17,54 @@ class TextPropertyMenuView: UIView {
     //Second TextView UndoManager
     var textViewUndoManager: UndoManager?
     
+    var viewModel: InputViewModelType?
     
-    // state inputView is active
-    var inputViewState: Bool = false {
+    
+    //input
+    var state: KeyBoardState? {
         didSet{
-            if self.inputViewState {
+            switch self.state{
+            case .originalkeyBoard:
+                self.keyDownButton.setImage(UIImage(systemName: "keyboard.chevron.compact.down"), for: .normal)
+
+            case .backAndForeGroundColorState:
                 self.keyDownButton.setImage(UIImage(systemName: "x.circle"), for: .normal)
+
+            case .none:
+                print("nil")
             }
         }
+    }
+    
+    
+    var keyBoardObserver: AnyObserver<KeyBoardState>?
+    
+    private var disposeBag = DisposeBag()
+    
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.layer.addBorder(side: .top, thickness: CGFloat(1), color: UIColor.systemPink.cgColor)
+        configure()
+        
+        
+        
+    }
+
+    
+    convenience init(frame: CGRect, viewModel: InputViewModelType){
+        
+        self.init(frame: frame)
+        
+        self.viewModel = viewModel
+        
+        
+    }
+    
+    
+    required init?(coder: NSCoder) {
+        fatalError("required init fatalError")
+        
     }
     
     private lazy var scrollView: UIScrollView = {
@@ -72,7 +114,6 @@ class TextPropertyMenuView: UIView {
     
   
     
-    
     lazy var undoButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "arrow.uturn.backward"), for: .normal)
@@ -104,24 +145,6 @@ class TextPropertyMenuView: UIView {
     }()
     
     
-    private lazy var backGroundPickerView: BackGroundPickerView = {
-        let view = BackGroundPickerView()
-        return view
-    }()
-    
-    
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.layer.addBorder(side: .top, thickness: CGFloat(1), color: UIColor.systemPink.cgColor)
-        configure()
-    }
-    
-    
-    required init?(coder: NSCoder) {
-        fatalError("required init fatalError")
-        
-    }
     
     func settingFrame(_ frame: CGRect,_ heihgt: CGFloat){
         var beforeFrame = frame
@@ -133,19 +156,25 @@ class TextPropertyMenuView: UIView {
     }
     
     @objc private func glyphColorMenuTapped(_ sender: UIButton){
-        
-        NotificationCenter.default.post(Notification(name: Notification.dismissKeyBoard))
-        
+
+        NotificationCenter.default.post(Notification(name: Notification.changeInputView))
         
     }
     
     @objc private func keyDownTapped(_ sender: UIButton){
         
-        if !inputViewState{
+        
+        switch self.state{
+        case .originalkeyBoard:
             NotificationCenter.default.post(Notification(name: Notification.keyDown))
-        }else{
-            NotificationCenter.default.post(Notification(name: Notification.dismissKeyBoard))
+        
+        case .backAndForeGroundColorState:
+            NotificationCenter.default.post(Notification(name: Notification.changeOriginalKeyBoard))
+        
+        case .none:
+            break
         }
+        
         
     }
     
@@ -163,14 +192,7 @@ class TextPropertyMenuView: UIView {
     
 }
 private extension TextPropertyMenuView {
-    
-    func changeColorViewConfiguration() {
-        self.addSubview(backGroundPickerView)
-        backGroundPickerView.snp.makeConstraints{
-            $0.top.equalTo(self.scrollView.snp.bottom)
-            $0.leading.trailing.bottom.equalToSuperview()
-        }
-    }
+   
     
     func configure(){
         
@@ -221,10 +243,7 @@ private extension TextPropertyMenuView {
         
         stackView.addArrangedSubview(backGroundPickerButton)
         
-        backGroundPickerButton.snp.makeConstraints{
-            $0.width.height.equalTo(30)
-        }
-        
+       
         separatorLine2.snp.makeConstraints{
             $0.height.equalTo(22)
             $0.width.equalTo(1)

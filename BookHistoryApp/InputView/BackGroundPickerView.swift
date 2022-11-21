@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import RxCocoa
+import RxSwift
 
 class BackGroundPickerView: UIInputView{
     
@@ -58,38 +60,80 @@ class BackGroundPickerView: UIInputView{
     }()
     
     private lazy var colorButton: ColorButton = {
-        let button = ColorButton()
-        
+        let button = ColorButton(frame: .zero, buttonObserver: buttonObserver)
         return button
     }()
     
     private lazy var colorButton3: ColorButton = {
-        let button = ColorButton()
-        
+        let button = ColorButton(frame: .zero, buttonObserver: buttonObserver)
+        return button
+    }()
+    
+    private lazy var colorButton5: ColorButton = {
+        let button = ColorButton(frame: .zero, buttonObserver: buttonObserver)
+        return button
+    }()
+    
+    private lazy var colorButton7: ColorButton = {
+        let button = ColorButton(frame: .zero, buttonObserver: buttonObserver)
         return button
     }()
     
     private lazy var colorButton2: ColorButton = {
-        let button = ColorButton()
-        
+        let button = ColorButton(frame: .zero, buttonObserver: buttonObserver)
         return button
     }()
     
     private lazy var colorButton4: ColorButton = {
-        let button = ColorButton()
-        
+        let button = ColorButton(frame: .zero, buttonObserver: buttonObserver)
+        return button
+    }()
+    
+    private lazy var colorButton6: ColorButton = {
+        let button = ColorButton(frame: .zero, buttonObserver: buttonObserver)
         return button
     }()
 
+    private lazy var colorButton8: ColorButton = {
+        let button = ColorButton(frame: .zero, buttonObserver: buttonObserver)
+        return button
+    }()
     
-
+    //input
+    var buttonObserver: AnyObserver<PresentationType>
+    
+    //output
+    var buttonObservable: Observable<PresentationType>
+    
+    var disposeBag = DisposeBag()
+    
     override init(frame: CGRect,inputViewStyle: UIInputView.Style) {
-
+        
+        let colorObserverPipe = PublishSubject<PresentationType>()
+        
+        buttonObserver = colorObserverPipe.asObserver()
+        
+        let colorObervablePipe = PublishSubject<PresentationType>()
+        
+        buttonObservable = colorObervablePipe
+        
         super.init(frame: frame,inputViewStyle: inputViewStyle)
         
-//        self.allowsSelfSizing = true
-        self.backgroundColor = .green
         
+        colorObserverPipe
+            .bind(onNext: colorObervablePipe.onNext(_:))
+            .disposed(by: disposeBag)
+        
+        autoLayoutAdd()
+        
+    }
+    required init?(coder: NSCoder) {
+        fatalError("required init fatalError")
+        
+    }
+    
+    
+    fileprivate func autoLayoutAdd() {
         self.addSubview(scrollView)
         
         scrollView.snp.makeConstraints{
@@ -122,7 +166,7 @@ class BackGroundPickerView: UIInputView{
             $0.leading.equalToSuperview()
         }
         
-   
+        
         verticalStackView2.snp.makeConstraints{
             $0.top.equalTo(sectionForeTitle.snp.bottom).offset(12)
             $0.leading.equalTo(verticalStackView.snp.trailing)
@@ -131,7 +175,7 @@ class BackGroundPickerView: UIInputView{
         
         
         
-        [colorButton,colorButton3].forEach{
+        [colorButton5,colorButton,colorButton3,colorButton7].forEach{
             verticalStackView.addArrangedSubview($0)
             $0.snp.makeConstraints{
                 $0.leading.equalToSuperview().inset(16)
@@ -140,33 +184,23 @@ class BackGroundPickerView: UIInputView{
             }
         }
         
-        colorButton.configureSubViews(.systemCyan, .systemCyan)
-        colorButton3.configureSubViews(.blue, .blue)
-       
-    
+        colorButton5.configureButton(.clear, .clear)
+        colorButton.configureButton(.systemCyan, .systemCyan)
+        colorButton3.configureButton(.blue, .blue)
+        colorButton7.configureButton(.systemMint, .systemMint)
         
-        [colorButton2,colorButton4].forEach{
+        
+        [colorButton2,colorButton4,colorButton6,colorButton8].forEach{
             verticalStackView2.addArrangedSubview($0)
             $0.snp.makeConstraints{
                 $0.width.equalTo(UIScreen.main.bounds.width / 2 - 24)
                 $0.height.equalTo(60)
             }
         }
-        
-        colorButton2.configureSubViews(.red, .red)
-        colorButton4.configureSubViews(.green,.green)
-        
-        
-        
-        
-        
-        
+
+        colorButton2.configureButton(.red, .red)
+        colorButton4.configureButton(.green,.green)
+        colorButton6.configureButton(.systemPink, .systemPink)
+        colorButton8.configureButton(.systemPurple, .systemPurple)
     }
-    required init?(coder: NSCoder) {
-        fatalError("required init fatalError")
-        
-    }
-    
-    
-    
 }

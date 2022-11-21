@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import RxCocoa
+import RxSwift
 
 protocol SecondTextViewScrollDelegate {
     func scrollPostion(_ range: UITextRange)
@@ -15,7 +17,13 @@ protocol SecondTextViewScrollDelegate {
 
 class SecondViewController: UIViewController {
 
+    var inputViewModel: InputViewModelType = InputViewModel()
     
+    var colorViewModel: ColorVMType = ColorViewModel()
+    
+    var disposeBag = DisposeBag()
+    
+    var keyBoardDisposeBag = DisposeBag()
     
     let toolBar = UIToolbar(frame: CGRect(x: 0.0,
                                           y: 0.0,
@@ -27,17 +35,18 @@ class SecondViewController: UIViewController {
     
     lazy var textMenuView: TextPropertyMenuView = {
         let menu = TextPropertyMenuView(frame:  CGRect(x: 0, y: self.view.frame.size.height,
-                                                       width: UIScreen.main.bounds.size.width, height: 10))
+                                                       width: UIScreen.main.bounds.size.width, height: 10),
+                                        viewModel: self.inputViewModel)
         menu.backgroundColor = .tertiarySystemBackground
         return menu
     }()
     
     
     lazy var textView: SecondTextView = {
-      
         let textView = SecondTextView(frame:.zero,
                                       textContainer: CustomTextContainer(size: .zero),
-                                      self)
+                                      self,
+                                      colorViewModel)
         
         textView.delegate = self
         return textView
@@ -100,6 +109,29 @@ class SecondViewController: UIViewController {
         super.viewWillDisappear(animated)
         self.textMenuView.removeFromSuperview()
         
+    }
+    
+    // bind viewModelState to textMenuView
+    func showTextMenuView(_ kbFrame: CGRect,
+                          _ height: CGFloat) {
+        
+        //        UIApplication.shared.keyWindow?.addSubview(textMenuView)
+        if !self.view.subviews.contains(where: { view in view == textMenuView}){
+            self.view.addSubview(textMenuView)
+            
+            textMenuView.settingFrame(kbFrame, height)
+            
+            inputViewModel
+                .ouputStateObservable
+                .bind(to: textMenuView.rx.state)
+                .disposed(by: disposeBag)
+            
+            colorViewModel
+                .updateUndoButtonObservable
+                .bind(onNext: updateUndoButtons)
+                .disposed(by: keyBoardDisposeBag)
+            
+        }
     }
 
     

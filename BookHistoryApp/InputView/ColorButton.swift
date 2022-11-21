@@ -6,10 +6,19 @@
 //
 
 import UIKit
-
+import RxCocoa
+import RxSwift
 
 class ColorButton: UIButton {
 
+    
+    private var contextColor: Color?
+    
+    private var presentationType: PresentationType?
+    
+    var colorObservable: Observable<Color>
+    
+    private var disposeBag = DisposeBag()
     
     lazy var colorContextView: UIView = {
         let view = UIView()
@@ -24,23 +33,53 @@ class ColorButton: UIButton {
         return label
     }()
     
-    private var contextColor: Color?
-    
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
+    fileprivate func layoutConfigure() {
         self.layer.borderColor = UIColor.systemGray.cgColor
         self.layer.borderWidth = 1
         self.layer.cornerRadius = 8
+    }
+    
+    override init(frame: CGRect) {
+        
+        let colorPipe = PublishSubject<Color>()
+        
+        colorObservable = colorPipe
+        
+        super.init(frame: frame)
+        
+        layoutConfigure()
         
     }
     
-    func configureSubViews(_ viewColor: UIColor,_ labelColor: Color) {
+    convenience init(frame: CGRect,
+                     buttonObserver: AnyObserver<PresentationType>) {
+        self.init(frame: frame)
+        
+        self.rx.tap
+            .bind(onNext: { [weak self] in
+                guard let self = self else {return}
+                guard let type = self.presentationType else {return}
+                buttonObserver.onNext(type)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("required init fatalError")
+        
+    }
+    
+ 
+
+    
+    
+    func configureButton(_ viewColor: UIColor,_ labelColor: Color) {
+        
+        self.contextColor = labelColor
+        self.presentationType = .backGround(labelColor)
        
         self.addSubview(colorContextView)
         self.addSubview(contextLabel)
-        
         
         colorContextView.frame = CGRect(x: 8, y: 20, width: 25, height: 25)
         
@@ -63,14 +102,6 @@ class ColorButton: UIButton {
         contextLabel.frame = CGRect(x: colorContextView.frame.origin.x + colorContextView.frame.width + 10,
                                     y: colorContextView.frame.origin.y,
                                     width: contextLabel.bounds.width, height: contextLabel.bounds.height)
-        
-        
-        
-        
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("required init fatalError")
         
     }
     

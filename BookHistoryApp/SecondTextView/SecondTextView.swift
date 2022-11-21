@@ -7,6 +7,9 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
+
 
 class SecondTextView: UITextView {
     
@@ -15,18 +18,80 @@ class SecondTextView: UITextView {
     
     private let scTextStorage = SCTextStorage()
     
-   
+    private var colorViewModel: ColorVMType?
     
-    override var bounds: CGRect{
-        didSet{
-//            self.bounds.size.height += 300
-        }
+    private var disposeBag = DisposeBag()
+
+    
+    override init(frame: CGRect, textContainer: NSTextContainer?) {
+        
+        let manager: TextWrapLayoutManager = TextWrapLayoutManager()
+        
+        scTextStorage.addLayoutManager(manager)
+        
+        manager.addTextContainer(textContainer!)
+        
+        super.init(frame: frame, textContainer: textContainer)
+        
+        settingConfiguration()
+
     }
-    override var contentOffset: CGPoint{
-        didSet{
-            print("self.contentOffset TextView : \(self.contentOffset)")
+    
+    convenience init(frame: CGRect,
+                     textContainer: NSTextContainer?,
+                     _ delegate: SecondTextViewScrollDelegate,
+                     _ viewModel: ColorVMType) {
+        
+        self.init(frame: frame, textContainer: textContainer)
+        self.scrollDelegate = delegate
+        self.colorViewModel = viewModel
+        
+        colorViewModel?
+            .attributedStringObservable
+            .subscribe(onNext: {[weak self] presentationType in
+                
+                guard let self = self else {return}
+                
+                self.setColorSelectedText(NSAttributedString.getAttributeColorKey(presentationType),
+                                          self.getSeletedPragraphRange())
+            })
+            .disposed(by: disposeBag)
+        
+    }
+    
+    
+    func setColorSelectedText(_ key: [NSAttributedString.Key : Any],
+                              _ paragraphRange: NSRange) {
+        
+        let attributes = self.textStorage.attributes(at: paragraphRange.location,
+                                                        longestEffectiveRange: nil,
+                                                        in: paragraphRange)
+        
+        if let backgroundColor = attributes[NSAttributedString.Key.backgroundColor] as? UIColor{
+            undoManager?.registerUndo(withTarget: self, handler: { (targetSelf) in
+                targetSelf.setColorSelectedText([NSAttributedString.Key.backgroundColor : backgroundColor],
+                                                paragraphRange)
+            })
             
+            // UndoButton redoButton isEnable
+            self.colorViewModel?.onUndoActivity.onNext(())
+        }else {
+            print("fail")
         }
+        
+        self.scTextStorage.addAttributes(key, range: paragraphRange)
+    }
+    
+
+
+    required init?(coder: NSCoder) {
+        fatalError("required init fatalError")
+        
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+    
     }
     
     
@@ -53,40 +118,6 @@ class SecondTextView: UITextView {
         
     }
     
-    override init(frame: CGRect, textContainer: NSTextContainer?) {
-        
-        let manager: TextWrapLayoutManager = TextWrapLayoutManager()
-        
-        scTextStorage.addLayoutManager(manager)
-        
-        manager.addTextContainer(textContainer!)
-        
-        super.init(frame: frame, textContainer: textContainer)
-        
-        settingConfiguration()
-        
-        
-    }
-    
-    convenience init(frame: CGRect,
-                              textContainer: NSTextContainer?,
-                              _ delegate: SecondTextViewScrollDelegate) {
-        
-        self.init(frame: frame, textContainer: textContainer)
-        self.scrollDelegate = delegate
-        
-    }
-    
-    
-    required init?(coder: NSCoder) {
-        fatalError("required init fatalError")
-        
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-    
-    }
   
     
     func insertAtTextViewCursor(attributedString: NSAttributedString) {
@@ -102,18 +133,21 @@ class SecondTextView: UITextView {
         self.attributedText = mutableAttributedText
     }
     
- 
-    override func selectionRects(for range: UITextRange) -> [UITextSelectionRect] {
-        
-        return super.selectionRects(for: range)
-    }
-    
- 
-    
 }
 
 
 extension SecondTextView {
+    
+    private func getSeletedPragraphRange() -> NSRange {
+        let seletedNSRange = self.selectedRange
+        
+        let nsString = self.text as NSString
+        
+        let paragraphRange = nsString.paragraphRange(for: seletedNSRange)
+        
+        return paragraphRange
+    }
+    
     
     override func caretRect(for position: UITextPosition) -> CGRect {
         var original = super.caretRect(for: position)
