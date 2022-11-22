@@ -23,6 +23,8 @@ class SecondViewController: UIViewController {
     
     var disposeBag = DisposeBag()
     
+    var previousRect = CGRect.zero
+    
     var keyBoardDisposeBag = DisposeBag()
     
     let toolBar = UIToolbar(frame: CGRect(x: 0.0,
@@ -45,18 +47,10 @@ class SecondViewController: UIViewController {
     lazy var textView: SecondTextView = {
         let textView = SecondTextView(frame:.zero,
                                       textContainer: CustomTextContainer(size: .zero),
-                                      self,
                                       colorViewModel)
         
         textView.delegate = self
         return textView
-    }()
-    
-    private lazy var scrollView: KRScrollView = {
-        let scrollView = KRScrollView()
-        scrollView.contentInset = .zero
-        scrollView.showsHorizontalScrollIndicator = false
-        return scrollView
     }()
     
     
@@ -65,8 +59,7 @@ class SecondViewController: UIViewController {
         return view
     }()
     
-    
-    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -99,7 +92,6 @@ class SecondViewController: UIViewController {
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(12)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.bottom.equalToSuperview().inset(16)
-            $0.width.equalTo(self.view.snp.width).offset(-36)
         }
         
     }
@@ -144,7 +136,7 @@ class SecondViewController: UIViewController {
     }
 
     
-    func updateUndoButtons() {
+    private func updateUndoButtons() {
         textMenuView.undoButton.isEnabled = textView.undoManager?.canUndo ?? false
         textMenuView.redoButton.isEnabled = textView.undoManager?.canRedo ?? false
     }
@@ -155,10 +147,15 @@ class SecondViewController: UIViewController {
 extension SecondViewController: UITextViewDelegate {
     
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        //Set your typing attributes here
-     
+//        self.textView.typingAttributes = [
+//            NSAttributedString.Key.backgroundColor : UIColor.clear,
+//            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .bold),
+//            NSAttributedString.Key.foregroundColor : UIColor.label
+//        ]
         return true
     }
+    
+    
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         
@@ -177,38 +174,9 @@ extension SecondViewController: UITextViewDelegate {
         updateUndoButtons()
         
     }
-    
-
 }
 
-extension SecondViewController: SecondTextViewScrollDelegate{
-    func textDidChagned() {
-        
-    }
-    
-   
-    func scrollPostion(_ range: UITextRange) {
-//        self.textView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
-        
-//        self.textView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 0, height: 0), animated: false)
-        let caret = self.textView.caretRect(for: range.start)
-        
-        let keyboardTopBorder: CGFloat = UIScreen.main.bounds.height - keyBoardHeight - 44
-        
-        let origingHeight: CGFloat = UIScreen.main.bounds.height - keyboardTopBorder - 44 - 150
-        
-        
-//        let topCaretHeight: CGFloat = caret.origin.y - keyboardTopBorder
-//
-//        print("textViewSize : \(textView.bounds.height)")
-        
-//        if caret.origin.y >= origingHeight {
-//            self.textView.scrollRectToVisible(caret, animated: true)
-//
-//        }
-    }
-    
-}
+
 extension SecondViewController {
     
     func addDoneButton(title: String, selector: Selector) {

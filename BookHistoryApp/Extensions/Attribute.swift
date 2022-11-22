@@ -19,6 +19,14 @@ enum PresentationType {
     case foreGround(_ color: Color)
     case backGround(_ color: Color)
 }
+extension PresentationType{
+    static func getForeGroundColor(_ colors : [Color]) -> [PresentationType]{
+        return colors.map{ color in PresentationType.foreGround(color) }
+    }
+    static func getBackGroundColor(_ colors : [Color]) -> [PresentationType]{
+        return colors.map{ color in PresentationType.backGround(color) }
+    }
+}
 
 protocol NSAttributedStringExtension {
     static func getAttributeColorKey(_ presentationType: PresentationType ) -> [NSAttributedString.Key : Any]
@@ -50,6 +58,7 @@ extension NSAttributedString : NSAttributedStringExtension {
         return NSAttributedString(string: string, attributes: attrs)
     }
     
+    
     static func attributed(string: String, font: UIFont, type: Color) -> NSAttributedString {
         let attrs: [NSAttributedString.Key : Any] = [
             NSAttributedString.Key.presentationIntentAttributeName : type,
@@ -57,6 +66,7 @@ extension NSAttributedString : NSAttributedStringExtension {
         ]
         return NSAttributedString(string: string, attributes: attrs)
     }
+    
     
     class func getAttributes(_ textType: TextType) -> [Key : Any] {
         switch textType{

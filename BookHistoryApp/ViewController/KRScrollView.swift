@@ -21,9 +21,7 @@ class KRScrollView: UIScrollView {
         }
         
     }
-    
-    
-    
+
     
     // When the content offset gets set, figure out what the
     // ratio is between 0 and 1

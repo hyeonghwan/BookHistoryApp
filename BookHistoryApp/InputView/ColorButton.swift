@@ -20,6 +20,7 @@ class ColorButton: UIButton {
     
     private var disposeBag = DisposeBag()
     
+    
     lazy var colorContextView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 4
@@ -52,8 +53,11 @@ class ColorButton: UIButton {
     }
     
     convenience init(frame: CGRect,
-                     buttonObserver: AnyObserver<PresentationType>) {
+                     buttonObserver: AnyObserver<PresentationType>,
+                     presentationType: PresentationType) {
         self.init(frame: frame)
+        
+        configureButton(presentationType)
         
         self.rx.tap
             .bind(onNext: { [weak self] in
@@ -69,14 +73,23 @@ class ColorButton: UIButton {
         
     }
     
- 
-
     
     
-    func configureButton(_ viewColor: UIColor,_ labelColor: Color) {
+    func configureButton(_ presentationType: PresentationType) {
         
-        self.contextColor = labelColor
-        self.presentationType = .backGround(labelColor)
+        self.presentationType = presentationType
+        
+        switch presentationType {
+        case let .backGround(color):
+            self.contextColor = color
+            colorContextView.backgroundColor = color.create
+            contextLabel.text = color.rawValue
+            
+        case let .foreGround(color):
+            self.contextColor = color
+            colorContextView.backgroundColor = color.create
+            contextLabel.text = color.rawValue
+        }
        
         self.addSubview(colorContextView)
         self.addSubview(contextLabel)
@@ -91,11 +104,6 @@ class ColorButton: UIButton {
         colorContextView.addSubview(label)
         
         label.center = CGPointMake(colorContextView.frame.size.width / 2 , colorContextView.frame.size.height / 2)
-        
-        colorContextView.backgroundColor = viewColor
-        
-        
-        contextLabel.text = labelColor.rawValue
         
         contextLabel.sizeToFit()
         

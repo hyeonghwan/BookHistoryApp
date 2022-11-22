@@ -26,7 +26,7 @@
 		962AA0D2292384ED00C2620B /* UIApplication-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D1292384ED00C2620B /* UIApplication-Ext.swift */; };
 		962AA0D42924F48500C2620B /* KRScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D32924F48500C2620B /* KRScrollView.swift */; };
 		962AA0D62926351D00C2620B /* CALayer-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D52926351D00C2620B /* CALayer-Ext.swift */; };
-		962AA0D82928F31A00C2620B /* BackGroundPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D72928F31900C2620B /* BackGroundPickerView.swift */; };
+		962AA0D82928F31A00C2620B /* BackORForeColorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D72928F31900C2620B /* BackORForeColorPickerView.swift */; };
 		962AA0DA2928F7B400C2620B /* ColorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0D92928F7B400C2620B /* ColorButton.swift */; };
 		962AA0DD292B8A5A00C2620B /* InputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0DC292B8A5A00C2620B /* InputViewModel.swift */; };
 		962AA0DF292B97FC00C2620B /* ColorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0DE292B97FC00C2620B /* ColorViewModel.swift */; };
@@ -63,7 +63,7 @@
 		962AA0D1292384ED00C2620B /* UIApplication-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication-Ext.swift"; sourceTree = "<group>"; };
 		962AA0D32924F48500C2620B /* KRScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KRScrollView.swift; sourceTree = "<group>"; };
 		962AA0D52926351D00C2620B /* CALayer-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer-Ext.swift"; sourceTree = "<group>"; };
-		962AA0D72928F31900C2620B /* BackGroundPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackGroundPickerView.swift; sourceTree = "<group>"; };
+		962AA0D72928F31900C2620B /* BackORForeColorPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackORForeColorPickerView.swift; sourceTree = "<group>"; };
 		962AA0D92928F7B400C2620B /* ColorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorButton.swift; sourceTree = "<group>"; };
 		962AA0DC292B8A5A00C2620B /* InputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputViewModel.swift; sourceTree = "<group>"; };
 		962AA0DE292B97FC00C2620B /* ColorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorViewModel.swift; sourceTree = "<group>"; };
@@ -186,7 +186,7 @@
 		962AA0DB29291C4700C2620B /* InputView */ = {
 			isa = PBXGroup;
 			children = (
-				962AA0D72928F31900C2620B /* BackGroundPickerView.swift */,
+				962AA0D72928F31900C2620B /* BackORForeColorPickerView.swift */,
 				962AA0D92928F7B400C2620B /* ColorButton.swift */,
 			);
 			path = InputView;
@@ -367,7 +367,7 @@
 				962AA0D42924F48500C2620B /* KRScrollView.swift in Sources */,
 				962AA0C7292233EE00C2620B /* SCTextView-Ext.swift in Sources */,
 				962AA0DA2928F7B400C2620B /* ColorButton.swift in Sources */,
-				962AA0D82928F31A00C2620B /* BackGroundPickerView.swift in Sources */,
+				962AA0D82928F31A00C2620B /* BackORForeColorPickerView.swift in Sources */,
 				962AA0CA29237ACF00C2620B /* TextPropertyMenuView.swift in Sources */,
 				962AA0BC2920F61800C2620B /* SecondViewController.swift in Sources */,
 				962AA0AB2920C6AC00C2620B /* CustomColor.swift in Sources */,

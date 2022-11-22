@@ -62,6 +62,7 @@ extension SecondViewController{
         ], range: self.textView.selectedRange)
     }
     
+    
     @objc private func keyBoardchangeInputViewAction(_ notification: Notification?) -> Void {
         
         if let state = self.textMenuView.state,
@@ -69,11 +70,11 @@ extension SecondViewController{
             
             self.inputViewModel.inputStateObserver.onNext(.backAndForeGroundColorState)
             
-            let backGroundPickerView = BackGroundPickerView()
+            let backGroundPickerView = BackORForeColorPickerView()
             
             backGroundPickerView
                 .buttonObservable
-                .bind(onNext: self.colorViewModel.onColorData.onNext(_:))
+                .bind(onNext: colorViewModel.onColorData.onNext(_:))
                 .disposed(by: keyBoardDisposeBag)
             
             backGroundPickerView.translatesAutoresizingMaskIntoConstraints = false
@@ -87,7 +88,6 @@ extension SecondViewController{
     
     @objc private func keyDownTapped(_ notification: Notification?) -> Void {
         self.hideTextMenuView()
-        
         
     }
     
@@ -146,7 +146,6 @@ extension SecondViewController{
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(12)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.bottom.equalToSuperview().inset(16)
-            $0.width.equalTo(self.view.snp.width).offset(-36)
         }
 
     }
@@ -166,7 +165,6 @@ extension SecondViewController{
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(12)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.bottom.equalToSuperview().inset(kbSize.height + 44)
-            $0.width.equalTo(self.view.snp.width).offset(-36)
         }
         
     }
