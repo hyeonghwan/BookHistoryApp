@@ -106,8 +106,7 @@ class SecondViewController: UIViewController {
     // bind viewModelState to textMenuView
     func showTextMenuView(_ kbFrame: CGRect,
                           _ height: CGFloat) {
-        
-        //        UIApplication.shared.keyWindow?.addSubview(textMenuView)
+    
         if !self.view.subviews.contains(where: { view in view == textMenuView}){
             self.view.addSubview(textMenuView)
             

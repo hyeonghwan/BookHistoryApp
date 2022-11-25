@@ -84,12 +84,12 @@ class BackORForeColorPickerView: UIInputView{
     }()
 
     //input
-    var buttonObserver: AnyObserver<PresentationType>
+    private var buttonObserver: AnyObserver<PresentationType>
     
     //output
     var buttonObservable: Observable<PresentationType>
     
-    var disposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
     
     
     override init(frame: CGRect,inputViewStyle: UIInputView.Style) {
@@ -103,7 +103,7 @@ class BackORForeColorPickerView: UIInputView{
         buttonObservable = colorObervablePipe
         
         super.init(frame: frame,inputViewStyle: inputViewStyle)
-        
+    
         
         colorObserverPipe
             .bind(onNext: colorObervablePipe.onNext(_:))

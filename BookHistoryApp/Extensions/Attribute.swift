@@ -8,9 +8,6 @@
 import UIKit
 
 
-
-class CustomAttribute: NSAttributedString{}
-
 enum TextType {
     case backGround(_ color: Color, _ font: UIFont)
 }
@@ -18,8 +15,20 @@ enum TextType {
 enum PresentationType {
     case foreGround(_ color: Color)
     case backGround(_ color: Color)
+    
+    
 }
 extension PresentationType{
+    
+    func getColor() -> Color{
+        switch self{
+        case let .backGround(color):
+            return color
+        case let .foreGround(color):
+            return color
+        }
+    }
+
     static func getForeGroundColor(_ colors : [Color]) -> [PresentationType]{
         return colors.map{ color in PresentationType.foreGround(color) }
     }

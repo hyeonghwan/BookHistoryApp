@@ -60,11 +60,6 @@ class SecondTextView: UITextView {
         
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-    
-    }
-    
     
     private func setColorSelectedText(_ key: [NSAttributedString.Key : Any],
                               _ paragraphRange: NSRange) {
@@ -98,8 +93,6 @@ class SecondTextView: UITextView {
         self.contentInset = UIEdgeInsets(top: 30, left: 12, bottom: 10, right: 12)
         
         self.autocorrectionType = .no
-        
-       
         
     }
     

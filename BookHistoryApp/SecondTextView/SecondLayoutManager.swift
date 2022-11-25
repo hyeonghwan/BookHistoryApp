@@ -20,7 +20,6 @@ class TextWrapLayoutManager: NSLayoutManager {
                                                                             longestEffectiveRange: nil,
                                                                                   in: glyphRange) as? UIColor else { return }
             
-            
             let lineBoundingRect = self.boundingRect(forGlyphRange: glyphRange, in: textContainer)
 
             var adjustedLineRect = lineBoundingRect.offsetBy(dx: origin.x , dy: origin.y )

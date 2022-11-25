@@ -24,7 +24,6 @@ class ColorButton: UIButton {
     lazy var colorContextView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 4
-        
         return view
     }()
     
@@ -55,6 +54,7 @@ class ColorButton: UIButton {
     convenience init(frame: CGRect,
                      buttonObserver: AnyObserver<PresentationType>,
                      presentationType: PresentationType) {
+        
         self.init(frame: frame)
         
         configureButton(presentationType)
@@ -74,22 +74,18 @@ class ColorButton: UIButton {
     }
     
     
-    
     func configureButton(_ presentationType: PresentationType) {
         
         self.presentationType = presentationType
         
-        switch presentationType {
-        case let .backGround(color):
-            self.contextColor = color
-            colorContextView.backgroundColor = color.create
-            contextLabel.text = color.rawValue
-            
-        case let .foreGround(color):
-            self.contextColor = color
-            colorContextView.backgroundColor = color.create
-            contextLabel.text = color.rawValue
-        }
+        
+        contextColor = presentationType.getColor()
+        
+        guard let color = contextColor else { return }
+        
+        colorContextView.backgroundColor = color.create
+        contextLabel.text = color.rawValue
+        
        
         self.addSubview(colorContextView)
         self.addSubview(contextLabel)
