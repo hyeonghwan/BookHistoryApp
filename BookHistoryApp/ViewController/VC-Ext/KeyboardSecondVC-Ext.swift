@@ -136,8 +136,6 @@ extension SecondViewController{
     func hideTextMenuView() {
         self.view.layoutIfNeeded()
         
-        
-        
         self.textView.endEditing(true)
         
         textMenuView.removeFromSuperview()

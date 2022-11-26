@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
-
+import ParagraphTextKit
 
 class SecondTextView: UITextView {
     
@@ -22,11 +22,11 @@ class SecondTextView: UITextView {
  
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         
-        let manager: TextWrapLayoutManager = TextWrapLayoutManager()
-        
-        scTextStorage.addLayoutManager(manager)
-        
-        manager.addTextContainer(textContainer!)
+//        let manager: TextWrapLayoutManager = TextWrapLayoutManager()
+//        
+//        scTextStorage.addLayoutManager(manager)
+//
+//        manager.addTextContainer(textContainer!)
         
         super.init(frame: frame, textContainer: textContainer)
         
@@ -64,13 +64,14 @@ class SecondTextView: UITextView {
     private func setColorSelectedText(_ key: [NSAttributedString.Key : Any],
                               _ paragraphRange: NSRange) {
         
+        print("paragraphRange : \(paragraphRange)")
         let attributes = self.textStorage.attributes(at: paragraphRange.location,
                                                      longestEffectiveRange: nil,
                                                      in: paragraphRange)
         
         registerUndo(attributes, paragraphRange)
         
-        self.scTextStorage.addAttributes(key, range: paragraphRange)
+        self.textStorage.addAttributes(key, range: paragraphRange)
     }
 
     
@@ -122,19 +123,13 @@ extension SecondTextView {
     ///   - attributes: specific range textStorage attributes
     ///   - paragraphRange: NSRange from paragraph
     private func registerUndo(_ attributes: [NSAttributedString.Key : Any],_ paragraphRange: NSRange) {
-        
-        if let backgroundColor = attributes[NSAttributedString.Key.backgroundColor] as? UIColor{
-        
+
             undoManager?.registerUndo(withTarget: self, handler: { (targetSelf) in
-                targetSelf.setColorSelectedText([NSAttributedString.Key.backgroundColor : backgroundColor],
+                targetSelf.setColorSelectedText(attributes,
                                                 paragraphRange)
             })
             // UndoButton redoButton isEnable
             self.colorViewModel?.onUndoActivity.onNext(())
-            
-        }else {
-            print("fail")
-        }
     }
     
     private func getSeletedPragraphRange() -> NSRange {
@@ -157,26 +152,6 @@ extension SecondTextView {
         
         return original
     }
-    
-    private func scrollToCursorPositionIfBelowKeyboard() {
-        let keyboardHeight: CGFloat = 295 + 44
-        print("keyboardHeight", keyboardHeight)
-
-        let caret = self.caretRect(for: self.selectedTextRange!.start)
-
-        let keyboardTopBorder = self.bounds.size.height - keyboardHeight
-
-        if caret.origin.y < keyboardTopBorder {
-
-            self.scrollRectToVisible(caret, animated: true)
-
-        }
-
-    }
-    override func setContentOffset(_ contentOffset: CGPoint, animated: Bool) {
-        super.setContentOffset(contentOffset, animated: false)
-    }
-    
     
 }
 

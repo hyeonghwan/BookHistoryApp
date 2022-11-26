@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "paragraphtextkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/CineDev/ParagraphTextKit.git",
+      "state" : {
+        "revision" : "c344237dad1d234ee419369a59ad2b0c27ea8f41",
+        "version" : "1.2.4"
+      }
+    },
+    {
       "identity" : "snapkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SnapKit/SnapKit.git",

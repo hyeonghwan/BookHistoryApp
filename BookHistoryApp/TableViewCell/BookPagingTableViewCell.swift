@@ -30,7 +30,7 @@ class BookPagingTableViewCell: UITableViewCell{
     private lazy var titleLable: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-        label.text = "TextLable settingTextLable settingTextLable settingTextLable setting"
+        label.text = "test"
         label.textColor = UIColor.label
         return label
     }()
@@ -41,10 +41,37 @@ class BookPagingTableViewCell: UITableViewCell{
         return button
     }()
     
+    
+    var onPageData: AnyObserver<BookMO>
+    
+    var disposeBag = DisposeBag()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        
+        let pagePipe = PublishSubject<BookMO>()
+        
+        onPageData = pagePipe.asObserver()
+        
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.selectionStyle = .default
+        
         configure()
+        
+        pagePipe
+            .bind(onNext: { [weak self] book in
+                guard let self = self else {return}
+                guard let name = book.bookTitle else {return}
+                
+                self.titleLable.text = name
+                
+            }).disposed(by: disposeBag)
+        
+    }
+    
+    
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
     }
     
     required init?(coder: NSCoder) {
@@ -58,6 +85,7 @@ class BookPagingTableViewCell: UITableViewCell{
     }
     
     private func configure() {
+        self.selectionStyle = .default
         
         self.contentView.addSubview(container)
         

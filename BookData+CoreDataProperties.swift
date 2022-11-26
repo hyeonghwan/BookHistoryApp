@@ -2,7 +2,7 @@
 //  BookData+CoreDataProperties.swift
 //  BookHistoryApp
 //
-//  Created by 박형환 on 2022/11/24.
+//  Created by 박형환 on 2022/11/26.
 //
 //
 
@@ -10,15 +10,17 @@ import Foundation
 import CoreData
 
 
-extension BookMO {
+extension BookData {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<BookMO> {
-        return NSFetchRequest<BookMO>(entityName: "BookData")
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<BookData> {
+        return NSFetchRequest<BookData>(entityName: "BookData")
     }
 
-    
+    @NSManaged public var bookTitle: String?
+    @NSManaged public var bookContent: NSAttributedString?
+
 }
 
-extension BookMO : Identifiable {
+extension BookData : Identifiable {
 
 }

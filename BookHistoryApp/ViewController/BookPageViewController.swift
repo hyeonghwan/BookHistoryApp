@@ -22,60 +22,96 @@ class BookPagingViewController: UIViewController {
         
         tableView.rowHeight = CGFloat(60)
         
-        tableView.register(BookPagingTableViewCell.self, forCellReuseIdentifier: BookPagingTableViewCell.identify)
+        tableView.register(BookPagingTableViewCell.self,
+                           forCellReuseIdentifier: BookPagingTableViewCell.identify)
         
         return tableView
     }()
     
     var container: NSPersistentContainer?
     
+    var disposeBag = DisposeBag()
+    
+    var bookPagingViewModel: PagingType = BookPagingViewModel()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
         layoutConfigure()
         
-        self.bookPagingTableView.delegate = self
-        self.bookPagingTableView.dataSource = self
+        settingNavi()
         
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        
-        container = appDelegate.persistentContainer
+        setupBinding()
+    }
     
-        guard let container = container else {return}
-        
-        guard let entity = NSEntityDescription.entity(forEntityName: "BookData", in: container.viewContext ) else {return}
-        
-        let data = NSManagedObject(entity: entity, insertInto: container.viewContext)
-        data.setValue("history", forKey: "bookTitle")
-        data.setValue("history-content", forKey: "bookContent")
-        
-        do {
-            try container.viewContext.save()
-        }catch{
-            print("catch Error 1")
-            print(error.localizedDescription)
-        }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        bookPagingViewModel.onPaging.onNext(())
         
         
     }
     
-    private func fetchData(){
-        guard let container = container else {return}
-        do {
-            print(111)
-            let content = try container.viewContext.fetch(BookMO.fetchRequest()) // as! [BookMO]
-            
-            content.forEach{ entity in
+    private func setupBinding(){
+        
+        // load Paging Data
+        bookPagingViewModel.showPage
+            .observe(on: MainScheduler.instance)
+            .bind(to: bookPagingTableView.rx.items(cellIdentifier:BookPagingTableViewCell.identify,
+                                                   cellType: BookPagingTableViewCell.self)){
+                index, item , cell in
                 
-                print(entity.bookTitle)
-                print(entity.bookContent)
-            }
-        }catch{
-            print(error.localizedDescription)
-        }
+                cell.onPageData.onNext(item)
+                
+            }.disposed(by: disposeBag)
+            
+        
+        bookPagingTableView
+            .rx.modelSelected(BookMO.self)
+            .subscribe(onNext: { [weak self] e in
+                guard let self = self else {return}
+                
+                let vc = SecondViewController()
+                
+                vc.textView.attributedText = e.bookContent!
+                
+                self.navigationController?
+                    .pushViewController(vc, animated: false)
+            }).disposed(by: disposeBag)
+
+        
+        
+        
+        self.navigationItem.rightBarButtonItem?.rx.tap
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else {return}
+                
+                let vc = SecondViewController()
+                vc.bookPagingViewModel = self.bookPagingViewModel
+                
+                self.navigationController?
+                    .pushViewController(vc, animated: false)
+                
+            })
+            .disposed(by: disposeBag)
     }
+
+
+    
+    private func settingNavi() {
+        
+        self.navigationItem.rightBarButtonItem =
+        UIBarButtonItem(barButtonSystemItem: .add, target: self, action: nil)
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: nil)
+        
+    }
+    
+   
     
     private func layoutConfigure() {
+        
+        
         self.view.addSubview(bookPagingTableView)
         
         self.title = "Paging"
@@ -87,25 +123,3 @@ class BookPagingViewController: UIViewController {
     }
 }
 
-extension BookPagingViewController: UITableViewDelegate{
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        fetchData()
-//        let TextVC = SecondViewController()
-//        self.navigationController?.pushViewController(TextVC, animated: true)
-//        tableView.deselectRow(at: indexPath, animated: true)
-//
-    }
-}
-extension BookPagingViewController: UITableViewDataSource{
-    
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: BookPagingTableViewCell.identify, for: indexPath) as? BookPagingTableViewCell else { return UITableViewCell() }
-        
-        return cell
-    }
-}

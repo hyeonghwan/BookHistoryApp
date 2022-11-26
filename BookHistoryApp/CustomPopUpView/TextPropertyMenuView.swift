@@ -147,11 +147,12 @@ class TextPropertyMenuView: UIView {
     
     
     func settingFrame(_ frame: CGRect,_ heihgt: CGFloat){
+
         var beforeFrame = frame
         beforeFrame.size.height += heihgt
-        beforeFrame.origin.y -= heihgt
-
+        beforeFrame.origin.y -= (heihgt )
         self.frame = beforeFrame
+        
         
     }
     
@@ -226,19 +227,6 @@ private extension TextPropertyMenuView {
         stackView.snp.makeConstraints{
             $0.edges.equalToSuperview()
         }
-        
-        (1...8).forEach{ k in
-            print(k)
-            let button = UIButton()
-            button.contentMode = .scaleAspectFit
-            button.setImage(UIImage(systemName: "star"), for: .normal)
-            button.backgroundColor = .systemPink
-            stackView.addArrangedSubview(button)
-            button.snp.makeConstraints{
-                $0.width.height.equalTo(44)
-            }
-        }
-        
 
         
         stackView.addArrangedSubview(backGroundPickerButton)
@@ -267,11 +255,7 @@ private extension TextPropertyMenuView {
         spacingView.snp.makeConstraints{
             $0.width.height.equalTo(30)
         }
-        
-       
-        
-        
-        
+
     }
     
 }

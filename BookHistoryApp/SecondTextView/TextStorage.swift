@@ -18,10 +18,10 @@ class SCTextStorage: NSTextStorage{
         return container.string
     }
     
-    func getBolock() {
-        let nsString = self.string as NSString
-        
-    }
+//    func getBolock() {
+//        let nsString = self.string as NSString
+//
+//    }
     
     
     

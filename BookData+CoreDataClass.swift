@@ -13,6 +13,6 @@ import CoreData
 public class BookMO: NSManagedObject {
     
     @NSManaged public var bookTitle: String?
-    @NSManaged public var bookContent: String?
+    @NSManaged public var bookContent: NSAttributedString?
 
 }

@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import RxCocoa
 import RxSwift
+import ParagraphTextKit
 
 protocol SecondTextViewScrollDelegate {
     func scrollPostion(_ range: UITextRange)
@@ -16,14 +17,24 @@ protocol SecondTextViewScrollDelegate {
 }
 
 class SecondViewController: UIViewController {
+    
+    private var paragraphTextStorage = ParagraphTextStorage()
 
+    
+    // KeyBoard InputViewType State ViewModel
     var inputViewModel: InputViewModelType = InputViewModel()
     
+    // TextView Color Type State ViewModel
     var colorViewModel: ColorVMType = ColorViewModel()
     
-    var disposeBag = DisposeBag()
+    // TextView Save Content State ViewModel
+    var contentViewModel: ContentViewModelType = BookContentViewModel()
     
-    var previousRect = CGRect.zero
+    
+    var bookPagingViewModel: PagingType?
+    
+    
+    var disposeBag = DisposeBag()
     
     var keyBoardDisposeBag = DisposeBag()
     
@@ -45,8 +56,19 @@ class SecondViewController: UIViewController {
     
     
     lazy var textView: SecondTextView = {
+ 
+        self.paragraphTextStorage.paragraphDelegate = self
+        
+        let layoutManager = TextWrapLayoutManager()
+
+        self.paragraphTextStorage.addLayoutManager(layoutManager)
+
+        let textContainer = CustomTextContainer(size: .zero)
+
+        layoutManager.addTextContainer(textContainer)
+        
         let textView = SecondTextView(frame:.zero,
-                                      textContainer: CustomTextContainer(size: .zero),
+                                      textContainer: textContainer,
                                       colorViewModel)
         
         textView.delegate = self
@@ -59,7 +81,6 @@ class SecondViewController: UIViewController {
         return view
     }()
     
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,15 +97,41 @@ class SecondViewController: UIViewController {
         
         textView.backgroundColor = .tertiarySystemBackground
         
-        
+        settingNavigation()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { [weak self] in
             guard let self = self else {return}
             self.textView.contentSize.height += 500
             
         })
-    
+        
     }
+    
+    func setUpBinging() {
+        
+    }
+    
+    private func settingNavigation(){
+
+//        self.navigationController?.navigationBar.isTranslucent = false
+        
+        self.navigationController?.navigationBar.tintColor = .systemCyan
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: nil)
+
+        
+        self.navigationItem.rightBarButtonItem?.rx.tap
+            .bind(onNext: { [weak self] _ in
+                guard let self = self else {return}
+                self.contentViewModel
+                    .onParagraphData
+                    .onNext(self.textView.attributedText)
+                
+            }).disposed(by: disposeBag)
+        
+    }
+    
+    
     
     private func addAutoLayout() {
         
@@ -103,7 +150,7 @@ class SecondViewController: UIViewController {
         
     }
     
-    // bind viewModelState to textMenuView
+    // bind viewModelState to textMenuView( KeyBoard InPutView State)
     func showTextMenuView(_ kbFrame: CGRect,
                           _ height: CGFloat) {
     
@@ -143,19 +190,20 @@ class SecondViewController: UIViewController {
     
 }
 
-extension SecondViewController: UITextViewDelegate {
+extension SecondViewController: ParagraphTextStorageDelegate{
     
-    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-//        self.textView.typingAttributes = [
-//            NSAttributedString.Key.backgroundColor : UIColor.clear,
-//            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .bold),
-//            NSAttributedString.Key.foregroundColor : UIColor.label
-//        ]
-        return true
+    var presentedParagraphs: [NSAttributedString] {
+        return [NSAttributedString(string: "asdf")]
     }
     
+    func textStorage(_ textStorage: ParagraphTextKit.ParagraphTextStorage, didChangeParagraphs changes: [ParagraphTextKit.ParagraphTextStorage.ParagraphChange]) {
+        
+    }
     
-    
+}
+
+extension SecondViewController: UITextViewDelegate {
+
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         
         if text == "\n"{
@@ -175,23 +223,5 @@ extension SecondViewController: UITextViewDelegate {
     }
 }
 
-
-extension SecondViewController {
-    
-    func addDoneButton(title: String, selector: Selector) {
-        
-        let barButton = UIBarButtonItem(title: title, style: .plain, target: self, action: selector)//3
-        
-        self.toolBar.items?.append(barButton)
-    }
-    
-    func addColorBlockButton(title: String, selector: Selector){
-        
-        let barButton = UIBarButtonItem(title: title, style: .plain, target: self, action: selector)//3
-    
-        self.toolBar.items?.append(barButton)
-    }
-    
-}
 
 
