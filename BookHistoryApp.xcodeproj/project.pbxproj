@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		75917BAF902F9D79BB4CA6FD /* Pods_BookHistoryApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A50DDEE5B459107E26A04E3E /* Pods_BookHistoryApp.framework */; };
+		9601D0B7295028260069EF58 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9601D0B6295028260069EF58 /* CustomTabBarController.swift */; };
+		9601D0BA2950286B0069EF58 /* BottomStackItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9601D0B92950286B0069EF58 /* BottomStackItem.swift */; };
+		9601D0BC295029630069EF58 /* StackItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9601D0BB295029630069EF58 /* StackItemView.swift */; };
 		962AA0A92920BF2D00C2620B /* Attribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0A82920BF2D00C2620B /* Attribute.swift */; };
 		962AA0AB2920C6AC00C2620B /* CustomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0AA2920C6AC00C2620B /* CustomColor.swift */; };
 		962AA0AD2920CEAA00C2620B /* CustomTextView-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0AC2920CEAA00C2620B /* CustomTextView-Ext.swift */; };
@@ -58,6 +61,9 @@
 /* Begin PBXFileReference section */
 		2631171D9CE1723689325DD5 /* Pods-BookHistoryApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookHistoryApp.debug.xcconfig"; path = "Target Support Files/Pods-BookHistoryApp/Pods-BookHistoryApp.debug.xcconfig"; sourceTree = "<group>"; };
 		487EA1E7BD9E25B396951AD0 /* Pods-BookHistoryApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookHistoryApp.release.xcconfig"; path = "Target Support Files/Pods-BookHistoryApp/Pods-BookHistoryApp.release.xcconfig"; sourceTree = "<group>"; };
+		9601D0B6295028260069EF58 /* CustomTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
+		9601D0B92950286B0069EF58 /* BottomStackItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomStackItem.swift; sourceTree = "<group>"; };
+		9601D0BB295029630069EF58 /* StackItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackItemView.swift; sourceTree = "<group>"; };
 		962AA0A82920BF2D00C2620B /* Attribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attribute.swift; sourceTree = "<group>"; };
 		962AA0AA2920C6AC00C2620B /* CustomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColor.swift; sourceTree = "<group>"; };
 		962AA0AC2920CEAA00C2620B /* CustomTextView-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomTextView-Ext.swift"; sourceTree = "<group>"; };
@@ -128,6 +134,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		9601D0B8295028560069EF58 /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				9601D0B6295028260069EF58 /* CustomTabBarController.swift */,
+				9601D0BB295029630069EF58 /* StackItemView.swift */,
+				9601D0B92950286B0069EF58 /* BottomStackItem.swift */,
+			);
+			path = TabBar;
+			sourceTree = "<group>";
+		};
 		962AA0B02920E86A00C2620B /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -171,6 +187,7 @@
 		962AA0BA2920F5F300C2620B /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				9601D0B8295028560069EF58 /* TabBar */,
 				962AA0E0292E307400C2620B /* BookPageViewController.swift */,
 				96477D1F291A041D00830EFB /* ViewController.swift */,
 				962AA0BB2920F61800C2620B /* SecondViewController.swift */,
@@ -426,12 +443,14 @@
 			files = (
 				962AA0E6292E322C00C2620B /* BookPagingTableViewCell.swift in Sources */,
 				96477D20291A041D00830EFB /* ViewController.swift in Sources */,
+				9601D0BA2950286B0069EF58 /* BottomStackItem.swift in Sources */,
 				965AED95291E3EF0005B616F /* ColorBlockManager.swift in Sources */,
 				962AA0D2292384ED00C2620B /* UIApplication-Ext.swift in Sources */,
 				962AA0AD2920CEAA00C2620B /* CustomTextView-Ext.swift in Sources */,
 				962AA0E8292E32B400C2620B /* Cell+Ext.swift in Sources */,
 				962AA11A29322CF100C2620B /* BookModel.swift in Sources */,
 				962AA0D42924F48500C2620B /* KRScrollView.swift in Sources */,
+				9601D0B7295028260069EF58 /* CustomTabBarController.swift in Sources */,
 				962AA11329311C3600C2620B /* NSAttributedStringTransformer.swift in Sources */,
 				962AA0C7292233EE00C2620B /* SCTextView-Ext.swift in Sources */,
 				962AA0EA292E3C7500C2620B /* BookPagingViewModel.swift in Sources */,
@@ -452,6 +471,7 @@
 				96477D1C291A041D00830EFB /* AppDelegate.swift in Sources */,
 				96512BCB291B8CA00090F90B /* CustomLayoutManager.swift in Sources */,
 				962AA0B22920E87C00C2620B /* UITextView-Ext.swift in Sources */,
+				9601D0BC295029630069EF58 /* StackItemView.swift in Sources */,
 				96477D33291A24EB00830EFB /* CustomTextView.swift in Sources */,
 				962AA12429324E9700C2620B /* BookMO+CoreDataProperties.swift in Sources */,
 				962AA0DF292B97FC00C2620B /* ColorViewModel.swift in Sources */,

@@ -23,6 +23,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.makeKeyAndVisible()
         
         
+        let tabBarController = BottomStackTabViewController()
+        
         let bookTableViewController = BookPagingViewController()
         let viewController = ViewController()
         let secondViewController = SecondViewController()
@@ -32,7 +34,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         
         
-        window.rootViewController = navigationController
+        window.rootViewController = tabBarController
         
         self.window = window
         
