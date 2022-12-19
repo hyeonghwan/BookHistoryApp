@@ -13,20 +13,12 @@ import ParagraphTextKit
 
 class SecondTextView: UITextView {
     
-    private let scTextStorage = SCTextStorage()
-    
     private var colorViewModel: ColorVMType?
     
     private var disposeBag = DisposeBag()
     
  
     override init(frame: CGRect, textContainer: NSTextContainer?) {
-        
-//        let manager: TextWrapLayoutManager = TextWrapLayoutManager()
-//        
-//        scTextStorage.addLayoutManager(manager)
-//
-//        manager.addTextContainer(textContainer!)
         
         super.init(frame: frame, textContainer: textContainer)
         
@@ -64,7 +56,6 @@ class SecondTextView: UITextView {
     private func setColorSelectedText(_ key: [NSAttributedString.Key : Any],
                               _ paragraphRange: NSRange) {
         
-        print("paragraphRange : \(paragraphRange)")
         let attributes = self.textStorage.attributes(at: paragraphRange.location,
                                                      longestEffectiveRange: nil,
                                                      in: paragraphRange)
@@ -81,8 +72,6 @@ class SecondTextView: UITextView {
         self.layoutManager.delegate = self
         
         self.attributedText = testSetting()
-        
-        // 'no replacements Found popUp menu disable' when word select
         
         self.isScrollEnabled = true
         self.alwaysBounceVertical = false

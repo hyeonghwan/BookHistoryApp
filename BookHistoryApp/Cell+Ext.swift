@@ -17,7 +17,4 @@ extension CellIdentifiable{
     }
 }
 
-extension BookPagingTableViewCell: CellIdentifiable {
-    
-    
-}
+extension BookPagingTableViewCell: CellIdentifiable {}

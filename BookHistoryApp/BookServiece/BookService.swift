@@ -15,6 +15,8 @@ protocol RxBookService {
     var observable: Observable<[BookMO]> { get }
     
     func rxGetPages() -> Observable<[BookMO]>
+    
+    func rxDeletePage() -> Observable<Bool>
 
 }
 
@@ -40,6 +42,48 @@ class BookService: NSObject, RxBookService{
         
     }
     
+    func rxDeletePage() -> Observable<Bool> {
+        return Observable.create{ [weak self] emiter in
+            
+            guard let self = self else { return Disposables.create()}
+            
+            let data = self.deleteData()
+            
+            emiter.onNext(data)
+            
+            return Disposables.create()
+        }
+    }
+    
+    func deleteData() -> Bool {
+        
+        guard let container = self.container else {return false}
+        
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "BookPage")
+        
+        do{
+            
+            let result = try container.viewContext.fetch(fetchRequest)
+            
+            print(result)
+            
+            result.forEach{ obj in
+                
+                container.viewContext.delete(obj)
+            }
+            
+            self.saveContext()
+            
+            return true
+            
+        }catch{
+            return false
+        }
+    
+    }
+    
+    
+    
     func rxGetPages() -> Observable<[BookMO]>{
 
         return Observable.create { [weak self] observer in
@@ -60,17 +104,17 @@ class BookService: NSObject, RxBookService{
         
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "BookData")
     
+        
         do{
             let result = try container.viewContext.fetch(fetchRequest) as? [BookMO]
+            
             return result
         }catch{
             print("viewContext.fetch(fetchRequest) failed")
             return nil
         }
-        
-        
     }
-    
+
     
     private func saveContext() {
         guard let container = container else {return}

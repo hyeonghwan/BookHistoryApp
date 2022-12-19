@@ -77,10 +77,9 @@ class BookPagingViewController: UIViewController {
                 
                 self.navigationController?
                     .pushViewController(vc, animated: false)
+                
             }).disposed(by: disposeBag)
 
-        
-        
         
         self.navigationItem.rightBarButtonItem?.rx.tap
             .subscribe(onNext: { [weak self] _ in
@@ -94,6 +93,14 @@ class BookPagingViewController: UIViewController {
                 
             })
             .disposed(by: disposeBag)
+        
+        self.navigationItem.leftBarButtonItem?.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                self.bookPagingViewModel.deletePage.onNext(())
+            })
+            .disposed(by: disposeBag)
+        
     }
 
 
@@ -110,7 +117,6 @@ class BookPagingViewController: UIViewController {
    
     
     private func layoutConfigure() {
-        
         
         self.view.addSubview(bookPagingTableView)
         

@@ -66,6 +66,7 @@ class BookContentViewModel: NSObject, ContentViewModelType{
         
         let data = NSManagedObject(entity: entity, insertInto: container.viewContext)
         
+        
         data.setValue("BookHistory", forKey: "bookTitle")
         data.setValue(attributedString, forKey: "bookContent")
         

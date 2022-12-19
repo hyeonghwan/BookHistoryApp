@@ -22,7 +22,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
                 fatalError("coredata Container load Failed : \(error)")
             }
-            
         })
         print("suceess")
         
