@@ -71,8 +71,11 @@ class SecondTextView: UITextView {
         
         self.layoutManager.delegate = self
         
-        self.attributedText = testSetting()
         
+//        Test Setting Configuration
+//        self.attributedText = titlePlaceHolderSetting()
+//        settingTitlePlace()
+//
         self.isScrollEnabled = true
         self.alwaysBounceVertical = false
         self.isUserInteractionEnabled = true
@@ -85,7 +88,7 @@ class SecondTextView: UITextView {
         self.autocorrectionType = .no
         
     }
-    
+   
   
     
     func insertAtTextViewCursor(attributedString: NSAttributedString) {

@@ -28,6 +28,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let viewController = ViewController()
         let secondViewController = SecondViewController()
+        
+        let testview = TestViewController()
 
 //        let tabBarController = BottomStackTabViewController([bookTableViewController,
 //                                                             viewController,
@@ -38,7 +40,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let test = CSTabBarController()
         test.setViewControllers([nav,
                                  viewController,
-                                 secondViewController], animated: true)
+                                 secondViewController,testview], animated: true)
         
         window.rootViewController = test
         

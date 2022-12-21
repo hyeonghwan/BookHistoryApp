@@ -18,6 +18,13 @@ protocol SecondTextViewScrollDelegate {
 
 class SecondViewController: UIViewController {
     
+    let titlePresentationKey: String = "Title"
+    lazy var titleAttribute = NSAttributedString(string: "제목을 입력해주세요",
+                                            attributes: [.foregroundColor : UIColor.lightGray,
+                                                         .font : UIFont.boldSystemFont(ofSize: 20),
+                                        .presentationIntentAttributeName : titlePresentationKey])
+
+    
     private var paragraphTextStorage = ParagraphTextStorage()
 
     
@@ -72,14 +79,10 @@ class SecondViewController: UIViewController {
                                       colorViewModel)
         
         textView.delegate = self
+        
         return textView
     }()
     
-    
-    private lazy var container: UIView =    {
-        let view = UIView()
-        return view
-    }()
     
     
     override func viewDidLoad() {
@@ -91,13 +94,13 @@ class SecondViewController: UIViewController {
 
         self.addAutoLayout()
         
-        container.backgroundColor = .systemPink
-        
         self.settingKeyBoardNotification()
         
         textView.backgroundColor = .tertiarySystemBackground
         
         settingNavigation()
+        
+        addTextViewTitlePlaceHolder()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { [weak self] in
             guard let self = self else {return}
@@ -107,10 +110,7 @@ class SecondViewController: UIViewController {
         
     }
     
-    func setUpBinging() {
-        
-    }
-    
+
     private func settingNavigation(){
 
 //        self.navigationController?.navigationBar.isTranslucent = false
@@ -140,7 +140,13 @@ class SecondViewController: UIViewController {
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.bottom.equalToSuperview().inset(16)
         }
+    }
+    
+    private func addTextViewTitlePlaceHolder() {
+        textView.attributedText = titleAttribute
+        textView.becomeFirstResponder()
         
+        textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
     }
     
     
@@ -168,7 +174,6 @@ class SecondViewController: UIViewController {
                 .updateUndoButtonObservable
                 .bind(onNext: updateUndoButtons)
                 .disposed(by: keyBoardDisposeBag)
-            
         }
     }
 
@@ -191,9 +196,8 @@ class SecondViewController: UIViewController {
 }
 
 extension SecondViewController: ParagraphTextStorageDelegate{
-    
     var presentedParagraphs: [NSAttributedString] {
-        return [NSAttributedString(string: "asdf")]
+        return []
     }
     
     func textStorage(_ textStorage: ParagraphTextKit.ParagraphTextStorage, didChangeParagraphs changes: [ParagraphTextKit.ParagraphTextStorage.ParagraphChange]) {
@@ -203,19 +207,68 @@ extension SecondViewController: ParagraphTextStorageDelegate{
 }
 
 extension SecondViewController: UITextViewDelegate {
+    func textViewDidChangeSelection(_ textView: UITextView) {
+
+        if textView.attributedText.string == titleAttribute.string{
+           self.textView.selectedRange = NSMakeRange(0, 0)
+        }else{
+            return
+        }
+       
+    }
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        
+        print(range)
         if text == "\n"{
+            
+            // 제목을 입력하지 않으면 "\n" 입력 -> false
+            if range == NSRange(location: 0, length: 0){
+                return false
+            }
             textView.typingAttributes = [
                 NSAttributedString.Key.backgroundColor : UIColor.clear,
                 NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .bold),
                 NSAttributedString.Key.foregroundColor : UIColor.label
             ]
         }
-        
-        return true
+
+        // Combine the textView text and the replacement text to
+        // create the updated text string
+        let currentText:String = textView.text
+        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
+
+        // If updated text view will be empty, add the placeholder
+        // and set the cursor to the beginning of the text view
+        if updatedText.isEmpty {
+
+            textView.attributedText = titleAttribute
+            textView.textColor = UIColor.lightGray
+
+            textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+        }
+
+        // Else if the text view's placeholder is showing and the
+        // length of the replacement string is greater than 0, set
+        // the text color to black then set its text to the
+        // replacement string
+         else if textView.textColor == UIColor.lightGray && !text.isEmpty {
+            textView.textColor = UIColor.white
+            textView.text = ""
+             return true
+        }
+
+        // For every other case, the text should change with the usual
+        // behavior...
+        else {
+            
+            return true
+        }
+
+        // ...otherwise return false since the updates have already
+        // been made
+        return false
     }
+
     
     func textViewDidChange(_ textView: UITextView) {
         updateUndoButtons()

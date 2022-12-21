@@ -22,7 +22,7 @@ class BookContentViewModel: NSObject, ContentViewModelType{
     
     var container: NSPersistentContainer?
     
-    override init() {
+    init(_ serviece: RxBookService = BookService()) {
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         
@@ -35,62 +35,16 @@ class BookContentViewModel: NSObject, ContentViewModelType{
         super.init()
         
         paragraphPipe
-            .subscribe(onNext: { [weak self] data in
-                guard let self = self else {return}
-                
-                print("ssibal")
-                self.addToCoreData(data)
+            .flatMapLatest(serviece.rxAddParagraphData)
+            .subscribe(onNext: {  result in
+                switch result{
+                case .success(_):
+                    print("add success")
+                case .failure(let error):
+                    print("error occur: \(error)")
+                }
             })
             .disposed(by: disposeBag)
         
-    }
-    
-    private func addBookPageData(_ object: BookMO){
-        guard let container = container else {return}
-        
-        guard let entity = NSEntityDescription.entity(forEntityName: "BookPage", in: container.viewContext ) else {return}
-        
-        let data = NSManagedObject(entity: entity, insertInto: container.viewContext)
-        
-        data.setValue("\(String(describing: object.bookTitle))", forKey: "bookName")
-        data.setValue(object, forKey: "bookData")
-        print("addBookPageData")
-        print(data)
-        saveContext()
-    }
-    
-    private func addToCoreData(_ attributedString: NSAttributedString ) {
-        guard let container = container else {return}
-        
-        guard let entity = NSEntityDescription.entity(forEntityName: "BookData", in: container.viewContext ) else {return}
-        
-        let data = NSManagedObject(entity: entity, insertInto: container.viewContext)
-        
-        
-        data.setValue("BookHistory", forKey: "bookTitle")
-        data.setValue(attributedString, forKey: "bookContent")
-        
-        let obj = data as! BookMO
-        
-        addBookPageData(obj)
-    }
-    
-    
-    
-    private func saveContext() {
-        guard let container = container else {return}
-        do {
-            try container.viewContext.save()
-            print("success save")
-        }catch{
-            print("catch Error 1")
-            print(error.localizedDescription)
-        }
-    }
-    
-    private func getContainer() {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        
-        self.container = appDelegate.persistentContainer
     }
 }

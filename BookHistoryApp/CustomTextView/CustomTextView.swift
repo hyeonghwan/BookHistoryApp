@@ -44,7 +44,7 @@ class CustomTextView: UITextView {
         super.init(frame: frame, textContainer: textContainer)
 
         configure()
-        testSetting()
+//        testSetting()
         
     }
     

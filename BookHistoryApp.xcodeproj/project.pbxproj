@@ -13,6 +13,7 @@
 		9601D0C029519C260069EF58 /* VC+EXT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9601D0BF29519C260069EF58 /* VC+EXT.swift */; };
 		9601D0C22951A5530069EF58 /* CSTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9601D0C12951A5530069EF58 /* CSTabBarController.swift */; };
 		9601D0C52951B84C0069EF58 /* CollectionViewRecentPages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9601D0C42951B84C0069EF58 /* CollectionViewRecentPages.swift */; };
+		9601D0C729530A6E0069EF58 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9601D0C629530A6D0069EF58 /* TestViewController.swift */; };
 		962AA0A92920BF2D00C2620B /* Attribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0A82920BF2D00C2620B /* Attribute.swift */; };
 		962AA0AB2920C6AC00C2620B /* CustomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0AA2920C6AC00C2620B /* CustomColor.swift */; };
 		962AA0AD2920CEAA00C2620B /* CustomTextView-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0AC2920CEAA00C2620B /* CustomTextView-Ext.swift */; };
@@ -68,6 +69,7 @@
 		9601D0BF29519C260069EF58 /* VC+EXT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+EXT.swift"; sourceTree = "<group>"; };
 		9601D0C12951A5530069EF58 /* CSTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSTabBarController.swift; sourceTree = "<group>"; };
 		9601D0C42951B84C0069EF58 /* CollectionViewRecentPages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewRecentPages.swift; sourceTree = "<group>"; };
+		9601D0C629530A6D0069EF58 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		962AA0A82920BF2D00C2620B /* Attribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attribute.swift; sourceTree = "<group>"; };
 		962AA0AA2920C6AC00C2620B /* CustomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColor.swift; sourceTree = "<group>"; };
 		962AA0AC2920CEAA00C2620B /* CustomTextView-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomTextView-Ext.swift"; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 		962AA0BA2920F5F300C2620B /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				9601D0C629530A6D0069EF58 /* TestViewController.swift */,
 				9601D0B8295028560069EF58 /* TabBar */,
 				9601D0C32951B8270069EF58 /* BookPagingTable */,
 				96477D1F291A041D00830EFB /* ViewController.swift */,
@@ -455,6 +458,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9601D0C729530A6E0069EF58 /* TestViewController.swift in Sources */,
 				962AA0E6292E322C00C2620B /* BookPagingTableViewCell.swift in Sources */,
 				96477D20291A041D00830EFB /* ViewController.swift in Sources */,
 				9601D0BA2950286B0069EF58 /* BottomStackItem.swift in Sources */,

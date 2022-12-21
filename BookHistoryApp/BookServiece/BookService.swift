@@ -14,10 +14,18 @@ import RxCocoa
 protocol RxBookService {
     var observable: Observable<[BookMO]> { get }
     
+    func rxAddParagraphData(_ attributedString: NSAttributedString) -> Observable<Result<Bool,Error>>
+    
     func rxGetPages() -> Observable<[BookMO]>
     
     func rxDeletePage() -> Observable<Bool>
 
+}
+
+enum CoreDataError: Error{
+    case fetchContainerError
+    case entityNameError
+    case saveContextError
 }
 
 
@@ -42,6 +50,18 @@ class BookService: NSObject, RxBookService{
         
     }
     
+    func rxAddParagraphData(_ attributedString: NSAttributedString) -> Observable<Result<Bool,Error>> {
+        return Observable.create{ [weak self] emitter in
+            guard let self = self else {return Disposables.create()}
+            
+            let result = self.addToCoreData(attributedString)
+            
+            emitter.onNext(result)
+            
+            return Disposables.create()
+        }
+    }
+    
     func rxDeletePage() -> Observable<Bool> {
         return Observable.create{ [weak self] emiter in
             
@@ -54,6 +74,8 @@ class BookService: NSObject, RxBookService{
             return Disposables.create()
         }
     }
+    
+    
     
     //delete ALL Data in CoreData(entityName -> "BookData")
     func deleteData() -> Bool {
@@ -98,6 +120,39 @@ class BookService: NSObject, RxBookService{
         }
     }
     
+    
+    private func addBookPageData(_ object: BookMO) -> Result<Bool,Error> {
+        guard let container = container else {return .failure(CoreDataError.fetchContainerError)}
+        
+        guard let entity = NSEntityDescription.entity(forEntityName: "BookPage", in: container.viewContext ) else {return .failure(CoreDataError.entityNameError)}
+        
+        let data = NSManagedObject(entity: entity, insertInto: container.viewContext)
+        
+        data.setValue("\(String(describing: object.bookTitle))", forKey: "bookName")
+        data.setValue(object, forKey: "bookData")
+        print("addBookPageData")
+        print(data)
+        return saveContext()
+    }
+    
+    private func addToCoreData(_ attributedString: NSAttributedString ) -> Result<Bool,Error> {
+        guard let container = container else {return .failure(CoreDataError.fetchContainerError)}
+        
+        guard let entity = NSEntityDescription.entity(forEntityName: "BookData", in: container.viewContext ) else {return .failure(CoreDataError.entityNameError)}
+        
+        let data = NSManagedObject(entity: entity, insertInto: container.viewContext)
+        
+        
+        data.setValue("BookHistory", forKey: "bookTitle")
+        data.setValue(attributedString, forKey: "bookContent")
+        
+        let obj = data as! BookMO
+        
+        return addBookPageData(obj)
+    }
+    
+    
+    
    
     func getPageData() -> [BookMO]? {
         
@@ -116,14 +171,15 @@ class BookService: NSObject, RxBookService{
     }
 
     
-    private func saveContext() {
-        guard let container = container else {return}
+    private func saveContext() -> Result<Bool,Error> {
+        guard let container = container else {return .failure(CoreDataError.fetchContainerError)}
         do {
             try container.viewContext.save()
-            print("seetting'")
+            return .success(true)
         }catch{
             print("catch Error 1")
             print(error.localizedDescription)
+            return .failure(CoreDataError.saveContextError)
         }
     }
     

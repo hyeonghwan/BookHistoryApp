@@ -7,8 +7,19 @@
 
 import UIKit
 
-extension SecondTextView{
+extension UITextView{
     
+    func titlePlaceHolderSetting() -> NSAttributedString{
+        let titleText = NSMutableAttributedString()
+        
+        let att = NSAttributedString(string: "제목 없음",
+                                     attributes: [.font : UIFont.boldSystemFont(ofSize: 20),
+                                                  .foregroundColor : UIColor.lightGray])
+        titleText.append(att)
+        
+        return titleText
+        
+    }
     
     func testSetting() -> NSAttributedString{
         
