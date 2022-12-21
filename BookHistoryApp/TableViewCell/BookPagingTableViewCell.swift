@@ -24,6 +24,7 @@ class BookPagingTableViewCell: UITableViewCell{
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(systemName: "book")
+        imageView.tintColor = .systemPink
         return imageView
     }()
     
@@ -38,6 +39,7 @@ class BookPagingTableViewCell: UITableViewCell{
     private lazy var settingButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+        button.tintColor = .systemPink
         return button
     }()
     

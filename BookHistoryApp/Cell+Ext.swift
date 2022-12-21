@@ -18,3 +18,4 @@ extension CellIdentifiable{
 }
 
 extension BookPagingTableViewCell: CellIdentifiable {}
+extension PageCell: CellIdentifiable {}

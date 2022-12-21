@@ -55,11 +55,12 @@ class BookService: NSObject, RxBookService{
         }
     }
     
+    //delete ALL Data in CoreData(entityName -> "BookData")
     func deleteData() -> Bool {
         
         guard let container = self.container else {return false}
         
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "BookPage")
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "BookData")
         
         do{
             
@@ -103,7 +104,6 @@ class BookService: NSObject, RxBookService{
         guard let container = self.container else {return []}
         
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "BookData")
-    
         
         do{
             let result = try container.viewContext.fetch(fetchRequest) as? [BookMO]

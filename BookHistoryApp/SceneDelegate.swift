@@ -21,20 +21,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windoScene)
         
         window.makeKeyAndVisible()
-        
-        
-        let tabBarController = BottomStackTabViewController()
+     
         
         let bookTableViewController = BookPagingViewController()
+      
+        
         let viewController = ViewController()
         let secondViewController = SecondViewController()
+
+//        let tabBarController = BottomStackTabViewController([bookTableViewController,
+//                                                             viewController,
+//                                                             secondViewController])
         
+        let nav = UINavigationController(rootViewController: bookTableViewController)
         
-        let navigationController = UINavigationController(rootViewController: bookTableViewController)
+        let test = CSTabBarController()
+        test.setViewControllers([nav,
+                                 viewController,
+                                 secondViewController], animated: true)
         
-        
-        
-        window.rootViewController = tabBarController
+        window.rootViewController = test
         
         self.window = window
         

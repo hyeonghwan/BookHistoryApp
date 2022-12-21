@@ -28,7 +28,28 @@ class BookPagingViewController: UIViewController {
         return tableView
     }()
     
-    var container: NSPersistentContainer?
+    private lazy var recentPagesCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        
+        layout.scrollDirection = .horizontal
+        
+        layout.itemSize = CGSize(width: 110, height: 110)
+        
+        layout.minimumLineSpacing = 16
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.backgroundColor = .tertiarySystemBackground
+        collectionView.register(PageCell.self, forCellWithReuseIdentifier: PageCell.identify)
+        let insetValue: CGFloat = 15
+        collectionView.contentInset = UIEdgeInsets(top: insetValue,
+                                                   left: insetValue,
+                                                   bottom: insetValue,
+                                                   right: insetValue)
+        return collectionView
+    }()
+    
     
     var disposeBag = DisposeBag()
     
@@ -54,7 +75,18 @@ class BookPagingViewController: UIViewController {
     
     private func setupBinding(){
         
-        // load Paging Data
+        // load Recent Page Data to CollectionView
+        bookPagingViewModel.showPage
+            .observe(on: MainScheduler.instance)
+            .bind(to: recentPagesCollectionView.rx.items(cellIdentifier: PageCell.identify,
+                                                         cellType: PageCell.self)){
+                index, item, cell in
+                
+                cell.onRecentPageData.onNext(item)
+                
+            }.disposed(by: disposeBag)
+        
+        // load Paging Data to TableView
         bookPagingViewModel.showPage
             .observe(on: MainScheduler.instance)
             .bind(to: bookPagingTableView.rx.items(cellIdentifier:BookPagingTableViewCell.identify,
@@ -65,18 +97,18 @@ class BookPagingViewController: UIViewController {
                 
             }.disposed(by: disposeBag)
             
-        
+        //TableView select EVENT
         bookPagingTableView
             .rx.modelSelected(BookMO.self)
-            .subscribe(onNext: { [weak self] e in
+            .subscribe(onNext: { [weak self] element in
                 guard let self = self else {return}
                 
                 let vc = SecondViewController()
                 
-                vc.textView.attributedText = e.bookContent!
+                vc.textView.attributedText = element.bookContent!
                 
                 self.navigationController?
-                    .pushViewController(vc, animated: false)
+                    .pushViewController(vc, animated: true)
                 
             }).disposed(by: disposeBag)
 
@@ -112,18 +144,28 @@ class BookPagingViewController: UIViewController {
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: nil)
         
+        self.navigationItem.rightBarButtonItem?.tintColor = .white
+        self.navigationItem.leftBarButtonItem?.tintColor = .white
+        
     }
     
    
     
     private func layoutConfigure() {
         
+        self.view.addSubview(recentPagesCollectionView)
         self.view.addSubview(bookPagingTableView)
         
         self.title = "Paging"
         
-        bookPagingTableView.snp.makeConstraints{
+        recentPagesCollectionView.snp.makeConstraints{
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(150)
+        }
+        
+        bookPagingTableView.snp.makeConstraints{
+            $0.top.equalTo(recentPagesCollectionView.snp.bottom).offset(10)
             $0.leading.trailing.bottom.equalToSuperview()
         }
     }

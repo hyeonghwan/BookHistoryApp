@@ -112,9 +112,9 @@ class BackORForeColorPickerView: UIInputView{
         autoLayoutAdd()
         
     }
+    
     required init?(coder: NSCoder) {
-        fatalError("required init fatalError")
-        
+        fatalError("required init fatalError")   
     }
     
     

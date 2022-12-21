@@ -11,9 +11,11 @@ import SnapKit
 
 protocol StackItemViewDelegate: AnyObject {
     func handleTap(_ view: StackItemView)
+    
 }
 
 class StackItemView: UIView {
+    
     
     var isSelected: Bool = false {
         willSet {
@@ -28,7 +30,7 @@ class StackItemView: UIView {
     }
     
     
-    private let higlightBGColor = UIColor.systemYellow
+    private let higlightBGColor = UIColor.white
     
     
     static var newInstance: StackItemView {
@@ -42,7 +44,7 @@ class StackItemView: UIView {
     lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textColor = .label
+        label.textColor = .black
         return label
     }()
     
@@ -89,7 +91,7 @@ class StackItemView: UIView {
                        options: options,
                        animations: {
             self.titleLabel.text = isSelected ? model.title : ""
-            let color = isSelected ? self.higlightBGColor : .white
+            let color = isSelected ? self.higlightBGColor : .systemPink
             isSelected ? self.showText() : self.hideText()
             self.backgroundColor = color
             (self.superview as? UIStackView)?.layoutIfNeeded()
@@ -134,7 +136,7 @@ extension StackItemView {
     }
     
     private func layoutConfigure() {
-        self.backgroundColor = .purple
+        
         self.layer.cornerRadius = 10
         
         self.addSubview(imageView)

@@ -8,7 +8,7 @@
 import Foundation
 
 
-class BottomStackItem {
+final class BottomStackItem {
     
     var title: String
     var image: String

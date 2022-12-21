@@ -65,6 +65,7 @@ class BookPagingViewModel: NSObject, PagingType{
         
         deletePage = deletePipe.asObserver()
         
+        // Data flow
         // onPaging -> pagingPipe -> Service -> pageDataPipe -> showPipe -> showPage
         
         super.init()
