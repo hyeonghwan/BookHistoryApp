@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-class BookPagingTableViewCell: UITableViewCell{
+final class BookPagingTableViewCell: UITableViewCell{
     
     private lazy var container: UIView = {
         let view = UIView()
@@ -46,6 +46,8 @@ class BookPagingTableViewCell: UITableViewCell{
     
     var onPageData: AnyObserver<BookMO>
     
+    var cellDisposeBag = DisposeBag()
+    
     var disposeBag = DisposeBag()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -59,26 +61,24 @@ class BookPagingTableViewCell: UITableViewCell{
         configure()
         
         pagePipe
+            .observe(on: MainScheduler.instance)
             .bind(onNext: { [weak self] book in
                 guard let self = self else {return}
-                guard let name = book.bookTitle else {return}
+                print("pagingTable : \(book.bookTitle)")
+                self.titleLable.text = book.bookTitle
                 
-                self.titleLable.text = name
-                
-            }).disposed(by: disposeBag)
+            }).disposed(by: cellDisposeBag)
         
-    }
-    
-    
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        disposeBag = DisposeBag()
     }
     
     required init?(coder: NSCoder) {
         fatalError("required init fatalError")
         
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.disposeBag = DisposeBag()
     }
     
     override func layoutSubviews() {

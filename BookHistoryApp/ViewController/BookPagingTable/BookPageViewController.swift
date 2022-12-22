@@ -70,7 +70,6 @@ class BookPagingViewController: UIViewController {
         super.viewWillAppear(animated)
         bookPagingViewModel.onPaging.onNext(())
         
-        
     }
     
     private func setupBinding(){
@@ -81,10 +80,11 @@ class BookPagingViewController: UIViewController {
             .bind(to: recentPagesCollectionView.rx.items(cellIdentifier: PageCell.identify,
                                                          cellType: PageCell.self)){
                 index, item, cell in
-                
+               
                 cell.onRecentPageData.onNext(item)
                 
             }.disposed(by: disposeBag)
+        
         
         // load Paging Data to TableView
         bookPagingViewModel.showPage
@@ -97,6 +97,7 @@ class BookPagingViewController: UIViewController {
                 
             }.disposed(by: disposeBag)
             
+        
         //TableView select EVENT
         bookPagingTableView
             .rx.modelSelected(BookMO.self)
@@ -105,8 +106,10 @@ class BookPagingViewController: UIViewController {
                 
                 let vc = SecondViewController()
                 
-                vc.textView.attributedText = element.bookContent!
-                
+                vc.contentViewModel.onTextViewData.onNext(BookViewModelData(id: element.bookID,
+                                                                            bookTitle: element.bookTitle,
+                                                                            bookContent: element.bookContent,
+                                                                            bookPage: nil))
                 self.navigationController?
                     .pushViewController(vc, animated: true)
                 

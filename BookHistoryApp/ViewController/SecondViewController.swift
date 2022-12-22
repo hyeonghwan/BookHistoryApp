@@ -23,10 +23,6 @@ class SecondViewController: UIViewController {
                                             attributes: [.foregroundColor : UIColor.lightGray,
                                                          .font : UIFont.boldSystemFont(ofSize: 20),
                                         .presentationIntentAttributeName : titlePresentationKey])
-
-    
-    private var paragraphTextStorage = ParagraphTextStorage()
-
     
     // KeyBoard InputViewType State ViewModel
     var inputViewModel: InputViewModelType = InputViewModel()
@@ -63,12 +59,14 @@ class SecondViewController: UIViewController {
     
     
     lazy var textView: SecondTextView = {
+        
+        let paragraphTextStorage = ParagraphTextStorage()
  
-        self.paragraphTextStorage.paragraphDelegate = self
+        paragraphTextStorage.paragraphDelegate = contentViewModel.paragraphTrackingUtility.self
         
         let layoutManager = TextWrapLayoutManager()
 
-        self.paragraphTextStorage.addLayoutManager(layoutManager)
+        paragraphTextStorage.addLayoutManager(layoutManager)
 
         let textContainer = CustomTextContainer(size: .zero)
 
@@ -108,6 +106,8 @@ class SecondViewController: UIViewController {
             
         })
         
+        settupBinding()
+        
     }
     
 
@@ -118,17 +118,27 @@ class SecondViewController: UIViewController {
         self.navigationController?.navigationBar.tintColor = .systemCyan
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: nil)
-
+    }
+    
+    private func settupBinding(){
         
+        // -> TextView Content Save trigger
         self.navigationItem.rightBarButtonItem?.rx.tap
             .bind(onNext: { [weak self] _ in
                 guard let self = self else {return}
                 self.contentViewModel
                     .onParagraphData
                     .onNext(self.textView.attributedText)
-                
             }).disposed(by: disposeBag)
         
+        
+        contentViewModel
+            .textObservable
+            .observe(on: MainScheduler.instance)
+            .compactMap{ $0.bookContent }
+            .debug()
+            .bind(to: textView.rx.attributedText)
+            .disposed(by: disposeBag)
     }
     
     
@@ -140,6 +150,7 @@ class SecondViewController: UIViewController {
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.bottom.equalToSuperview().inset(16)
         }
+        
     }
     
     private func addTextViewTitlePlaceHolder() {
@@ -152,6 +163,7 @@ class SecondViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
         self.textMenuView.removeFromSuperview()
         
     }
@@ -191,20 +203,9 @@ class SecondViewController: UIViewController {
         textMenuView.undoButton.isEnabled = textView.undoManager?.canUndo ?? false
         textMenuView.redoButton.isEnabled = textView.undoManager?.canRedo ?? false
     }
-    
-    
+        
 }
 
-extension SecondViewController: ParagraphTextStorageDelegate{
-    var presentedParagraphs: [NSAttributedString] {
-        return []
-    }
-    
-    func textStorage(_ textStorage: ParagraphTextKit.ParagraphTextStorage, didChangeParagraphs changes: [ParagraphTextKit.ParagraphTextStorage.ParagraphChange]) {
-        
-    }
-    
-}
 
 extension SecondViewController: UITextViewDelegate {
     func textViewDidChangeSelection(_ textView: UITextView) {
@@ -218,7 +219,7 @@ extension SecondViewController: UITextViewDelegate {
     }
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        print(range)
+        
         if text == "\n"{
             
             // 제목을 입력하지 않으면 "\n" 입력 -> false

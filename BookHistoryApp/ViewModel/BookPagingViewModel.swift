@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import CoreData
+import RxRelay
 
 protocol PagingType {
     
@@ -51,7 +52,7 @@ class BookPagingViewModel: NSObject, PagingType{
         
         let movePipe = PublishSubject<BookMO>()
         
-        let showPipe = PublishSubject<[BookMO]>()
+        let showPipe = BehaviorRelay<[BookMO]>(value: [])
         
         let deletePipe = PublishSubject<Void>()
         
@@ -76,8 +77,15 @@ class BookPagingViewModel: NSObject, PagingType{
             .disposed(by: disposeBag)
         
         pageDataPipe
-            .subscribe(onNext: showPipe.onNext(_:))
+            .subscribe(onNext: showPipe.accept(_:))
             .disposed(by: disposeBag)
+        
+        showPage
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { data in
+                print(data)
+            }).disposed(by: disposeBag)
+        
         
         deletePipe
             .flatMap(serviece.rxDeletePage)

@@ -10,7 +10,7 @@ import SnapKit
 
 final class CSTabBarController: UITabBarController{
     
-    var currentIndex = 0
+    private var currentIndex = 0
     
     //Tab Bar Height Size
     private var bottomTabBarHeight: CGFloat = 80

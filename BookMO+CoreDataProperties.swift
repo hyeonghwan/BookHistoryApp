@@ -18,6 +18,7 @@ extension BookMO {
         return NSFetchRequest<BookMO>(entityName: "BookData")
     }
 
+    @NSManaged public var bookID: UUID?
     @NSManaged public var bookTitle: String?
     @NSManaged public var bookContent: NSAttributedString?
     @NSManaged public var bookPage: BookPageMO?

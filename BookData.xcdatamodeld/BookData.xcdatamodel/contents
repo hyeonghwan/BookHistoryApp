@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="22A5358e" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22A5358e" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="BookData" representedClassName="BookMO" syncable="YES">
         <attribute name="bookContent" attributeType="Transformable" valueTransformerName="NSAttributedStringTransformer" customClassName="NSAttributedString"/>
+        <attribute name="bookID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="bookTitle" optional="YES" attributeType="String"/>
         <relationship name="bookPage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookPage" inverseName="bookData" inverseEntity="BookPage"/>
     </entity>

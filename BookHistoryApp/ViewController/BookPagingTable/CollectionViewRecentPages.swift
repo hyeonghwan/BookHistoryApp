@@ -36,7 +36,10 @@ final class PageCell: UICollectionViewCell {
     
     
     var onRecentPageData: AnyObserver<BookMO>
+    
+    var cellDisposeBag = DisposeBag()
     var disposeBag = DisposeBag()
+    
     
     override init(frame: CGRect) {
         let pagePipe = PublishSubject<BookMO>()
@@ -49,22 +52,27 @@ final class PageCell: UICollectionViewCell {
         
         pagePipe
             .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { value in
+            .subscribe(onNext: {[weak self] value in
+                guard let self = self else {return}
                 self.titleLabel.text = value.bookTitle
-                
-                
-            }).disposed(by: disposeBag)
+            }).disposed(by: cellDisposeBag)
         
     }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.disposeBag = DisposeBag()
+    }
+    
 
     required init?(coder: NSCoder) {
         fatalError("required init fatalError")
-        
     }
+    
     @objc func dopinch(_ pinch: UIPinchGestureRecognizer){
         contentImageView.transform = contentImageView.transform.scaledBy(x: pinch.scale, y: pinch.scale)
         pinch.scale = 1
     }
+    
     func addAutoLayout() {
         
         let pinch = UIPinchGestureRecognizer(target: self, action: #selector(dopinch(_:)))
