@@ -116,8 +116,8 @@
 		962AA11229311C3600C2620B /* NSAttributedStringTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSAttributedStringTransformer.swift; sourceTree = "<group>"; };
 		962AA117293224F800C2620B /* BookContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookContentViewModel.swift; sourceTree = "<group>"; };
 		962AA11C29322E4000C2620B /* BookService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookService.swift; sourceTree = "<group>"; };
-		962AA12229324E9700C2620B /* BookMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookMO+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
-		962AA12329324E9700C2620B /* BookPageMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookPageMO+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		962AA12229324E9700C2620B /* BookMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BookMO+CoreDataProperties.swift"; path = "CoreData/BookMO+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		962AA12329324E9700C2620B /* BookPageMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BookPageMO+CoreDataProperties.swift"; path = "CoreData/BookPageMO+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		96477D18291A041D00830EFB /* BookHistoryApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookHistoryApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96477D1B291A041D00830EFB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96477D1D291A041D00830EFB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -320,9 +320,7 @@
 		96477D0F291A041D00830EFB = {
 			isa = PBXGroup;
 			children = (
-				962AA101292F891E00C2620B /* CoreDataStack.swift */,
-				962AA12229324E9700C2620B /* BookMO+CoreDataProperties.swift */,
-				962AA12329324E9700C2620B /* BookPageMO+CoreDataProperties.swift */,
+				9655FE2E2955F269008991F1 /* CoreData */,
 				962AA10B29311AFD00C2620B /* BookData.xcdatamodeld */,
 				96477D1A291A041D00830EFB /* BookHistoryApp */,
 				9601D0CF2953364B0069EF58 /* BookHistoryAppTests */,
@@ -366,6 +364,16 @@
 				96477D29291A041F00830EFB /* Info.plist */,
 			);
 			path = BookHistoryApp;
+			sourceTree = "<group>";
+		};
+		9655FE2E2955F269008991F1 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				962AA101292F891E00C2620B /* CoreDataStack.swift */,
+				962AA12229324E9700C2620B /* BookMO+CoreDataProperties.swift */,
+				962AA12329324E9700C2620B /* BookPageMO+CoreDataProperties.swift */,
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 		9AC4BBCB9E2FB5B853773F41 /* Pods */ = {
