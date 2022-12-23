@@ -18,6 +18,12 @@ class SCTextStorage: NSTextStorage{
         return container.string
     }
     
+//    func getBolock() {
+//        let nsString = self.string as NSString
+//
+//    }
+    
+    
     
     override func insert(_ attrString: NSAttributedString, at loc: Int) {
         super.insert(attrString, at: loc)

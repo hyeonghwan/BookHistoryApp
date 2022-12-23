@@ -91,14 +91,9 @@ class BookPagingViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(to: bookPagingTableView.rx.items(cellIdentifier:BookPagingTableViewCell.identify,
                                                    cellType: BookPagingTableViewCell.self)){
-                [weak self] index, item , cell in
-                guard let self = self else {return}
+                index, item , cell in
                 
                 cell.onPageData.onNext(item)
-                
-                cell.showSettingPage
-                    .bind(onNext: self.bookPagingViewModel.presentSettingPageObserver.onNext(_:))
-                    .disposed(by: cell.disposeBag)
                 
             }.disposed(by: disposeBag)
             
@@ -115,7 +110,6 @@ class BookPagingViewController: UIViewController {
                                                                             bookTitle: element.bookTitle,
                                                                             bookContent: element.bookContent,
                                                                             bookPage: nil))
-                
                 self.navigationController?
                     .pushViewController(vc, animated: true)
                 
@@ -141,18 +135,6 @@ class BookPagingViewController: UIViewController {
                 self.bookPagingViewModel.deletePage.onNext(())
             })
             .disposed(by: disposeBag)
-        
-        
-        self.bookPagingViewModel
-            .showSettingPageObservable
-            .observe(on: MainScheduler.instance)
-            .bind(onNext: { [weak self] in
-                guard let self = self else {return}
-                let settingVC = PageSettingViewController()
-                
-                self.present(settingVC, animated: true)
-                
-            }).disposed(by: disposeBag)
         
     }
 

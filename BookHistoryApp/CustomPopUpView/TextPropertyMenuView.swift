@@ -51,11 +51,13 @@ class TextPropertyMenuView: UIView {
         
     }
 
+    
     convenience init(frame: CGRect, viewModel: InputViewModelType){
         
         self.init(frame: frame)
         
         self.viewModel = viewModel
+        
         
     }
     
