@@ -46,7 +46,6 @@
 		962AA11329311C3600C2620B /* NSAttributedStringTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA11229311C3600C2620B /* NSAttributedStringTransformer.swift */; };
 		962AA1162931408200C2620B /* ParagraphTextKit in Frameworks */ = {isa = PBXBuildFile; productRef = 962AA1152931408200C2620B /* ParagraphTextKit */; };
 		962AA118293224F800C2620B /* BookContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA117293224F800C2620B /* BookContentViewModel.swift */; };
-		962AA11A29322CF100C2620B /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA11929322CF100C2620B /* BookModel.swift */; };
 		962AA11D29322E4000C2620B /* BookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA11C29322E4000C2620B /* BookService.swift */; };
 		962AA12429324E9700C2620B /* BookMO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA12229324E9700C2620B /* BookMO+CoreDataProperties.swift */; };
 		962AA12529324E9700C2620B /* BookPageMO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA12329324E9700C2620B /* BookPageMO+CoreDataProperties.swift */; };
@@ -59,6 +58,7 @@
 		96477D31291A073A00830EFB /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 96477D30291A073A00830EFB /* SnapKit */; };
 		96477D33291A24EB00830EFB /* CustomTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D32291A24EB00830EFB /* CustomTextView.swift */; };
 		96512BCB291B8CA00090F90B /* CustomLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96512BCA291B8CA00090F90B /* CustomLayoutManager.swift */; };
+		9655FE2D2955D9E4008991F1 /* PageSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9655FE2C2955D9E4008991F1 /* PageSettingViewController.swift */; };
 		965AED95291E3EF0005B616F /* ColorBlockManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965AED94291E3EF0005B616F /* ColorBlockManager.swift */; };
 		965AED97291E80A9005B616F /* CustomTextStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965AED96291E80A9005B616F /* CustomTextStorage.swift */; };
 /* End PBXBuildFile section */
@@ -115,7 +115,6 @@
 		962AA10C29311AFD00C2620B /* BookData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BookData.xcdatamodel; sourceTree = "<group>"; };
 		962AA11229311C3600C2620B /* NSAttributedStringTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSAttributedStringTransformer.swift; sourceTree = "<group>"; };
 		962AA117293224F800C2620B /* BookContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookContentViewModel.swift; sourceTree = "<group>"; };
-		962AA11929322CF100C2620B /* BookModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookModel.swift; sourceTree = "<group>"; };
 		962AA11C29322E4000C2620B /* BookService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookService.swift; sourceTree = "<group>"; };
 		962AA12229324E9700C2620B /* BookMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookMO+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		962AA12329324E9700C2620B /* BookPageMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookPageMO+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
@@ -128,6 +127,7 @@
 		96477D29291A041F00830EFB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		96477D32291A24EB00830EFB /* CustomTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextView.swift; sourceTree = "<group>"; };
 		96512BCA291B8CA00090F90B /* CustomLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayoutManager.swift; sourceTree = "<group>"; };
+		9655FE2C2955D9E4008991F1 /* PageSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageSettingViewController.swift; sourceTree = "<group>"; };
 		965AED94291E3EF0005B616F /* ColorBlockManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorBlockManager.swift; sourceTree = "<group>"; };
 		965AED96291E80A9005B616F /* CustomTextStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextStorage.swift; sourceTree = "<group>"; };
 		A50DDEE5B459107E26A04E3E /* Pods_BookHistoryApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookHistoryApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -241,6 +241,7 @@
 			isa = PBXGroup;
 			children = (
 				9601D0C629530A6D0069EF58 /* TestViewController.swift */,
+				9655FE2C2955D9E4008991F1 /* PageSettingViewController.swift */,
 				9601D0B8295028560069EF58 /* TabBar */,
 				9601D0C32951B8270069EF58 /* BookPagingTable */,
 				96477D1F291A041D00830EFB /* ViewController.swift */,
@@ -296,7 +297,6 @@
 				962AA0DE292B97FC00C2620B /* ColorViewModel.swift */,
 				962AA0E9292E3C7500C2620B /* BookPagingViewModel.swift */,
 				962AA117293224F800C2620B /* BookContentViewModel.swift */,
-				962AA11929322CF100C2620B /* BookModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -546,7 +546,6 @@
 				962AA0D2292384ED00C2620B /* UIApplication-Ext.swift in Sources */,
 				962AA0AD2920CEAA00C2620B /* CustomTextView-Ext.swift in Sources */,
 				962AA0E8292E32B400C2620B /* Cell+Ext.swift in Sources */,
-				962AA11A29322CF100C2620B /* BookModel.swift in Sources */,
 				962AA0D42924F48500C2620B /* KRScrollView.swift in Sources */,
 				962AA11329311C3600C2620B /* NSAttributedStringTransformer.swift in Sources */,
 				962AA0C7292233EE00C2620B /* SCTextView-Ext.swift in Sources */,
@@ -574,6 +573,7 @@
 				96477D33291A24EB00830EFB /* CustomTextView.swift in Sources */,
 				9601D0C22951A5530069EF58 /* CSTabBarController.swift in Sources */,
 				962AA12429324E9700C2620B /* BookMO+CoreDataProperties.swift in Sources */,
+				9655FE2D2955D9E4008991F1 /* PageSettingViewController.swift in Sources */,
 				962AA0DF292B97FC00C2620B /* ColorViewModel.swift in Sources */,
 				962AA0C12922183F00C2620B /* SecondLayoutManager.swift in Sources */,
 				962AA0C329221D7900C2620B /* TextContainer.swift in Sources */,

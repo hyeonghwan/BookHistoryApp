@@ -46,6 +46,8 @@ final class BookPagingTableViewCell: UITableViewCell{
     
     var onPageData: AnyObserver<BookMO>
     
+    var showSettingPage: Observable<Void>
+    
     var cellDisposeBag = DisposeBag()
     
     var disposeBag = DisposeBag()
@@ -54,7 +56,11 @@ final class BookPagingTableViewCell: UITableViewCell{
         
         let pagePipe = PublishSubject<BookMO>()
         
+        let showSettingPagePipe = PublishSubject<Void>()
+        
         onPageData = pagePipe.asObserver()
+        
+        showSettingPage = showSettingPagePipe
         
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -64,10 +70,15 @@ final class BookPagingTableViewCell: UITableViewCell{
             .observe(on: MainScheduler.instance)
             .bind(onNext: { [weak self] book in
                 guard let self = self else {return}
-                print("pagingTable : \(book.bookTitle)")
+                
                 self.titleLable.text = book.bookTitle
                 
             }).disposed(by: cellDisposeBag)
+        
+        
+        settingButton.rx.tap
+            .bind(onNext: showSettingPagePipe.onNext(_:))
+            .disposed(by: cellDisposeBag)
         
     }
     

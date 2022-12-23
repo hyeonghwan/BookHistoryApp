@@ -26,6 +26,16 @@ struct TextViewData{
     let id: UUID?
     let title: String?
     let attributedString: NSAttributedString?
+    init(){
+        self.id = nil
+        self.title = nil
+        self.attributedString = nil
+    }
+    init(id: UUID?, title: String?, attributedString: NSAttributedString?) {
+        self.id = id
+        self.title = title
+        self.attributedString = attributedString
+    }
 }
 
 struct BookViewModelData {
@@ -80,22 +90,15 @@ class BookContentViewModel: NSObject, ContentViewModelType{
         textObservable = observablePipe
         
        
-        
         super.init()
         
         paragraphPipe
-            .observe(on: MainScheduler.instance)
             .withLatestFrom(observablePipe){[weak self] textViewAttributedString, original in
-                guard let self = self else {return TextViewData(id: nil, title: nil, attributedString: nil)}
-                guard original.id != nil else { return TextViewData(id: nil,
-                                                                        title: self.paragraphTrackingUtility.paragraphs.first!,
-                                                                        attributedString: textViewAttributedString) }
-                return TextViewData(id: original.id,
-                                    title: self.paragraphTrackingUtility.paragraphs.first!
-                                    ,attributedString: textViewAttributedString)
+                guard let self = self else {return TextViewData()}
+                return self.getTextViewData(textViewAttributedString, original)
             }
             .flatMap(serviece.rxAddParagraphData(_:))
-            .subscribe(onNext: {  result in
+            .subscribe(onNext: { result in
                 switch result{
                 case .success(_):
                     print("add success")
@@ -108,7 +111,16 @@ class BookContentViewModel: NSObject, ContentViewModelType{
         textViewDataPipe
             .subscribe(onNext: observablePipe.onNext(_:))
             .disposed(by: disposeBag)
-      
         
+    }
+    
+    private func getTextViewData(_ attributedString: NSAttributedString,
+                                 _ bookViewModelData: BookViewModelData) -> TextViewData{
+        guard bookViewModelData.id != nil else { return TextViewData(id: nil,
+                                                                     title: self.paragraphTrackingUtility.paragraphs.first!,
+                                                                     attributedString: attributedString) }
+        return TextViewData(id: bookViewModelData.id,
+                            title: self.paragraphTrackingUtility.paragraphs.first!
+                            ,attributedString: attributedString)
     }
 }

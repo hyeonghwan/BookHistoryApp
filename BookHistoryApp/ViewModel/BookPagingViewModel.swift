@@ -21,13 +21,14 @@ protocol PagingType {
     
     var deletePage: AnyObserver<Void> { get }
     
+    var presentSettingPageObserver: AnyObserver<Void> { get }
+    
     //output
     var showPage: Observable<[BookMO]> { get }
+    
+    var showSettingPageObservable: Observable<Void> {get}
 }
 
-enum Book{
-    case book
-}
 
 class BookPagingViewModel: NSObject, PagingType{
     
@@ -40,6 +41,10 @@ class BookPagingViewModel: NSObject, PagingType{
     var showPage: Observable<[BookMO]>
     
     var deletePage: AnyObserver<Void>
+    
+    var presentSettingPageObserver: AnyObserver<Void>
+    
+    var showSettingPageObservable: Observable<Void>
     
     var disposeBag = DisposeBag()
     
@@ -56,6 +61,10 @@ class BookPagingViewModel: NSObject, PagingType{
         
         let deletePipe = PublishSubject<Void>()
         
+        let presentSettingPipe = PublishSubject<Void>()
+        
+        let showSettingPipe = PublishSubject<Void>()
+        
         onPaging = pagingPipe.asObserver()
         
         pageData = pageDataPipe.asObserver()
@@ -65,6 +74,9 @@ class BookPagingViewModel: NSObject, PagingType{
         
         
         deletePage = deletePipe.asObserver()
+        
+        presentSettingPageObserver = presentSettingPipe.asObserver()
+        showSettingPageObservable = showSettingPipe
         
         // Data flow
         // onPaging -> pagingPipe -> Service -> pageDataPipe -> showPipe -> showPage
@@ -80,18 +92,19 @@ class BookPagingViewModel: NSObject, PagingType{
             .subscribe(onNext: showPipe.accept(_:))
             .disposed(by: disposeBag)
         
-        showPage
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { data in
-                print(data)
-            }).disposed(by: disposeBag)
-        
-        
         deletePipe
             .flatMap(serviece.rxDeletePage)
             .subscribe(onNext: { flag in
                 print(flag)
             })
+            .disposed(by: disposeBag)
+        
+        
+        //Setting Page Flow
+        // TableViewCell SettingButton.rx.tap -> (TableCell)showSettingPage -> (VM)presentSettingPageObserver ->
+        // -> (VM)showSettingPipe -> (VM)showSettingPageObservable -> (VC)PageSettingVC present
+        presentSettingPipe
+            .subscribe(onNext: showSettingPipe.onNext(_:))
             .disposed(by: disposeBag)
         
 
