@@ -2,7 +2,7 @@
 //  BookPageMO+CoreDataProperties.swift
 //  BookHistoryApp
 //
-//  Created by 박형환 on 2022/11/26.
+//  Created by 박형환 on 2022/12/24.
 //
 //
 
@@ -11,7 +11,10 @@ import CoreData
 
 
 @objc(BookPageMO)
-class BookPageMO: NSManagedObject {}
+public class BookPageMO: NSManagedObject {
+
+}
+
 
 extension BookPageMO {
 
