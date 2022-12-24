@@ -23,7 +23,7 @@ class SecondTextView: UITextView {
         super.init(frame: frame, textContainer: textContainer)
         
         settingConfiguration()
-
+        
     }
     
     convenience init(frame: CGRect,
@@ -44,6 +44,8 @@ class SecondTextView: UITextView {
     func settingTextBackGround(_ presentationType: PresentationType){
         self.setColorSelectedText(NSAttributedString.getAttributeColorKey(presentationType),
                                   self.getSeletedPragraphRange())
+        
+        
     }
     
 
@@ -71,11 +73,6 @@ class SecondTextView: UITextView {
         
         self.layoutManager.delegate = self
         
-        
-//        Test Setting Configuration
-//        self.attributedText = titlePlaceHolderSetting()
-//        settingTitlePlace()
-//
         self.isScrollEnabled = true
         self.alwaysBounceVertical = false
         self.isUserInteractionEnabled = true

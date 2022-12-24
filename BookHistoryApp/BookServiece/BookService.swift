@@ -9,10 +9,10 @@ import Foundation
 import CoreData
 import RxSwift
 import RxCocoa
+import OpenGraph
 
 
 protocol RxBookService {
-    var observable: Observable<[BookMO]> { get }
     
     func rxAddParagraphData(_ textViewData: TextViewData) -> Observable<Result<Bool,Error>>
     
@@ -21,6 +21,15 @@ protocol RxBookService {
     func rxDeletePage() -> Observable<Bool>
 
 }
+
+typealias MetaDataDictionatyOnURL = [OpenGraphMetadata: String]
+
+protocol URLBookMarkMakable{
+    func makeBookMark(_ url: URL) -> Observable<MetaDataDictionatyOnURL>
+}
+
+
+typealias BookServiceAble = RxBookService & URLBookMarkMakable
 
 enum CoreDataError: Error{
     case fetchContainerError
@@ -37,20 +46,48 @@ class BookService: NSObject, RxBookService{
     
     var container: NSPersistentContainer?
     
-    var observable: Observable<[BookMO]>
-    
     override init() {
-        
-        let booksPipe = PublishSubject<[BookMO]>()
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         
         container = appDelegate.persistentContainer
         
-        observable = booksPipe
-        
         super.init()
     }
+}
+
+extension BookService: URLBookMarkMakable{
+    
+    func makeBookMark(_ url: URL) -> Observable<MetaDataDictionatyOnURL>{
+        return Observable.create{[weak self] emit in
+            guard let self = self else {return Disposables.create()}
+            self.makeBookMark(url: url){ result in
+                switch result {
+                case .success(let metDic):
+                    emit.onNext(metDic)
+                case .failure(let error):
+                    emit.onError(error)
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    
+   private func makeBookMark(url: URL,_ completion: @escaping (Result<[OpenGraphMetadata: String],Error>) -> ()) {
+        OpenGraph.fetch(url: url){result in
+            switch result{
+            case .success(let graph):
+                completion(.success(graph.source))
+                
+            case .failure(let error):
+                completion(.failure(error))
+            }
+            
+        }
+    }
+}
+
+extension BookService{
     
     func rxAddParagraphData(_ textViewData: TextViewData) -> Observable<Result<Bool,Error>> {
         
@@ -108,8 +145,6 @@ class BookService: NSObject, RxBookService{
     
     }
     
-    
-    
     func rxGetPages() -> Observable<[BookMO]>{
 
         return Observable.create { [weak self] observer in
@@ -122,8 +157,25 @@ class BookService: NSObject, RxBookService{
             return Disposables.create()
         }
     }
-    
-    
+
+    func getPageData() -> [BookMO]? {
+        
+        guard let container = self.container else {return []}
+        
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "BookData")
+        
+        do{
+            let result = try container.viewContext.fetch(fetchRequest) as? [BookMO]
+            
+            return result
+        }catch{
+            print("viewContext.fetch(fetchRequest) failed")
+            return nil
+        }
+    }
+}
+
+extension BookService{
     private func addBookPageData(_ object: BookMO) -> Result<Bool,Error> {
         guard let container = container else {return .failure(CoreDataError.fetchContainerError)}
         
@@ -177,26 +229,7 @@ class BookService: NSObject, RxBookService{
         }
     }
     
-    
-    
-   
-    func getPageData() -> [BookMO]? {
-        
-        guard let container = self.container else {return []}
-        
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "BookData")
-        
-        do{
-            let result = try container.viewContext.fetch(fetchRequest) as? [BookMO]
-            
-            return result
-        }catch{
-            print("viewContext.fetch(fetchRequest) failed")
-            return nil
-        }
-    }
-
-    
+    @discardableResult
     private func saveContext() -> Result<Bool,Error> {
         guard let container = container else {return .failure(CoreDataError.fetchContainerError)}
         
@@ -211,6 +244,7 @@ class BookService: NSObject, RxBookService{
             return .failure(CoreDataError.saveContextError)
         }
     }
+    
     
     private func fetchData(){
         guard let container = container else {return}
@@ -227,5 +261,4 @@ class BookService: NSObject, RxBookService{
             print(error.localizedDescription)
         }
     }
-    
 }

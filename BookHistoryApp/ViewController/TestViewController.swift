@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import OpenGraph
+
 
 class TestViewController: UIViewController{
     
@@ -27,12 +29,11 @@ class TestViewController: UIViewController{
             $0.bottom.trailing.leading.equalToSuperview()
         }
         textView.text = "Placeholder"
-        textView.textColor = UIColor.lightGray
-
-        textView.becomeFirstResponder()
-
-        textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+    
+        
+        
     }
+
 }
 
 extension TestViewController: UITextViewDelegate{

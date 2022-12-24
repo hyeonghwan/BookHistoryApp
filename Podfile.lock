@@ -1,4 +1,5 @@
 PODS:
+  - OpenGraph (1.5.0)
   - RxCocoa (6.5.0):
     - RxRelay (= 6.5.0)
     - RxSwift (= 6.5.0)
@@ -8,23 +9,26 @@ PODS:
   - SubviewAttachingTextView (1.5.0)
 
 DEPENDENCIES:
+  - OpenGraph
   - RxCocoa (= 6.5.0)
   - RxSwift (= 6.5.0)
   - SubviewAttachingTextView
 
 SPEC REPOS:
   trunk:
+    - OpenGraph
     - RxCocoa
     - RxRelay
     - RxSwift
     - SubviewAttachingTextView
 
 SPEC CHECKSUMS:
+  OpenGraph: 765d59d309b578182052fdb0a430a0ba97349238
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
   SubviewAttachingTextView: 4b6e2d07bc4200f1d030887ead5c705200d105d1
 
-PODFILE CHECKSUM: e7626c75f9874d8297774075d40edbc8b9861465
+PODFILE CHECKSUM: ed9006ee9e13f329e803e1ea54688dcc17fafbbc
 
 COCOAPODS: 1.11.3

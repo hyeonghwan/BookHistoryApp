@@ -31,7 +31,7 @@ class SecondViewController: UIViewController {
     var colorViewModel: ColorVMType = ColorViewModel()
     
     // TextView Save Content State ViewModel
-    var contentViewModel: ContentViewModelType = BookContentViewModel()
+    var contentViewModel: ContentVMTypeAble = BookContentViewModel()
     
     
     var bookPagingViewModel: PagingType?
@@ -106,7 +106,28 @@ class SecondViewController: UIViewController {
             
         })
         
+        contentViewModel
+            .onURLData
+            .onNext(URL(string: "https://www.kodeco.com/5960-text-kit-tutorial-getting-started")!)
+        
         settupBinding()
+        
+        
+        let attributedString = NSMutableAttributedString(string: "Just click here to register")
+        let url = URL(string: "https://www.apple.com")!
+
+        // Set the 'click here' substring to be the link
+        attributedString.setAttributes([.link: url], range: NSMakeRange(5, 10))
+
+        self.textView.attributedText = attributedString
+        self.textView.isUserInteractionEnabled = true
+        self.textView.isEditable = true
+
+        // Set how links should appear: blue and underlined
+        self.textView.linkTextAttributes = [
+            .foregroundColor: UIColor.blue,
+            .underlineStyle: NSUnderlineStyle.single.rawValue
+        ]
         
     }
     
@@ -133,12 +154,23 @@ class SecondViewController: UIViewController {
         
         
         contentViewModel
-            .textObservable
+            .toTextObservable
             .observe(on: MainScheduler.instance)
             .compactMap{ $0.bookContent }
             .debug()
             .bind(to: textView.rx.attributedText)
             .disposed(by: disposeBag)
+        
+        contentViewModel
+            .toMetaDataURL
+            .subscribe(onNext: { og in
+                print(og[.title])
+                print(og[.description])
+                print(og[.url])
+                print(og[.image])
+            })
+            .disposed(by: disposeBag)
+        
     }
     
     
@@ -156,8 +188,10 @@ class SecondViewController: UIViewController {
     private func addTextViewTitlePlaceHolder() {
         textView.attributedText = titleAttribute
         textView.becomeFirstResponder()
-        
         textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+        
+        textView.attributedText = UITextView.testSetting()
+        
     }
     
     
@@ -226,6 +260,7 @@ extension SecondViewController: UITextViewDelegate {
             if range == NSRange(location: 0, length: 0){
                 return false
             }
+            
             textView.typingAttributes = [
                 NSAttributedString.Key.backgroundColor : UIColor.clear,
                 NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .bold),

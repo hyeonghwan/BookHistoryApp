@@ -21,21 +21,24 @@ extension UITextView{
         
     }
     
-    func testSetting() -> NSAttributedString{
+    static func testSetting() -> NSAttributedString{
         
         let richText = NSMutableAttributedString()
         
         
         //하 시발 존나 허망하네
         let para = NSMutableParagraphStyle()
-        para.lineSpacing = 4
+        para.lineSpacing = 10
+        para.paragraphSpacing = 10
         
         para.lineBreakMode = .byWordWrapping
         
+        
+        
         let chunk0 = NSAttributedString(string: "Something like this where it breaks to its own line and creates a box that goes to the edge no matter how long the text is \n\n",
                                         attributes: [
-                                            
-                                            NSAttributedString.Key.underlineStyle : NSUnderlineStyle.single.rawValue,
+                                            NSAttributedString.Key.baselineOffset : 10 ,
+                                            NSAttributedString.Key.underlineStyle : NSUnderlineStyle.double.rawValue,
                                             NSAttributedString.Key.underlineColor : UIColor(red: 51 / 255.0, green: 154 / 255.0, blue: 1.0, alpha: 1.0),
                                             NSAttributedString.Key.foregroundColor : UIColor.label,
                                             NSAttributedString.Key.paragraphStyle : para,
@@ -43,9 +46,6 @@ extension UITextView{
                                         ])
         
         richText.append(chunk0)
-        
-        
-
         
         let interlineStyle = NSMutableParagraphStyle()
         
@@ -82,6 +82,9 @@ extension UITextView{
                                         ])
        
         richText.append(chunk2)
+        
+        
+        
        
         
         return richText

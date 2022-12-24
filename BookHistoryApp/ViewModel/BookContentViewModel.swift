@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import CoreData
+import OpenGraph
 
 
 protocol ContentViewModelType {
@@ -17,11 +18,23 @@ protocol ContentViewModelType {
     var onParagraphData: AnyObserver<NSAttributedString> {get}
     
     //OUtPut
-    var textObservable: Observable<BookViewModelData> { get }
+    var toTextObservable: Observable<BookViewModelData> { get }
     
     //utility
     var paragraphTrackingUtility: ParagraphTrackingUtility { get }
 }
+
+protocol ContentVMBooMarkAble{
+    //input
+    var onURLData: AnyObserver<URL> { get }
+    
+    //output
+    var toMetaDataURL: Observable<MetaDataDictionatyOnURL> { get }
+}
+
+typealias ContentVMTypeAble = ContentViewModelType & ContentVMBooMarkAble
+
+
 struct TextViewData{
     let id: UUID?
     let title: String?
@@ -49,26 +62,41 @@ struct BookViewModelData {
     }
 }
 
-class BookContentViewModel: NSObject, ContentViewModelType{
+class BookContentViewModel: NSObject, ContentVMTypeAble{
     
     var paragraphTrackingUtility: ParagraphTrackingUtility = ParagraphTrackingUtility()
     
+    //MARK: ContentViewModelType
+    //input
     var onParagraphData: AnyObserver<NSAttributedString>
     
     var onTextViewData: AnyObserver<BookViewModelData>
     
-    var textObservable: Observable<BookViewModelData>
+    //outPUT
+    var toTextObservable: Observable<BookViewModelData>
+    
+    
+    //MARK: ContentVMBooMarkAble
+    //input
+    var onURLData: AnyObserver<URL>
+    
+    //output
+    var toMetaDataURL: Observable<MetaDataDictionatyOnURL>
+    
+    
     
     var disposeBag = DisposeBag()
     
     var container: NSPersistentContainer?
     
-    init(_ serviece: RxBookService = BookService()) {
+    init(_ serviece: BookServiceAble = BookService()) {
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         
         container = appDelegate.persistentContainer
         
+        
+        //ContentViewModelType
         let paragraphPipe = PublishSubject<NSAttributedString>()
         let textViewDataPipe = PublishSubject<BookViewModelData>()
         let observablePipe = BehaviorSubject<BookViewModelData>(value: BookViewModelData())
@@ -77,10 +105,17 @@ class BookContentViewModel: NSObject, ContentViewModelType{
         
         onTextViewData = textViewDataPipe.asObserver()
         
-        textObservable = observablePipe
+        toTextObservable = observablePipe
         
-       
         
+        //ContentVMBooMarkAble
+        let urlPipe = PublishSubject<URL>()
+        let metaDataPipe = PublishSubject<MetaDataDictionatyOnURL>()
+        
+        onURLData = urlPipe.asObserver()
+        toMetaDataURL = metaDataPipe
+        
+    
         super.init()
         
         paragraphPipe
@@ -105,8 +140,15 @@ class BookContentViewModel: NSObject, ContentViewModelType{
             })
             .disposed(by: disposeBag)
   
+        
         textViewDataPipe
             .subscribe(onNext: observablePipe.onNext(_:))
+            .disposed(by: disposeBag)
+        
+        
+        urlPipe
+            .flatMap(serviece.makeBookMark(_:))
+            .subscribe(onNext: metaDataPipe.onNext(_:))
             .disposed(by: disposeBag)
       
         
