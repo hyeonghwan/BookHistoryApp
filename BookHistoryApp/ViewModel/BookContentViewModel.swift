@@ -25,12 +25,18 @@ protocol ContentViewModelType {
 }
 
 protocol ContentVMBooMarkAble{
+    
+    var isPasteValue: Bool { get }
+    
     //input
+    var onPasteValue: AnyObserver<Bool> { get }
     var onURLData: AnyObserver<URL> { get }
     
     //output
+//    var toPasteContent:
     var toMetaDataURL: Observable<MetaDataDictionatyOnURL> { get }
 }
+
 
 typealias ContentVMTypeAble = ContentViewModelType & ContentVMBooMarkAble
 
@@ -77,8 +83,11 @@ class BookContentViewModel: NSObject, ContentVMTypeAble{
     
     
     //MARK: ContentVMBooMarkAble
+    var isPasteValue: Bool = false
+    
     //input
     var onURLData: AnyObserver<URL>
+    var onPasteValue: AnyObserver<Bool>
     
     //output
     var toMetaDataURL: Observable<MetaDataDictionatyOnURL>
@@ -111,9 +120,13 @@ class BookContentViewModel: NSObject, ContentVMTypeAble{
         //ContentVMBooMarkAble
         let urlPipe = PublishSubject<URL>()
         let metaDataPipe = PublishSubject<MetaDataDictionatyOnURL>()
+        let pastePipe = PublishSubject<Bool>()
+        let pasteOutPutPipe = PublishSubject<Bool>()
         
+        onPasteValue = pastePipe.asObserver()
         onURLData = urlPipe.asObserver()
         toMetaDataURL = metaDataPipe
+        
         
     
         super.init()
@@ -152,5 +165,11 @@ class BookContentViewModel: NSObject, ContentVMTypeAble{
             .disposed(by: disposeBag)
       
         
+        pastePipe
+            .bind(onNext: { [weak self] value in
+                guard let self = self else {return}
+                self.isPasteValue = value
+            })
+            .disposed(by: disposeBag)
     }
 }

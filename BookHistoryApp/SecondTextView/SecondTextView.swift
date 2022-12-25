@@ -15,7 +15,11 @@ class SecondTextView: UITextView {
     
     private var colorViewModel: ColorVMType?
     
+    private var contentViewModel: ContentVMBooMarkAble?
+    
     private var disposeBag = DisposeBag()
+    
+
     
  
     override init(frame: CGRect, textContainer: NSTextContainer?) {
@@ -28,18 +32,35 @@ class SecondTextView: UITextView {
     
     convenience init(frame: CGRect,
                      textContainer: NSTextContainer?,
-                     _ viewModel: ColorVMType) {
+                     _ viewModel: ColorVMType,
+                     _ contentVM: ContentVMBooMarkAble) {
         
         self.init(frame: frame, textContainer: textContainer)
         
         self.colorViewModel = viewModel
+        self.contentViewModel = contentVM
         
         colorViewModel?
             .attributedStringObservable
             .subscribe(onNext: settingTextBackGround(_:))
             .disposed(by: disposeBag)
         
+        
+
     }
+    
+    
+    func isLongPressGestureEnable(_ isEanableLongPress: Bool){
+        guard let gestures = self.gestureRecognizers else {return}
+        for gesture in gestures{
+            if gesture.isKind(of: UILongPressGestureRecognizer.self),
+               gesture.name == "PressParaGraphBlock"{
+                gesture.isEnabled = isEanableLongPress
+                print("gesture.isEnabled : \(isEanableLongPress)")
+            }
+        }
+    }
+    
 
     func settingTextBackGround(_ presentationType: PresentationType){
         self.setColorSelectedText(NSAttributedString.getAttributeColorKey(presentationType),
@@ -52,6 +73,45 @@ class SecondTextView: UITextView {
     required init?(coder: NSCoder) {
         fatalError("required init fatalError")
         
+    }
+    
+    override func paste(_ sender: Any?) {
+        print("paste!!!")
+        
+        self.contentViewModel?
+            .onPasteValue
+            .onNext(true)
+        
+        super.paste(sender)
+    }
+    
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        return super.canPerformAction(action, withSender: sender)
+    }
+    override func touchesEstimatedPropertiesUpdated(_ touches: Set<UITouch>) {
+        print("touches: \(touches)")
+        super.touchesEstimatedPropertiesUpdated(touches)
+    }
+    
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("touchesBegan")
+        super.touchesBegan(touches, with: event)
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("touchesCancelled")
+        super.touchesCancelled(touches, with: event)
+    }
+    
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        print("pressesBegan")
+        super.pressesBegan(presses, with: event)
+    }
+    
+    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        print("motionBegan")
+        super.motionBegan(motion, with: event)
     }
     
     

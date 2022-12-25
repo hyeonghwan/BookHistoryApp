@@ -23,12 +23,28 @@ protocol InputViewModelType {
     var ouputStateObservable: Observable<KeyBoardState> { get }
 }
 
-class InputViewModel: NSObject, InputViewModelType {
+protocol InputVMLongPressAble{
+    // input
+    var inputLongPressObserver: AnyObserver<Bool> { get }
+    
+    // output
+    var outputLongPressObservable: Observable<Bool> { get }
+    
+}
+
+typealias InputVMTypeAble = InputViewModelType & InputVMLongPressAble
+
+class InputViewModel: NSObject, InputVMTypeAble {
     
     
     var inputStateObserver: AnyObserver<KeyBoardState>
     
     var ouputStateObservable: Observable<KeyBoardState>
+    
+    var inputLongPressObserver: AnyObserver<Bool>
+    
+    var outputLongPressObservable: Observable<Bool>
+    
     
     private var disposeBag = DisposeBag()
     
@@ -44,10 +60,23 @@ class InputViewModel: NSObject, InputViewModelType {
         
         ouputStateObservable = outputKeyBoardStateSubject
         
+        
+        let inputLongPressPipe = PublishSubject<Bool>()
+        
+        let outputLongPressPipe = PublishSubject<Bool>()
+        
+        inputLongPressObserver = inputLongPressPipe.asObserver()
+        
+        outputLongPressObservable = outputLongPressPipe
+        
         super.init()
         
         inputKeyBoardStateSubject
             .subscribe(onNext: outputKeyBoardStateSubject.onNext(_:))
+            .disposed(by: disposeBag)
+        
+        inputLongPressPipe
+            .subscribe(onNext: outputLongPressPipe.onNext(_:))
             .disposed(by: disposeBag)
             
         

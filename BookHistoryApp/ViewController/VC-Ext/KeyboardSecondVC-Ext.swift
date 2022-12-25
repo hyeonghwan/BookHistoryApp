@@ -92,13 +92,16 @@ extension SecondViewController{
     }
     
     @objc private func keyboardWillHide(_ notification: Notification?) -> Void{
-    
+        inputViewModel.inputLongPressObserver.onNext(true)
     }
     
     
     @objc private func keyboardWillShow(_ notification : Notification?) -> Void {
         
         var _kbSize:CGSize!
+        
+        inputViewModel.inputLongPressObserver.onNext(false)
+        
         
         if let info = notification?.userInfo{
             
