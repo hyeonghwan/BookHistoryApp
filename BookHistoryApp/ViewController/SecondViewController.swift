@@ -10,6 +10,17 @@ import SnapKit
 import RxCocoa
 import RxSwift
 import ParagraphTextKit
+import SubviewAttachingTextView
+import WebKit
+
+// Handles tapping on the image view attachment
+class TapHandler: NSObject {
+    @objc func handle(_ sender: UIGestureRecognizer!) {
+        if let imageView = sender.view as? UIImageView {
+            imageView.alpha = CGFloat(arc4random_uniform(1000)) / 1000.0
+        }
+    }
+}
 
 protocol SecondTextViewScrollDelegate {
     func scrollPostion(_ range: UITextRange)
@@ -107,11 +118,14 @@ class SecondViewController: UIViewController {
             guard let self = self else {return}
             self.textView.contentSize.height += 500
             
+            
         })
         
         settupBinding()
         
         addLongPressGesture()
+        
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -154,6 +168,7 @@ class SecondViewController: UIViewController {
         contentViewModel
             .toMetaDataURL
             .subscribe(onNext: { og in
+                print("og Title")
                 print(og)
             })
             .disposed(by: disposeBag)
@@ -170,19 +185,74 @@ class SecondViewController: UIViewController {
 
     
     private func addAutoLayout() {
-        
         textView.snp.makeConstraints{
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(12)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.bottom.equalToSuperview().inset(16)
         }
-        
     }
     
     private func addTextViewTitlePlaceHolder() {
         textView.attributedText = titleAttribute
-        textView.becomeFirstResponder()
+//        textView.becomeFirstResponder()
         textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+       
+        // Make paragraph styles for attachments
+        let centerParagraphStyle = NSMutableParagraphStyle()
+        centerParagraphStyle.alignment = .center
+        centerParagraphStyle.paragraphSpacing = 10
+        centerParagraphStyle.paragraphSpacingBefore = 10
+
+        let leftParagraphStyle = NSMutableParagraphStyle()
+        leftParagraphStyle.alignment = .left
+        leftParagraphStyle.paragraphSpacing = 10
+        leftParagraphStyle.paragraphSpacingBefore = 10
+
+        // Create an image view with a tap recognizer
+        let imageView = UIImageView(image: UIImage(systemName: "circle"))
+        imageView.tintColor = .black
+        imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
+        let handler = TapHandler()
+        let gestureRecognizer = UITapGestureRecognizer(target: handler, action: #selector(TapHandler.handle(_:)))
+        imageView.addGestureRecognizer(gestureRecognizer)
+
+        // Create an activity indicator view
+        let spinner = UIActivityIndicatorView(style: .large)
+        spinner.color = .black
+        spinner.hidesWhenStopped = false
+        spinner.startAnimating()
+
+        // Create a text field
+        let textField = UITextField()
+        textField.borderStyle = .roundedRect
+
+        // Create a web view, because why not
+        let webView = WKWebView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
+        webView.load(URLRequest(url: URL(string: "https://revealapp.com")!))
+
+        // Add attachments to the string and set it on the text view
+        // This example avoids evaluating the attachments or attributed strings with attachments in the Playground because Xcode crashes trying to decode attachment objects
+        let richText = NSMutableAttributedString()
+        
+        richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: imageView, size: CGSize(width: 256, height: 256)), at: 20, with: centerParagraphStyle))
+        
+        richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: spinner), at: 0))
+        
+        richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: UISwitch()), at: 10))
+        
+//        richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: textField, size: CGSize(width: 200, height: 44)), at: 0, with: leftParagraphStyle)
+//        )
+//        
+//        richText.append(UITextView.testSetting2().insertingAttachment(SubviewTextAttachment(view: textField, size: CGSize(width: 200, height: 44)), at: 0, with: leftParagraphStyle))
+//        
+//        richText.append(UITextView.testSetting3().insertingAttachment(SubviewTextAttachment(view: textField, size: CGSize(width: 200, height: 44)), at: 0, with: leftParagraphStyle))
+//        
+//        richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: UIDatePicker()), at: 0, with: centerParagraphStyle))
+//        
+//        richText.append(UITextView.testSetting2().insertingAttachment(SubviewTextAttachment(view: webView), at: 0, with: centerParagraphStyle))
+//        
+        self.textView.attributedText = richText
     }
     
     
@@ -241,8 +311,14 @@ class SecondViewController: UIViewController {
     }
         
     
+    
+    //정규식 으로 추가해서 URL 추출이 필요함!
     private func isTextValidURL(_ text: String) -> Bool{
-        guard let url = URL(string: text) else {return false}
+        var urlString = text
+        urlString.removeAll(where: { $0 == "\n"})
+        print("urlString : \(urlString)")
+        guard let url = URL(string: urlString) else {return true}
+        print("url : \(url)")
         contentViewModel.onURLData.onNext(url)
         return true
     }

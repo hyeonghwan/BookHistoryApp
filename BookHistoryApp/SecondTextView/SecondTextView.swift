@@ -10,8 +10,9 @@ import SnapKit
 import RxSwift
 import RxCocoa
 import ParagraphTextKit
+import SubviewAttachingTextView
 
-class SecondTextView: UITextView {
+class SecondTextView: SubviewAttachingTextView {
     
     private var colorViewModel: ColorVMType?
     
@@ -44,9 +45,6 @@ class SecondTextView: UITextView {
             .attributedStringObservable
             .subscribe(onNext: settingTextBackGround(_:))
             .disposed(by: disposeBag)
-        
-        
-
     }
     
     
@@ -131,8 +129,6 @@ class SecondTextView: UITextView {
     fileprivate func settingConfiguration() {
         self.allowsEditingTextAttributes = true
         
-        self.layoutManager.delegate = self
-        
         self.isScrollEnabled = true
         self.alwaysBounceVertical = false
         self.isUserInteractionEnabled = true
@@ -192,15 +188,15 @@ extension SecondTextView {
     }
     
     
-    override func caretRect(for position: UITextPosition) -> CGRect {
-        var original = super.caretRect(for: position)
-        
-        guard let height = self.font?.lineHeight else { return original}
-        
-        original.size.height = height
-        
-        return original
-    }
+//    override func caretRect(for position: UITextPosition) -> CGRect {
+//        var original = super.caretRect(for: position)
+//        
+//        guard let height = self.font?.lineHeight else { return original}
+//        
+//        original.size.height = height
+//        
+//        return original
+//    }
     
 }
 

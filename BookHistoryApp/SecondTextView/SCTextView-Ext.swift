@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SubviewAttachingTextView
 
 extension UITextView{
     
@@ -21,41 +22,21 @@ extension UITextView{
         
     }
     
-    static func testSetting() -> NSAttributedString{
-        
-        let richText = NSMutableAttributedString()
-        
-        
-        //하 시발 존나 허망하네
-        let para = NSMutableParagraphStyle()
-        para.lineSpacing = 10
-        para.paragraphSpacing = 10
-        
-        para.lineBreakMode = .byWordWrapping
-        
-        
-        
-        let chunk0 = NSAttributedString(string: "Something like this where it breaks to its own line and creates a box that goes to the edge no matter how long the text is \n\n",
+    static func testSetting2() -> NSAttributedString{
+        let chunk2 = NSAttributedString(string: "Something like this where it breaks to its own line and creates a box that goes to the edge no matter how long the text is \n\n\n\n\n\n\n\n\n\n\n\n\n\n",
                                         attributes: [
-                                            NSAttributedString.Key.baselineOffset : 10 ,
-                                            NSAttributedString.Key.underlineStyle : NSUnderlineStyle.double.rawValue,
-                                            NSAttributedString.Key.underlineColor : UIColor(red: 51 / 255.0, green: 154 / 255.0, blue: 1.0, alpha: 1.0),
+                                            NSAttributedString.Key.backgroundColor : UIColor.red,
                                             NSAttributedString.Key.foregroundColor : UIColor.label,
-                                            NSAttributedString.Key.paragraphStyle : para,
                                             NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)
                                         ])
-        
-        richText.append(chunk0)
-        
-        let interlineStyle = NSMutableParagraphStyle()
-        
-        interlineStyle.maximumLineHeight = 8
-        
+        return chunk2
+    }
+    static func testSetting3() -> NSAttributedString{
+    
         let interlineAttributedString = NSMutableAttributedString(string: "\n",
                                                                   attributes: [
                                                                     NSAttributedString.Key.backgroundColor : UIColor.red,
                                                                     NSAttributedString.Key.foregroundColor : UIColor.red,
-                                                                    NSAttributedString.Key.paragraphStyle: interlineStyle
                                                                   ])
         
         
@@ -66,27 +47,17 @@ extension UITextView{
                                         ])
         
         
-//        richText.addAttributes([NSAttributedString.Key.foregroundColor : UIColor.red], range: NSRange)
-        
-        richText.append(chunk1)
-        
-        richText.append(interlineAttributedString)
-        
-        
-        let chunk2 = NSAttributedString(string: "Something like this where it breaks to its own line and creates a box that goes to the edge no matter how long the text is \n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+        return chunk1
+    }
+    static func testSetting() -> NSAttributedString{
+        let chunk0 = NSAttributedString(string: "Something like this where it breaks to its own line and creates a box that goes to the edge no matter how long the text is \n\n",
                                         attributes: [
-                                            NSAttributedString.Key.backgroundColor : UIColor.red,
+                                            NSAttributedString.Key.baselineOffset : 10 ,
+                                            NSAttributedString.Key.underlineStyle : NSUnderlineStyle.double.rawValue,
+                                            NSAttributedString.Key.underlineColor : UIColor(red: 51 / 255.0, green: 154 / 255.0, blue: 1.0, alpha: 1.0),
                                             NSAttributedString.Key.foregroundColor : UIColor.label,
-                                            NSAttributedString.Key.paragraphStyle : para,
                                             NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)
                                         ])
-       
-        richText.append(chunk2)
-        
-        
-        
-       
-        
-        return richText
+        return chunk0
     }
 }
