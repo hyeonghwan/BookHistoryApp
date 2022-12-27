@@ -104,7 +104,7 @@ class ViewController: UIViewController {
     
     
     @objc func deleteTapped(_ sender: Any){
-        print(self.textView.selectedRange)
+        
         self.textView.removeColorForRange(theRange: self.textView.selectedRange)
     }
     
@@ -124,7 +124,7 @@ extension ViewController: UITextViewDelegate{
         
         let paragraphRange = composeText.paragraphRange(for: textView.selectedRange)
         
-        print("paragraphRange \(paragraphRange)")
+        
         
         let length = paragraphRange.length - (textView.selectedRange.location - paragraphRange.location)
 
@@ -132,10 +132,6 @@ extension ViewController: UITextViewDelegate{
         
         guard let textRange = textView.textRangeFromNSRange(range: newRange) else { return true }
         
-        print("textRange: \(textRange)")
-        print("textStart : \(textRange.start)")
-        print("textEnd : \(textRange)")
-        print("textFromRange: \(textView.text(in: textRange) ?? "nil")")
         
         
         if text == "\n",

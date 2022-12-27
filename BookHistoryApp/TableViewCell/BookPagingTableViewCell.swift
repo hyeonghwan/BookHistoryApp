@@ -64,7 +64,9 @@ final class BookPagingTableViewCell: UITableViewCell{
             .observe(on: MainScheduler.instance)
             .bind(onNext: { [weak self] book in
                 guard let self = self else {return}
+                
                 print("pagingTable : \(book.bookTitle)")
+                print("content : \(book.bookContent)")
                 self.titleLable.text = book.bookTitle
                 
             }).disposed(by: cellDisposeBag)

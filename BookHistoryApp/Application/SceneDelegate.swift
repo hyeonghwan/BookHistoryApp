@@ -26,7 +26,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let bookTableViewController = BookPagingViewController()
       
         
-        let viewController = ViewController()
+        let viewController = PlanGoalViewController()
         let secondViewController = SecondViewController()
         
         let testview = TestViewController()

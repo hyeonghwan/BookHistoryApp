@@ -29,9 +29,6 @@ class TestViewController: UIViewController{
             $0.bottom.trailing.leading.equalToSuperview()
         }
         textView.text = "Placeholder"
-    
-        
-        
     }
 
 }

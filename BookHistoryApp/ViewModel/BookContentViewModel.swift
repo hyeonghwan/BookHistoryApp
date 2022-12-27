@@ -134,6 +134,7 @@ class BookContentViewModel: NSObject, ContentVMTypeAble{
         paragraphPipe
             .observe(on: MainScheduler.instance)
             .withLatestFrom(observablePipe){[weak self] textViewAttributedString, original in
+                
                 guard let self = self else {return TextViewData(id: nil, title: nil, attributedString: nil)}
                 guard original.id != nil else { return TextViewData(id: nil,
                                                                         title: self.paragraphTrackingUtility.paragraphs.first!,

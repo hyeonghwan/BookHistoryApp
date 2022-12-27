@@ -106,10 +106,14 @@ class BookPagingViewController: UIViewController {
                 
                 let vc = SecondViewController()
                 
-                vc.contentViewModel.onTextViewData.onNext(BookViewModelData(id: element.bookID,
-                                                                            bookTitle: element.bookTitle,
-                                                                            bookContent: element.bookContent,
-                                                                            bookPage: nil))
+                let item = BookViewModelData(id: element.bookID,
+                                             bookTitle: element.bookTitle,
+                                             bookContent: element.bookContent,
+                                             bookPage: nil)
+                print("eelement.content: \(element.bookContent)")
+                vc.contentViewModel.onTextViewData.onNext(item)
+                
+                
                 self.navigationController?
                     .pushViewController(vc, animated: true)
                 

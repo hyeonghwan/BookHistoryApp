@@ -128,7 +128,6 @@ extension BookService{
             
             let result = try container.viewContext.fetch(fetchRequest)
             
-            print(result)
             
             result.forEach{ obj in
                 
@@ -185,8 +184,8 @@ extension BookService{
         
         data.setValue("\(String(describing: object.bookTitle))", forKey: "bookName")
         data.setValue(object, forKey: "bookData")
-        print("addBookPageData")
-        print(data)
+        
+        
         return saveContext()
     }
     
@@ -254,8 +253,7 @@ extension BookService{
             
             content.forEach{ entity in
                 
-                print(entity.bookName)
-                print(entity.bookData)
+                
             }
         }catch{
             print(error.localizedDescription)

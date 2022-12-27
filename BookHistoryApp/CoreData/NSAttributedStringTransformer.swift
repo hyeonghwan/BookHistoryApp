@@ -16,8 +16,9 @@ public class NSAttributedStringTransformer: ValueTransformer {
         guard let attributedString = value as? NSAttributedString else { return nil}
         
         do{
+            print("transformedValue : \(attributedString)")
             let data = try NSKeyedArchiver.archivedData(withRootObject: attributedString,
-                                                        requiringSecureCoding: true)
+                                                        requiringSecureCoding: false)
             
             return data
         }catch{
@@ -30,8 +31,10 @@ public class NSAttributedStringTransformer: ValueTransformer {
         
         do{
             let attributedString = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSAttributedString.self, from: data)
+            print("reverseTransformedValue: \(attributedString)")
             return attributedString
         }catch{
+            print("reverseTransformedValue nil")
             return nil
         }
     }
