@@ -143,9 +143,7 @@ extension SecondViewController{
         
         textMenuView.removeFromSuperview()
         
-        textView.snp.remakeConstraints{
-            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(12)
-            $0.leading.trailing.equalToSuperview().inset(16)
+        textView.snp.updateConstraints{
             $0.bottom.equalToSuperview().inset(16)
         }
 
@@ -158,16 +156,15 @@ extension SecondViewController{
     }
     
     private func keyBoardAppearLayout(_ kbSize: CGSize){
-        self.view.layoutIfNeeded()
+        
         
         setUndoManager()
         
-        textView.snp.remakeConstraints{
-            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(12)
-            $0.leading.trailing.equalToSuperview().inset(16)
+        textView.snp.updateConstraints{
             $0.bottom.equalToSuperview().inset(kbSize.height + 44)
         }
-        
+
+        print("keyBoardAppearLayout :\(textView.bounds)")
     }
     
     private func keyBoardDisapearLayout(){

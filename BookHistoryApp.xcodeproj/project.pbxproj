@@ -17,7 +17,7 @@
 		9601D0C9295332730069EF58 /* ParagraphTrackingUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9601D0C8295332730069EF58 /* ParagraphTrackingUtility.swift */; };
 		9601D0D12953364B0069EF58 /* ParagraphTextStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9601D0D02953364B0069EF58 /* ParagraphTextStorageTests.swift */; };
 		9623C0F32959D90B00E3C3C6 /* allTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9623C0F22959D90B00E3C3C6 /* allTest.swift */; };
-		962AA0A92920BF2D00C2620B /* Attribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0A82920BF2D00C2620B /* Attribute.swift */; };
+		962AA0A92920BF2D00C2620B /* Attribute-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0A82920BF2D00C2620B /* Attribute-Ext.swift */; };
 		962AA0AB2920C6AC00C2620B /* CustomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0AA2920C6AC00C2620B /* CustomColor.swift */; };
 		962AA0AD2920CEAA00C2620B /* CustomTextView-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0AC2920CEAA00C2620B /* CustomTextView-Ext.swift */; };
 		962AA0AF2920DA6400C2620B /* String-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0AE2920DA6400C2620B /* String-Ext.swift */; };
@@ -41,7 +41,7 @@
 		962AA0DF292B97FC00C2620B /* ColorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0DE292B97FC00C2620B /* ColorViewModel.swift */; };
 		962AA0E1292E307400C2620B /* BookPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0E0292E307400C2620B /* BookPageViewController.swift */; };
 		962AA0E6292E322C00C2620B /* BookPagingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0E5292E322C00C2620B /* BookPagingTableViewCell.swift */; };
-		962AA0E8292E32B400C2620B /* Cell+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0E7292E32B400C2620B /* Cell+Ext.swift */; };
+		962AA0E8292E32B400C2620B /* Cell-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0E7292E32B400C2620B /* Cell-Ext.swift */; };
 		962AA0EA292E3C7500C2620B /* BookPagingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0E9292E3C7500C2620B /* BookPagingViewModel.swift */; };
 		962AA11329311C3600C2620B /* NSAttributedStringTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA11229311C3600C2620B /* NSAttributedStringTransformer.swift */; };
 		962AA1162931408200C2620B /* ParagraphTextKit in Frameworks */ = {isa = PBXBuildFile; productRef = 962AA1152931408200C2620B /* ParagraphTextKit */; };
@@ -68,6 +68,7 @@
 		96622859295B22B600E39FC3 /* PlanDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96622858295B22B600E39FC3 /* PlanDataModel.swift */; };
 		9662285C295C697D00E39FC3 /* PlanMonthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662285B295C697D00E39FC3 /* PlanMonthView.swift */; };
 		9662285F295C6DAF00E39FC3 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 9662285E295C6DAF00E39FC3 /* FSCalendar */; };
+		96622861295CAA9400E39FC3 /* Data-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96622860295CAA9400E39FC3 /* Data-Ext.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,7 +94,7 @@
 		9601D0CE2953364B0069EF58 /* BookHistoryAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BookHistoryAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9601D0D02953364B0069EF58 /* ParagraphTextStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParagraphTextStorageTests.swift; sourceTree = "<group>"; };
 		9623C0F22959D90B00E3C3C6 /* allTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = allTest.swift; sourceTree = "<group>"; };
-		962AA0A82920BF2D00C2620B /* Attribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attribute.swift; sourceTree = "<group>"; };
+		962AA0A82920BF2D00C2620B /* Attribute-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Attribute-Ext.swift"; sourceTree = "<group>"; };
 		962AA0AA2920C6AC00C2620B /* CustomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColor.swift; sourceTree = "<group>"; };
 		962AA0AC2920CEAA00C2620B /* CustomTextView-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomTextView-Ext.swift"; sourceTree = "<group>"; };
 		962AA0AE2920DA6400C2620B /* String-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String-Ext.swift"; sourceTree = "<group>"; };
@@ -101,7 +102,7 @@
 		962AA0B42920E90400C2620B /* NSLayoutManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSLayoutManagerDelegate.swift; sourceTree = "<group>"; };
 		962AA0B62920E97000C2620B /* EX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EX.swift; sourceTree = "<group>"; };
 		962AA0BB2920F61800C2620B /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
-		962AA0BE292217AA00C2620B /* SecondTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondTextView.swift; sourceTree = "<group>"; };
+		962AA0BE292217AA00C2620B /* SecondTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondTextView.swift; sourceTree = "<group>"; usesTabs = 0; };
 		962AA0C02922183F00C2620B /* SecondLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondLayoutManager.swift; sourceTree = "<group>"; };
 		962AA0C229221D7900C2620B /* TextContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextContainer.swift; sourceTree = "<group>"; };
 		962AA0C429222D9200C2620B /* TextStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextStorage.swift; sourceTree = "<group>"; };
@@ -117,7 +118,7 @@
 		962AA0DE292B97FC00C2620B /* ColorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorViewModel.swift; sourceTree = "<group>"; };
 		962AA0E0292E307400C2620B /* BookPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookPageViewController.swift; sourceTree = "<group>"; };
 		962AA0E5292E322C00C2620B /* BookPagingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookPagingTableViewCell.swift; sourceTree = "<group>"; };
-		962AA0E7292E32B400C2620B /* Cell+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Cell+Ext.swift"; sourceTree = "<group>"; };
+		962AA0E7292E32B400C2620B /* Cell-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Cell-Ext.swift"; sourceTree = "<group>"; };
 		962AA0E9292E3C7500C2620B /* BookPagingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookPagingViewModel.swift; sourceTree = "<group>"; };
 		962AA11229311C3600C2620B /* NSAttributedStringTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSAttributedStringTransformer.swift; sourceTree = "<group>"; };
 		962AA117293224F800C2620B /* BookContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookContentViewModel.swift; sourceTree = "<group>"; };
@@ -144,6 +145,7 @@
 		96622856295B217600E39FC3 /* PlanCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCell.swift; sourceTree = "<group>"; };
 		96622858295B22B600E39FC3 /* PlanDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanDataModel.swift; sourceTree = "<group>"; };
 		9662285B295C697D00E39FC3 /* PlanMonthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanMonthView.swift; sourceTree = "<group>"; };
+		96622860295CAA9400E39FC3 /* Data-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data-Ext.swift"; sourceTree = "<group>"; };
 		A50DDEE5B459107E26A04E3E /* Pods_BookHistoryApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookHistoryApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -216,11 +218,12 @@
 		962AA0B02920E86A00C2620B /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				962AA0E7292E32B400C2620B /* Cell+Ext.swift */,
-				962AA0A82920BF2D00C2620B /* Attribute.swift */,
+				962AA0E7292E32B400C2620B /* Cell-Ext.swift */,
+				962AA0A82920BF2D00C2620B /* Attribute-Ext.swift */,
 				962AA0AE2920DA6400C2620B /* String-Ext.swift */,
 				962AA0B12920E87C00C2620B /* UITextView-Ext.swift */,
 				962AA0B62920E97000C2620B /* EX.swift */,
+				96622860295CAA9400E39FC3 /* Data-Ext.swift */,
 				962AA0D52926351D00C2620B /* CALayer-Ext.swift */,
 			);
 			path = Extensions;
@@ -603,8 +606,9 @@
 				9601D0C029519C260069EF58 /* VC+EXT.swift in Sources */,
 				962AA0D2292384ED00C2620B /* UIApplication-Ext.swift in Sources */,
 				962AA0AD2920CEAA00C2620B /* CustomTextView-Ext.swift in Sources */,
+				96622861295CAA9400E39FC3 /* Data-Ext.swift in Sources */,
 				96622852295AFFFA00E39FC3 /* LineContainerView.swift in Sources */,
-				962AA0E8292E32B400C2620B /* Cell+Ext.swift in Sources */,
+				962AA0E8292E32B400C2620B /* Cell-Ext.swift in Sources */,
 				962AA11A29322CF100C2620B /* PlanViewModel.swift in Sources */,
 				962AA0D42924F48500C2620B /* KRScrollView.swift in Sources */,
 				962AA11329311C3600C2620B /* NSAttributedStringTransformer.swift in Sources */,
@@ -641,7 +645,7 @@
 				962AA0C529222D9200C2620B /* TextStorage.swift in Sources */,
 				96622859295B22B600E39FC3 /* PlanDataModel.swift in Sources */,
 				962AA0BF292217AA00C2620B /* SecondTextView.swift in Sources */,
-				962AA0A92920BF2D00C2620B /* Attribute.swift in Sources */,
+				962AA0A92920BF2D00C2620B /* Attribute-Ext.swift in Sources */,
 				9655FE322955FADA008991F1 /* BookData.xcdatamodeld in Sources */,
 				962AA0B52920E90400C2620B /* NSLayoutManagerDelegate.swift in Sources */,
 				962AA0D62926351D00C2620B /* CALayer-Ext.swift in Sources */,

@@ -20,15 +20,23 @@ class SecondTextView: SubviewAttachingTextView {
     
     private var disposeBag = DisposeBag()
     
-
     
+    private let topInset: CGFloat = 30
+    private let leftInset: CGFloat = 12
+    private let bottomInset: CGFloat = 10
+    private let rightInset: CGFloat = 12
+    
+    override var bounds: CGRect {
+        didSet {
+            if self.bounds.origin.x > -leftInset{
+                self.bounds = CGRect(x: -leftInset, y: oldValue.origin.y, width: oldValue.size.width, height: oldValue.size.height)
+            }
+        }
+    }
  
     override init(frame: CGRect, textContainer: NSTextContainer?) {
-        
         super.init(frame: frame, textContainer: textContainer)
-        
         settingConfiguration()
-        
     }
     
     convenience init(frame: CGRect,
@@ -47,6 +55,13 @@ class SecondTextView: SubviewAttachingTextView {
             .disposed(by: disposeBag)
     }
     
+    fileprivate func settingConfiguration() {
+        self.allowsEditingTextAttributes = true
+        self.isUserInteractionEnabled = true
+        self.contentInset = UIEdgeInsets(top: topInset, left: leftInset, bottom: bottomInset, right: rightInset)
+        self.autocorrectionType = .no
+    }
+   
     
     func isLongPressGestureEnable(_ isEanableLongPress: Bool){
         guard let gestures = self.gestureRecognizers else {return}
@@ -61,9 +76,9 @@ class SecondTextView: SubviewAttachingTextView {
     
 
     func settingTextBackGround(_ presentationType: PresentationType){
+        
         self.setColorSelectedText(NSAttributedString.getAttributeColorKey(presentationType),
                                   self.getSeletedPragraphRange())
-        
         
     }
     
@@ -116,32 +131,26 @@ class SecondTextView: SubviewAttachingTextView {
     private func setColorSelectedText(_ key: [NSAttributedString.Key : Any],
                               _ paragraphRange: NSRange) {
         
-        let attributes = self.textStorage.attributes(at: paragraphRange.location,
+        var attributes: [NSAttributedString.Key : Any] = [:]
+        
+        // 빈 문자열일 경우 textStorage의 attributes 메소드를 사용하여 속성을 얻으려고 하면 치명적인 에러가 발생한다. -> 아무 속성도 없기 때문에
+        // -> 그래서 분기 처리를 하여 빈 문자열일 경우에는 typingAttributes에 컬러 속성을 add 한다.
+        if paragraphRange.length == 0 {
+            
+            attributes = self.typingAttributes
+            
+            self.typingAttributes[key.keys.first!] = key.values.first!
+            
+            registerUndo(attributes, paragraphRange)
+            
+        }else {
+            attributes = self.textStorage.attributes(at: paragraphRange.location,
                                                      longestEffectiveRange: nil,
                                                      in: paragraphRange)
-        
-        registerUndo(attributes, paragraphRange)
-        
+            registerUndo(attributes, paragraphRange)
+        }
         self.textStorage.addAttributes(key, range: paragraphRange)
     }
-
-    
-    fileprivate func settingConfiguration() {
-        self.allowsEditingTextAttributes = true
-        
-        self.isScrollEnabled = true
-        self.alwaysBounceVertical = false
-        self.isUserInteractionEnabled = true
-        
-        self.layer.borderColor = UIColor.gray.cgColor
-        self.layer.borderWidth = 1
-        
-        self.contentInset = UIEdgeInsets(top: 30, left: 12, bottom: 10, right: 12)
-        
-        self.autocorrectionType = .no
-        
-    }
-   
   
     
     func insertAtTextViewCursor(attributedString: NSAttributedString) {

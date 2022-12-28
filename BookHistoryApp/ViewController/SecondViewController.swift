@@ -80,13 +80,9 @@ class SecondViewController: UIViewController {
         let layoutManager = TextWrapLayoutManager()
 
         paragraphTextStorage.addLayoutManager(layoutManager)
-
-        let textContainer = CustomTextContainer(size: .zero)
-
-        layoutManager.addTextContainer(textContainer)
         
         let textView = SecondTextView(frame:.zero,
-                                      textContainer: textContainer,
+                                      textContainer: nil,
                                       colorViewModel,
                                       contentViewModel)
         
@@ -117,8 +113,8 @@ class SecondViewController: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { [weak self] in
             guard let self = self else {return}
             self.textView.contentSize.height += 500
-            
-            
+
+
         })
         
         settupBinding()
@@ -185,7 +181,7 @@ class SecondViewController: UIViewController {
     private func addAutoLayout() {
         textView.snp.makeConstraints{
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(12)
-            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.leading.trailing.equalToSuperview()
             $0.bottom.equalToSuperview().inset(16)
         }
     }
@@ -243,7 +239,7 @@ private extension SecondViewController{
     
     func addTextViewTitlePlaceHolder() {
         textView.attributedText = titleAttribute
-        textView.becomeFirstResponder()
+//        textView.becomeFirstResponder()
         textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
         textView.attributedText = subAttatchViewTest()
     }
