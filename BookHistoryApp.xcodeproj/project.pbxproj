@@ -66,6 +66,8 @@
 		96622854295B12C900E39FC3 /* DotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96622853295B12C900E39FC3 /* DotView.swift */; };
 		96622857295B217600E39FC3 /* PlanCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96622856295B217600E39FC3 /* PlanCell.swift */; };
 		96622859295B22B600E39FC3 /* PlanDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96622858295B22B600E39FC3 /* PlanDataModel.swift */; };
+		9662285C295C697D00E39FC3 /* PlanMonthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662285B295C697D00E39FC3 /* PlanMonthView.swift */; };
+		9662285F295C6DAF00E39FC3 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 9662285E295C6DAF00E39FC3 /* FSCalendar */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -141,6 +143,7 @@
 		96622853295B12C900E39FC3 /* DotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotView.swift; sourceTree = "<group>"; };
 		96622856295B217600E39FC3 /* PlanCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCell.swift; sourceTree = "<group>"; };
 		96622858295B22B600E39FC3 /* PlanDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanDataModel.swift; sourceTree = "<group>"; };
+		9662285B295C697D00E39FC3 /* PlanMonthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanMonthView.swift; sourceTree = "<group>"; };
 		A50DDEE5B459107E26A04E3E /* Pods_BookHistoryApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookHistoryApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -157,6 +160,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				96477D31291A073A00830EFB /* SnapKit in Frameworks */,
+				9662285F295C6DAF00E39FC3 /* FSCalendar in Frameworks */,
 				75917BAF902F9D79BB4CA6FD /* Pods_BookHistoryApp.framework in Frameworks */,
 				962AA1162931408200C2620B /* ParagraphTextKit in Frameworks */,
 			);
@@ -403,10 +407,19 @@
 				9662284F295AFA9300E39FC3 /* PlanGoalViewController.swift */,
 				96622856295B217600E39FC3 /* PlanCell.swift */,
 				96622858295B22B600E39FC3 /* PlanDataModel.swift */,
-				96622853295B12C900E39FC3 /* DotView.swift */,
-				96622851295AFFFA00E39FC3 /* LineContainerView.swift */,
+				9662285A295C696000E39FC3 /* PlanCustomView */,
 			);
 			path = PlanTable;
+			sourceTree = "<group>";
+		};
+		9662285A295C696000E39FC3 /* PlanCustomView */ = {
+			isa = PBXGroup;
+			children = (
+				9662285B295C697D00E39FC3 /* PlanMonthView.swift */,
+				96622851295AFFFA00E39FC3 /* LineContainerView.swift */,
+				96622853295B12C900E39FC3 /* DotView.swift */,
+			);
+			path = PlanCustomView;
 			sourceTree = "<group>";
 		};
 		9AC4BBCB9E2FB5B853773F41 /* Pods */ = {
@@ -457,6 +470,7 @@
 			packageProductDependencies = (
 				96477D30291A073A00830EFB /* SnapKit */,
 				962AA1152931408200C2620B /* ParagraphTextKit */,
+				9662285E295C6DAF00E39FC3 /* FSCalendar */,
 			);
 			productName = BookHistoryApp;
 			productReference = 96477D18291A041D00830EFB /* BookHistoryApp.app */;
@@ -493,6 +507,7 @@
 			packageReferences = (
 				96477D2F291A073900830EFB /* XCRemoteSwiftPackageReference "SnapKit" */,
 				962AA1142931408200C2620B /* XCRemoteSwiftPackageReference "ParagraphTextKit" */,
+				9662285D295C6DAF00E39FC3 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 			);
 			productRefGroup = 96477D19291A041D00830EFB /* Products */;
 			projectDirPath = "";
@@ -595,6 +610,7 @@
 				962AA11329311C3600C2620B /* NSAttributedStringTransformer.swift in Sources */,
 				962AA0C7292233EE00C2620B /* SCTextView-Ext.swift in Sources */,
 				962AA0EA292E3C7500C2620B /* BookPagingViewModel.swift in Sources */,
+				9662285C295C697D00E39FC3 /* PlanMonthView.swift in Sources */,
 				962AA0E1292E307400C2620B /* BookPageViewController.swift in Sources */,
 				9655FE3B2955FCB2008991F1 /* BookMO+CoreDataProperties.swift in Sources */,
 				962AA0DA2928F7B400C2620B /* ColorButton.swift in Sources */,
@@ -921,6 +937,14 @@
 				minimumVersion = 5.0.0;
 			};
 		};
+		9662285D295C6DAF00E39FC3 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/WenchaoD/FSCalendar.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -933,6 +957,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 96477D2F291A073900830EFB /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		9662285E295C6DAF00E39FC3 /* FSCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9662285D295C6DAF00E39FC3 /* XCRemoteSwiftPackageReference "FSCalendar" */;
+			productName = FSCalendar;
 		};
 /* End XCSwiftPackageProductDependency section */
 

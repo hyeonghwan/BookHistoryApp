@@ -248,12 +248,8 @@ extension BookService{
     private func fetchData(){
         guard let container = container else {return}
         do {
-            
             let content = try container.viewContext.fetch(BookMO.fetchRequest()) as! [BookPageMO]
-            
             content.forEach{ entity in
-                
-                
             }
         }catch{
             print(error.localizedDescription)

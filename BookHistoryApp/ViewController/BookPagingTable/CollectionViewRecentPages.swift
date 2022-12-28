@@ -89,6 +89,7 @@ final class PageCell: UICollectionViewCell {
         
         titleLabel.snp.makeConstraints{
             $0.top.equalToSuperview().inset(5)
+            $0.leading.trailing.equalToSuperview().inset(5)
             $0.centerX.equalToSuperview()
         }
         separatorLine.snp.makeConstraints{

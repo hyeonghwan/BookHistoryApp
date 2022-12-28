@@ -80,24 +80,11 @@ class BookPagingViewModel: NSObject, PagingType{
             .subscribe(onNext: showPipe.accept(_:))
             .disposed(by: disposeBag)
         
-        showPage
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { data in
-                
-            }).disposed(by: disposeBag)
-        
-        
         deletePipe
             .flatMap(serviece.rxDeletePage)
             .subscribe(onNext: { flag in
                 
             })
             .disposed(by: disposeBag)
-        
-
     }
-    
-    
-    
-    
 }

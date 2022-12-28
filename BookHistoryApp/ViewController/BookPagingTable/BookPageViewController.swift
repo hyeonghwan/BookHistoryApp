@@ -69,8 +69,8 @@ class BookPagingViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         bookPagingViewModel.onPaging.onNext(())
-        
     }
+    
     
     private func setupBinding(){
         
@@ -110,9 +110,8 @@ class BookPagingViewController: UIViewController {
                                              bookTitle: element.bookTitle,
                                              bookContent: element.bookContent,
                                              bookPage: nil)
-                print("eelement.content: \(element.bookContent)")
-                vc.contentViewModel.onTextViewData.onNext(item)
                 
+                vc.contentViewModel.onTextViewData.onNext(item)
                 
                 self.navigationController?
                     .pushViewController(vc, animated: true)
@@ -129,9 +128,9 @@ class BookPagingViewController: UIViewController {
                 
                 self.navigationController?
                     .pushViewController(vc, animated: false)
-                
             })
             .disposed(by: disposeBag)
+        
         
         self.navigationItem.leftBarButtonItem?.rx.tap
             .subscribe(onNext: { [weak self] in
@@ -139,7 +138,6 @@ class BookPagingViewController: UIViewController {
                 self.bookPagingViewModel.deletePage.onNext(())
             })
             .disposed(by: disposeBag)
-        
     }
 
 
@@ -153,10 +151,7 @@ class BookPagingViewController: UIViewController {
         
         self.navigationItem.rightBarButtonItem?.tintColor = .white
         self.navigationItem.leftBarButtonItem?.tintColor = .white
-        
     }
-    
-   
     
     private func layoutConfigure() {
         
