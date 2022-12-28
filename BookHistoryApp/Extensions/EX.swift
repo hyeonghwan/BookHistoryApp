@@ -7,6 +7,8 @@
 
 import UIKit
 
+
+
 public extension NSTextAttachment {
 
     convenience init(image: UIImage, size: CGSize? = nil) {
