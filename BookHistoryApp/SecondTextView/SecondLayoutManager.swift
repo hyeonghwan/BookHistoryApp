@@ -13,7 +13,10 @@ class TextWrapLayoutManager: NSLayoutManager {
     
   
     
+    
+    
     override func drawBackground(forGlyphRange glyphsToShow: NSRange, at origin: CGPoint) {
+
 
         self.enumerateLineFragments(forGlyphRange: NSMakeRange(0, self.numberOfGlyphs)) { (rect, usedRect, textContainer, glyphRange, Bool) in
 
@@ -39,6 +42,7 @@ class TextWrapLayoutManager: NSLayoutManager {
             fillColorPath.fill()
         }
     }
+    
 //    
 //    override func drawUnderline(forGlyphRange glyphRange: NSRange,
 //        underlineType underlineVal: NSUnderlineStyle,

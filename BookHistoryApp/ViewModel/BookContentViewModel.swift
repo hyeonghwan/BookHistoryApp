@@ -139,6 +139,7 @@ class BookContentViewModel: NSObject, ContentVMTypeAble{
                 guard original.id != nil else { return TextViewData(id: nil,
                                                                         title: self.paragraphTrackingUtility.paragraphs.first!,
                                                                         attributedString: textViewAttributedString) }
+                print("self.paragraphTrackingUtility.paragraphs : \(self.paragraphTrackingUtility.paragraphs)")
                 return TextViewData(id: original.id,
                                     title: self.paragraphTrackingUtility.paragraphs.first!
                                     ,attributedString: textViewAttributedString)

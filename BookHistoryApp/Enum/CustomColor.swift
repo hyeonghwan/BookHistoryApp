@@ -67,7 +67,7 @@ enum Color: String {
         case .yellow:
             return .yellow
         case .gray:
-            return .gray
+            return UIColor(red: 151/255.0, green: 154/255.0, blue: 155/255.0, alpha: 0.95)
         case .clear:
             return .clear
         case .red:
@@ -75,7 +75,8 @@ enum Color: String {
         case .blue:
             return .blue
         case .green:
-            return .green
+            
+            return UIColor(red: 77/255.0, green: 171/255.0, blue: 154/255.0, alpha: 1)
         case .label:
             return .label
         case .systemCyan:

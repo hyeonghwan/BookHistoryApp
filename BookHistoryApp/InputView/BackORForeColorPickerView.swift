@@ -180,7 +180,7 @@ class BackORForeColorPickerView: UIInputView{
         
         makeColorButton(vStackForeGroundLeftView,
                         buttonObserver,
-                        PresentationType.getForeGroundColor([.clear,.systemCyan,.blue,.systemMint]))
+                        PresentationType.getForeGroundColor([.gray,.systemCyan,.blue,.systemMint]))
         
         makeColorButton(vStackForeGroundRightView,
                         buttonObserver,
@@ -188,7 +188,7 @@ class BackORForeColorPickerView: UIInputView{
 
         makeColorButton(vStackBackGroundLeftView,
                         buttonObserver,
-                        PresentationType.getBackGroundColor([.clear,.systemCyan,.blue,.systemMint]))
+                        PresentationType.getBackGroundColor([.gray,.systemCyan,.blue,.systemMint]))
         
         makeColorButton(vStackBackGroundRightView,
                         buttonObserver,

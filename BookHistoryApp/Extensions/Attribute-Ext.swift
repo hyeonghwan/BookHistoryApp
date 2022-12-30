@@ -57,6 +57,7 @@ extension NSAttributedString : NSAttributedStringExtension {
             return [NSAttributedString.Key.backgroundColor : color.create]
         case let .foreGround(color):
             return [NSAttributedString.Key.foregroundColor : color.create]
+            
         }
     }
     

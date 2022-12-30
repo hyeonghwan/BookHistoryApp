@@ -46,9 +46,7 @@ class TextPropertyMenuView: UIView {
         super.init(frame: frame)
         self.layer.addBorder(side: .top, thickness: CGFloat(1), color: UIColor.systemPink.cgColor)
         configure()
-        
-        
-        
+    
     }
 
     
@@ -147,13 +145,10 @@ class TextPropertyMenuView: UIView {
     
     
     func settingFrame(_ frame: CGRect,_ heihgt: CGFloat){
-
         var beforeFrame = frame
         beforeFrame.size.height += heihgt
         beforeFrame.origin.y -= (heihgt )
         self.frame = beforeFrame
-        
-        
     }
     
     @objc private func glyphColorMenuTapped(_ sender: UIButton){
@@ -176,17 +171,18 @@ class TextPropertyMenuView: UIView {
             break
         }
         
-        
     }
     
     
     @objc private func undoButtonTapped(_ sender: UIButton){
         textViewUndoManager?.undo()
         undoButton.isEnabled = textViewUndoManager?.canUndo ?? false
+        redoButton.isEnabled = textViewUndoManager?.canRedo ?? false
     }
     
     @objc private func redoButtonTapped(_ sender: UIButton){
         textViewUndoManager?.redo()
+        undoButton.isEnabled = textViewUndoManager?.canUndo ?? false
         redoButton.isEnabled = textViewUndoManager?.canRedo ?? false
     }
     

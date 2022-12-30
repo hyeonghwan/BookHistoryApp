@@ -16,6 +16,7 @@ import WebKit
 // Handles tapping on the image view attachment
 class TapHandler: NSObject {
     @objc func handle(_ sender: UIGestureRecognizer!) {
+        print("handle : \(sender)")
         if let imageView = sender.view as? UIImageView {
             imageView.alpha = CGFloat(arc4random_uniform(1000)) / 1000.0
         }
@@ -78,11 +79,17 @@ class SecondViewController: UIViewController {
         paragraphTextStorage.paragraphDelegate = contentViewModel.paragraphTrackingUtility.self
         
         let layoutManager = TextWrapLayoutManager()
-
+        
+        layoutManager.textStorage = paragraphTextStorage
+        
+        let customTextContainer = CustomTextContainer(size: .zero)
+        
         paragraphTextStorage.addLayoutManager(layoutManager)
         
+        layoutManager.addTextContainer(customTextContainer)
+        
         let textView = SecondTextView(frame:.zero,
-                                      textContainer: nil,
+                                      textContainer: customTextContainer,
                                       colorViewModel,
                                       contentViewModel)
         
@@ -188,6 +195,8 @@ class SecondViewController: UIViewController {
     
     
     
+    
+    
     /// AddLongPressGesture to move PragraphBlcok when keyBoard not showing
     private func addLongPressGesture() {
         textView.isUserInteractionEnabled = true
@@ -261,60 +270,93 @@ private extension SecondViewController{
         contentViewModel.onURLData.onNext(url)
         return true
     }
+    @objc func handle(_ sender: UIGestureRecognizer!) {
+        print("handle : 시발련아")
+        if let imageView = sender.view as? UIImageView {
+            imageView.alpha = CGFloat(arc4random_uniform(1000)) / 1000.0
+        }
+    }
     
     private func subAttatchViewTest() -> NSAttributedString{
-        // Make paragraph styles for attachments
-        let centerParagraphStyle = NSMutableParagraphStyle()
-        centerParagraphStyle.alignment = .center
-        centerParagraphStyle.paragraphSpacing = 10
-        centerParagraphStyle.paragraphSpacingBefore = 10
-
-        let leftParagraphStyle = NSMutableParagraphStyle()
-        leftParagraphStyle.alignment = .left
-        leftParagraphStyle.paragraphSpacing = 10
-        leftParagraphStyle.paragraphSpacingBefore = 10
-
+ 
         // Create an image view with a tap recognizer
         let imageView = UIImageView(image: UIImage(systemName: "circle"))
         imageView.tintColor = .black
         imageView.contentMode = .scaleAspectFit
         imageView.isUserInteractionEnabled = true
-        let handler = TapHandler()
-        let gestureRecognizer = UITapGestureRecognizer(target: handler, action: #selector(TapHandler.handle(_:)))
+
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.handle(_:)))
         imageView.addGestureRecognizer(gestureRecognizer)
+        
+        
+        let screenSize = UIScreen.main.bounds.width
+        
+        let containerView = UIView()
+        containerView.backgroundColor = .systemCyan
+        containerView.isUserInteractionEnabled = true
+      
+        containerView.addSubview(imageView)
+        imageView.frame = CGRect(origin: CGPoint(x: (( (screenSize - 12) / 2 ) - 128), y: 0),
+                                 size: CGSize(width: 256, height: 256))
+        
+        
 
         // Create an activity indicator view
         let spinner = UIActivityIndicatorView(style: .large)
         spinner.color = .black
         spinner.hidesWhenStopped = false
-        NSRange()
         spinner.startAnimating()
 
         // Create a text field
         let textField = UITextField()
         textField.borderStyle = .roundedRect
-
+        
         // Create a web view, because why not
         let webView = WKWebView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
         webView.load(URLRequest(url: URL(string: "https://revealapp.com")!))
-
+        
         // Add attachments to the string and set it on the text view
         // This example avoids evaluating the attachments or attributed strings with attachments in the Playground because Xcode crashes trying to decode attachment objects
         let richText = NSMutableAttributedString()
+        let width =  self.view.bounds.width - (self.textView.textContainerInset.left + self.textView.textContainerInset.right + 12)
+        print(self.systemMinimumLayoutMargins)
         
-        richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: imageView, size: CGSize(width: 256, height: 256)), at: 20, with: centerParagraphStyle))
+        print("widht : \(width)")
+        richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: containerView,
+                                                                                           size: CGSize(width: width, height: 256)), at: 20))
+        
+        imageView.snp.makeConstraints{
+            $0.edges.equalToSuperview()
+        }
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "x.circle"), for: .normal)
+        button.addTarget(self, action: #selector(deleteView(_:)), for: .touchUpInside)
+        containerView.addSubview(button)
+        
+        button.snp.makeConstraints{
+            $0.top.equalToSuperview().inset(12)
+            $0.trailing.equalToSuperview().inset(12)
+            $0.width.height.equalTo(33)
+        }
         
         richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: spinner), at: 0))
         
         richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: UISwitch()), at: 10))
         return richText
     }
+    
+    
+    @objc func deleteView(_ sender: UIButton){
+        let deleteButton = sender
+        guard let superView = deleteButton.superview else {return}
+        self.textView.attachmentBehavior.removeSeletedAttachedSubview(superView)
+    }
 }
 extension SecondViewController: UIGestureRecognizerDelegate{
-    func gestureRecognizer (_ gestureRecognizer: UIGestureRecognizer,
-                            shouldRecognizerSimultaneouslyWithotherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
-    }
+//    func gestureRecognizer (_ gestureRecognizer: UIGestureRecognizer,
+//                            shouldRecognizerSimultaneouslyWithotherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//        return true
+//    }
 }
 
 

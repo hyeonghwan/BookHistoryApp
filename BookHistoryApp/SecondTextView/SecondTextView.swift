@@ -12,7 +12,9 @@ import RxCocoa
 import ParagraphTextKit
 import SubviewAttachingTextView
 
-class SecondTextView: SubviewAttachingTextView {
+
+
+class SecondTextView: UITextView {
     
     private var colorViewModel: ColorVMType?
     
@@ -20,23 +22,34 @@ class SecondTextView: SubviewAttachingTextView {
     
     private var disposeBag = DisposeBag()
     
+    let attachmentBehavior = SubviewAttachingTextViewBehavior()
+    
     
     private let topInset: CGFloat = 30
     private let leftInset: CGFloat = 12
     private let bottomInset: CGFloat = 10
     private let rightInset: CGFloat = 12
     
-    override var bounds: CGRect {
+
+    open override var textContainerInset: UIEdgeInsets {
         didSet {
-            if self.bounds.origin.x > -leftInset{
-                self.bounds = CGRect(x: -leftInset, y: oldValue.origin.y, width: oldValue.size.width, height: oldValue.size.height)
-            }
+            // Text container insets are used to convert coordinates between the text container and text view, so a change to these insets must trigger a layout update
+            self.attachmentBehavior.layoutAttachedSubviews()
         }
     }
  
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
         settingConfiguration()
+        self.commonInit()
+        
+    }
+    
+    private func commonInit() {
+        // Connect the attachment behavior
+        self.attachmentBehavior.textView = self
+        self.layoutManager.delegate = self.attachmentBehavior
+        self.textStorage.delegate = self.attachmentBehavior
     }
     
     convenience init(frame: CGRect,
@@ -53,36 +66,35 @@ class SecondTextView: SubviewAttachingTextView {
             .attributedStringObservable
             .subscribe(onNext: settingTextBackGround(_:))
             .disposed(by: disposeBag)
+        
+        print("self.textContainerInset: \(self.textContainerInset)")
     }
     
     fileprivate func settingConfiguration() {
         self.allowsEditingTextAttributes = true
         self.isUserInteractionEnabled = true
-        self.contentInset = UIEdgeInsets(top: topInset, left: leftInset, bottom: bottomInset, right: rightInset)
+        self.textContainerInset = UIEdgeInsets(top: topInset, left: leftInset, bottom: bottomInset, right: rightInset)
         self.autocorrectionType = .no
     }
-   
+    
     
     func isLongPressGestureEnable(_ isEanableLongPress: Bool){
         guard let gestures = self.gestureRecognizers else {return}
+        
         for gesture in gestures{
-            if gesture.isKind(of: UILongPressGestureRecognizer.self),
-               gesture.name == "PressParaGraphBlock"{
+            if gesture.isKind(of: UILongPressGestureRecognizer.self){
                 gesture.isEnabled = isEanableLongPress
-                print("gesture.isEnabled : \(isEanableLongPress)")
             }
         }
     }
     
-
+    
     func settingTextBackGround(_ presentationType: PresentationType){
         
         self.setColorSelectedText(NSAttributedString.getAttributeColorKey(presentationType),
                                   self.getSeletedPragraphRange())
-        
     }
     
-
     required init?(coder: NSCoder) {
         fatalError("required init fatalError")
         
@@ -109,6 +121,7 @@ class SecondTextView: SubviewAttachingTextView {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         print("touchesBegan")
+        print(event)
         super.touchesBegan(touches, with: event)
     }
 
@@ -129,7 +142,7 @@ class SecondTextView: SubviewAttachingTextView {
     
     
     private func setColorSelectedText(_ key: [NSAttributedString.Key : Any],
-                              _ paragraphRange: NSRange) {
+                                      _ paragraphRange: NSRange) {
         
         var attributes: [NSAttributedString.Key : Any] = [:]
         
@@ -151,7 +164,7 @@ class SecondTextView: SubviewAttachingTextView {
         }
         self.textStorage.addAttributes(key, range: paragraphRange)
     }
-  
+    
     
     func insertAtTextViewCursor(attributedString: NSAttributedString) {
         // Exit if no selected text range

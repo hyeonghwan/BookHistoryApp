@@ -23,13 +23,24 @@ public extension NSTextAttachment {
 }
 
 public extension NSAttributedString {
+    
+    static var defaultParagraphStyle: NSParagraphStyle {
+        let style = NSMutableParagraphStyle()
+        style.paragraphSpacing = 10
+        style.paragraphSpacingBefore = 10
+        return style
+    }
 
-    func insertingAttachment(_ attachment: NSTextAttachment, at index: Int, with paragraphStyle: NSParagraphStyle? = nil) -> NSAttributedString {
+    func insertingAttachment(_ attachment: NSTextAttachment,
+                             at index: Int,
+                             with paragraphStyle: NSParagraphStyle? = NSAttributedString.defaultParagraphStyle) -> NSAttributedString {
         let copy = self.mutableCopy() as! NSMutableAttributedString
         copy.insertAttachment(attachment, at: index, with: paragraphStyle)
 
         return copy.copy() as! NSAttributedString
     }
+    
+    
 
     func addingAttributes(_ attributes: [NSAttributedString.Key : Any]) -> NSAttributedString {
         let copy = self.mutableCopy() as! NSMutableAttributedString

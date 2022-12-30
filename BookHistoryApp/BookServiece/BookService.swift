@@ -91,6 +91,7 @@ extension BookService{
     
     func rxAddParagraphData(_ textViewData: TextViewData) -> Observable<Result<Bool,Error>> {
         
+        print("textView data : \(textViewData)")
         return Observable.create{ [weak self] emitter in
             guard let self = self else {return Disposables.create()}
             
