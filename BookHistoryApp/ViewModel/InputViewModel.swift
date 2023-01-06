@@ -12,6 +12,7 @@ import RxSwift
 enum KeyBoardState: String {
     case originalkeyBoard
     case backAndForeGroundColorState
+    
 }
 
 protocol InputViewModelType {

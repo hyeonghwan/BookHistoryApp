@@ -33,8 +33,10 @@ public extension NSAttributedString {
 
     func insertingAttachment(_ attachment: NSTextAttachment,
                              at index: Int,
-                             with paragraphStyle: NSParagraphStyle? = NSAttributedString.defaultParagraphStyle) -> NSAttributedString {
+                             with paragraphStyle: NSParagraphStyle? = nil) -> NSAttributedString {
+        
         let copy = self.mutableCopy() as! NSMutableAttributedString
+        
         copy.insertAttachment(attachment, at: index, with: paragraphStyle)
 
         return copy.copy() as! NSAttributedString
@@ -58,7 +60,11 @@ public extension NSMutableAttributedString {
 
         if let paragraphStyle = paragraphStyle {
             let attachmentString = plainAttachmentString
-                .addingAttributes([ .paragraphStyle : paragraphStyle ])
+                .addingAttributes([
+//                    NSAttributedString.Key.backgroundColor : UIColor.clear,
+//                    NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .bold),
+//                    NSAttributedString.Key.foregroundColor : UIColor.label,
+                    .paragraphStyle : paragraphStyle ])
             let separatorString = NSAttributedString(string: .paragraphSeparator)
 
             // Surround the attachment string with paragraph separators, so that the paragraph style is only applied to it

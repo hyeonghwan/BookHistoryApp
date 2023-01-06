@@ -30,6 +30,10 @@ extension SecondViewController{
         
         NotificationCenter
             .default
+            .addObserver(self, selector: #selector(keyboardDidShow), name: UIResponder.keyboardDidShowNotification, object: nil)
+        
+        NotificationCenter
+            .default
             .addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         NotificationCenter
@@ -47,7 +51,6 @@ extension SecondViewController{
     
     
     @objc private func keyBoardChangeOriginal(_ notification: Notification?) -> Void {
-        
         self.inputViewModel.inputStateObserver.onNext(.originalkeyBoard)
         self.keyBoardDisposeBag = DisposeBag()
         self.textView.inputView = nil
@@ -88,20 +91,14 @@ extension SecondViewController{
     
     @objc private func keyDownTapped(_ notification: Notification?) -> Void {
         self.hideTextMenuView()
-        
     }
     
     @objc private func keyboardWillHide(_ notification: Notification?) -> Void{
         inputViewModel.inputLongPressObserver.onNext(true)
     }
     
-    
-    @objc private func keyboardWillShow(_ notification : Notification?) -> Void {
-        
+    @objc private func keyboardDidShow(_ notification: Notification?) -> Void{
         var _kbSize:CGSize!
-        
-        inputViewModel.inputLongPressObserver.onNext(false)
-        
         
         if let info = notification?.userInfo{
             
@@ -123,30 +120,47 @@ extension SecondViewController{
                 print("Your Keyboard Size \(String(describing: _kbSize))")
                 
                 
-                showTextMenuView(kbFrame, 44)
+                bindingInputAccessoryView()
                 
                 self.setKeyboardHeight(_kbSize.height)
                 
                 self.keyBoardAppearLayout(_kbSize)
-                
             }
         }
-        
-        
     }
-    //(375.0, 291.0))
+    
+    @objc private func keyboardWillShow(_ notification : Notification?) -> Void {
+        inputViewModel.inputLongPressObserver.onNext(true) //false
+    }
+    
+    
+    // bind viewModelState to textMenuView( KeyBoard InPutView State)
+    func bindingInputAccessoryView() {
+            inputViewModel
+                .ouputStateObservable
+                .bind(to: textMenuView.rx.state)
+                .disposed(by: disposeBag)
+            
+            colorViewModel
+                .updateUndoButtonObservable
+                .bind(onNext: updateUndoButtons)
+                .disposed(by: keyBoardDisposeBag)
+    }
+
     
     func hideTextMenuView() {
         self.view.layoutIfNeeded()
         
         self.textView.endEditing(true)
         
-        textMenuView.removeFromSuperview()
-        
         textView.snp.updateConstraints{
             $0.bottom.equalToSuperview().inset(16)
         }
-
+        
+        if textView.textContentHeightFlag == true{
+            textView.contentSize.height += 500
+            textView.textContentHeightFlag = false
+        }
     }
     
     
@@ -157,18 +171,12 @@ extension SecondViewController{
     
     private func keyBoardAppearLayout(_ kbSize: CGSize){
         
-        
         setUndoManager()
         
         textView.snp.updateConstraints{
-            $0.bottom.equalToSuperview().inset(kbSize.height + 44)
+            $0.bottom.equalToSuperview().inset(kbSize.height)
         }
+    }
 
-        print("keyBoardAppearLayout :\(textView.bounds)")
-    }
-    
-    private func keyBoardDisapearLayout(){
-        
-    }
 }
 

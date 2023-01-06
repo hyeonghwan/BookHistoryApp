@@ -8,6 +8,8 @@
 import UIKit
 
 
+
+
 enum TextType {
     case backGround(_ color: Color, _ font: UIFont)
 }
@@ -15,7 +17,6 @@ enum TextType {
 enum PresentationType {
     case foreGround(_ color: Color)
     case backGround(_ color: Color)
-    
     
 }
 extension PresentationType{
@@ -48,6 +49,7 @@ protocol NSAttributedStringExtension {
     
     static func getAttributeKeys(_ textType: TextType) -> [NSAttributedString.Key]
 }
+
 
 extension NSAttributedString : NSAttributedStringExtension {
     

@@ -11,18 +11,27 @@ import RxSwift
 import RxCocoa
 import ParagraphTextKit
 import SubviewAttachingTextView
+import UniformTypeIdentifiers
 
-
+public struct DelegateDependency{
+    let attachmentBehavior: SubviewAttachingTextViewBehavior
+    let textView: UITextView
+}
 
 class SecondTextView: UITextView {
-    
     private var colorViewModel: ColorVMType?
     
-    private var contentViewModel: ContentVMBooMarkAble?
+    var contentViewModel: ContentVMTypeAble?
+    
+    private var accessoryViewModel: AccessoryCompositionProtocol?
     
     private var disposeBag = DisposeBag()
     
-    let attachmentBehavior = SubviewAttachingTextViewBehavior()
+    public let attachmentBehavior = SubviewAttachingTextViewBehavior()
+    
+    lazy var dependency: DelegateDependency = DelegateDependency(attachmentBehavior: attachmentBehavior, textView: self)
+    
+    private lazy var layoutManagerDelegate = LayoutManagerDelegate(dependency)
     
     
     private let topInset: CGFloat = 30
@@ -30,6 +39,25 @@ class SecondTextView: UITextView {
     private let bottomInset: CGFloat = 10
     private let rightInset: CGFloat = 12
     
+    var contentSizeObserver: CGSize?{
+        didSet{
+            guard let old = oldValue else {return}
+            guard let current = self.contentSizeObserver else {return}
+            if old.height > current.height {
+                textContentHeightFlag = true
+            }
+        }
+    }
+    
+    // this property is value to determine whether increase or stay textView Content Size
+    // if this value is true, contentSize value incresed when keyboard dismiss
+    var textContentHeightFlag: Bool = false
+    
+    override var contentSize: CGSize{
+        didSet{
+            self.contentSizeObserver = self.contentSize
+        }
+    }
 
     open override var textContainerInset: UIEdgeInsets {
         didSet {
@@ -48,26 +76,38 @@ class SecondTextView: UITextView {
     private func commonInit() {
         // Connect the attachment behavior
         self.attachmentBehavior.textView = self
-        self.layoutManager.delegate = self.attachmentBehavior
+        self.layoutManager.delegate = self.layoutManagerDelegate
         self.textStorage.delegate = self.attachmentBehavior
     }
     
     convenience init(frame: CGRect,
                      textContainer: NSTextContainer?,
-                     _ viewModel: ColorVMType,
-                     _ contentVM: ContentVMBooMarkAble) {
+                     _ dependency: DependencyOfTextView) {
         
         self.init(frame: frame, textContainer: textContainer)
         
-        self.colorViewModel = viewModel
-        self.contentViewModel = contentVM
+        self.colorViewModel = dependency.colorViewModel
+        self.contentViewModel = dependency.contentViewModel
+        self.accessoryViewModel = dependency.accessoryViewModel
         
+//        self.pasteDelegate = self
+        
+        
+        
+        settUpBinding()
+    }
+    
+    func settUpBinding(){
         colorViewModel?
             .attributedStringObservable
             .subscribe(onNext: settingTextBackGround(_:))
             .disposed(by: disposeBag)
         
-        print("self.textContainerInset: \(self.textContainerInset)")
+        accessoryViewModel?
+            .outPutActionObservable
+            .bind(onNext: textViewActionHandler(_:))
+            .disposed(by: disposeBag)
+        
     }
     
     fileprivate func settingConfiguration() {
@@ -88,6 +128,11 @@ class SecondTextView: UITextView {
         }
     }
     
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        
+    }
+    
     
     func settingTextBackGround(_ presentationType: PresentationType){
         
@@ -100,6 +145,12 @@ class SecondTextView: UITextView {
         
     }
     
+    override func copy(_ sender: Any?) {
+          
+
+        super.copy(sender)
+    }
+    
     override func paste(_ sender: Any?) {
         print("paste!!!")
         
@@ -110,36 +161,8 @@ class SecondTextView: UITextView {
         super.paste(sender)
     }
     
-    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-        return super.canPerformAction(action, withSender: sender)
-    }
-    override func touchesEstimatedPropertiesUpdated(_ touches: Set<UITouch>) {
-        print("touches: \(touches)")
-        super.touchesEstimatedPropertiesUpdated(touches)
-    }
     
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("touchesBegan")
-        print(event)
-        super.touchesBegan(touches, with: event)
-    }
-
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("touchesCancelled")
-        super.touchesCancelled(touches, with: event)
-    }
-    
-    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        print("pressesBegan")
-        super.pressesBegan(presses, with: event)
-    }
-    
-    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        print("motionBegan")
-        super.motionBegan(motion, with: event)
-    }
-    
+   
     
     private func setColorSelectedText(_ key: [NSAttributedString.Key : Any],
                                       _ paragraphRange: NSRange) {
@@ -147,7 +170,7 @@ class SecondTextView: UITextView {
         var attributes: [NSAttributedString.Key : Any] = [:]
         
         // 빈 문자열일 경우 textStorage의 attributes 메소드를 사용하여 속성을 얻으려고 하면 치명적인 에러가 발생한다. -> 아무 속성도 없기 때문에
-        // -> 그래서 분기 처리를 하여 빈 문자열일 경우에는 typingAttributes에 컬러 속성을 add 한다.
+        // -> 그래서 분기 처리를 하여 빈 문자열일 경우에는 typingAttrxibutes에 컬러 속성을 add 한다.
         if paragraphRange.length == 0 {
             
             attributes = self.typingAttributes
@@ -190,7 +213,7 @@ extension SecondTextView {
     ///   - attributes: specific range textStorage attributes
     ///   - paragraphRange: NSRange from paragraph
     private func registerUndo(_ attributes: [NSAttributedString.Key : Any],_ paragraphRange: NSRange) {
-
+        
             undoManager?.registerUndo(withTarget: self, handler: { (targetSelf) in
                 targetSelf.setColorSelectedText(attributes,
                                                 paragraphRange)
@@ -220,6 +243,62 @@ extension SecondTextView {
 //        return original
 //    }
     
+}
+
+extension SecondTextView: UITextPasteDelegate{
+    
+    
+    func textPasteConfigurationSupporting(_ textPasteConfigurationSupporting: UITextPasteConfigurationSupporting,
+                                          transform item: UITextPasteItem) {
+        print("item.itemProvider.self : \(item.itemProvider.self)")
+        print("item : \(item)")
+        
+        
+        
+        
+        if item.itemProvider.hasItemConformingToTypeIdentifier(UTType.flatRTFD.identifier) {
+            
+            switch checkPlain_Text(){
+            case .success(let att):
+                print(att.containsAttachments(in: att.range))
+                item.setResult(attributedString: att)
+                
+            case .failure(let err):
+                print(err)
+                break
+            }
+        }
+        else {
+            item.setDefaultResult()
+        }
+    }
+    
+    private func checkPlain_Text() -> Result<NSAttributedString,Error>{
+        let rtfdStringType = "com.apple.flat-rtfd"
+        
+        // Get the last copied data in the pasteboard as RTFD
+        if let data = UIPasteboard.general.data(forPasteboardType: rtfdStringType) {
+            do {
+                print("rtfd data str = \(String(data: data, encoding: .ascii) ?? "")")
+                // Convert rtfd data to attributedString
+                
+                let attStr = try NSAttributedString(data: data, options: [NSAttributedString.DocumentReadingOptionKey.documentType: NSAttributedString.DocumentType.rtfd], documentAttributes: nil)
+                // Insert it into textview
+                return .success(attStr)
+            }
+            catch {
+                print("Couldn't convert pasted rtfd")
+                return .failure(error)
+            }
+        }
+        return .failure(PasteError.unknown)
+    }
+    
+    
+}
+
+enum PasteError: Error{
+    case unknown
 }
 
 extension SecondTextView: NSLayoutManagerDelegate{

@@ -10,15 +10,42 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-class TextPropertyMenuView: UIView {
+struct MenuButtonType{
+    let type: MenuActionType?
+    let image: String?
+    let disposeBag: DisposeBag?
+    let viewModel: AccessoryCompositionProtocol?
+    let frame: CGRect?
+    let color: UIColor?
     
+    init(type: MenuActionType,
+         image: String,
+         disposeBag: DisposeBag,
+         viewModel: AccessoryCompositionProtocol,
+         _ frame: CGRect = CGRect(x: 0, y: 0, width: 30, height: 30),
+         _ color: UIColor = UIColor.lightGray) {
+        
+        self.type = type
+        self.image = image
+        self.disposeBag = disposeBag
+        self.viewModel = viewModel
+        self.frame = frame
+        self.color = color
+    }
+}
 
-    
+
+class TextPropertyMenuView: UIView {
+        
     //Second TextView UndoManager
     var textViewUndoManager: UndoManager?
     
     var viewModel: InputViewModelType?
     
+    var accessoryViewModel: AccessoryCompositionProtocol?
+    
+    
+    var menuButtonDisposeBag = DisposeBag()
     
     //input
     var state: KeyBoardState? {
@@ -36,6 +63,7 @@ class TextPropertyMenuView: UIView {
         }
     }
     
+  
     
     var keyBoardObserver: AnyObserver<KeyBoardState>?
     
@@ -45,18 +73,18 @@ class TextPropertyMenuView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.layer.addBorder(side: .top, thickness: CGFloat(1), color: UIColor.systemPink.cgColor)
-        configure()
-    
     }
 
     
-    convenience init(frame: CGRect, viewModel: InputViewModelType){
+    convenience init(frame: CGRect,
+                     viewModel: InputViewModelType,
+                     accessoryViewModel: AccessoryCompositionProtocol){
         
         self.init(frame: frame)
         
         self.viewModel = viewModel
-        
-        
+        self.accessoryViewModel = accessoryViewModel
+        configure()
     }
     
     
@@ -68,6 +96,7 @@ class TextPropertyMenuView: UIView {
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsHorizontalScrollIndicator = false
+        scrollView.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         return scrollView
     }()
     
@@ -75,7 +104,7 @@ class TextPropertyMenuView: UIView {
         let stackView = UIStackView()
         stackView.alignment = .center
         stackView.distribution = .equalSpacing
-        stackView.spacing = 10
+        stackView.spacing = 25
         stackView.axis = .horizontal
         return stackView
     }()
@@ -91,8 +120,64 @@ class TextPropertyMenuView: UIView {
     }()
     
     
-    private lazy var button: UIButton = {
+    
+    private lazy var blockAddButton: UIButton = {
         let button = UIButton()
+        let type = MenuButtonType(type: .blockAdd,
+                                  image: "plus",
+                                  disposeBag: menuButtonDisposeBag,
+                                  viewModel: accessoryViewModel!)
+        button.inputAccessoryButton_Frame_Color_Image_Action_Setting(type)
+        return button
+    }()
+    
+    private lazy var blockParagraphSettingButton: UIButton = {
+        let button = UIButton()
+        let type = MenuButtonType(type: .paragraphSetting,
+                                  image:"arrow.rectanglepath",
+                                  disposeBag: menuButtonDisposeBag,
+                                  viewModel: accessoryViewModel!)
+        button.inputAccessoryButton_Frame_Color_Image_Action_Setting(type)
+        return button
+    }()
+    
+    private lazy var blockCommentButton: UIButton = {
+        let button = UIButton()
+        let type = MenuButtonType(type: .blockComment,
+                                  image:"bubble.left",
+                                  disposeBag: menuButtonDisposeBag,
+                                  viewModel: accessoryViewModel!)
+        button.inputAccessoryButton_Frame_Color_Image_Action_Setting(type)
+        return button
+    }()
+    
+    private lazy var blockImageButton: UIButton = {
+        let button = UIButton()
+        let type = MenuButtonType(type: .blcokimage,
+                                  image:"photo.on.rectangle.angled",
+                                  disposeBag: menuButtonDisposeBag,
+                                  viewModel: accessoryViewModel!)
+        button.inputAccessoryButton_Frame_Color_Image_Action_Setting(type)
+        return button
+    }()
+    
+    private lazy var boldItalicUnderLineButton: UIButton = {
+        let button = UIButton()
+        let type = MenuButtonType(type: .boldItalicUnderLine,
+                                  image:"bold.italic.underline",
+                                  disposeBag: menuButtonDisposeBag,
+                                  viewModel: accessoryViewModel!)
+        button.inputAccessoryButton_Frame_Color_Image_Action_Setting(type)
+        return button
+    }()
+    
+    private lazy var blockRemoveButton: UIButton = {
+        let button = UIButton()
+        let type = MenuButtonType(type: .blockRemove,
+                                  image:"trash",
+                                  disposeBag: menuButtonDisposeBag,
+                                  viewModel: accessoryViewModel!)
+        button.inputAccessoryButton_Frame_Color_Image_Action_Setting(type)
         return button
     }()
     
@@ -102,7 +187,6 @@ class TextPropertyMenuView: UIView {
         return view
     }()
     
-    let buttonArr: [UIButton] = []
     
     private lazy var separatorLine2: UIView = {
         let view = UIView()
@@ -110,7 +194,18 @@ class TextPropertyMenuView: UIView {
         return view
     }()
     
-  
+    private lazy var separatorLine3: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemGray
+        return view
+    }()
+    
+    private lazy var separatorLine4: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemGray
+        return view
+    }()
+    
     
     lazy var undoButton: UIButton = {
         let button = UIButton()
@@ -131,7 +226,7 @@ class TextPropertyMenuView: UIView {
     }()
     
     
-    private lazy var backGroundPickerButton: UIButton = {
+    private lazy var blockBackGroundPickerButton: UIButton = {
         let button = UIButton()
         button.setTitle("가", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .heavy)
@@ -142,7 +237,55 @@ class TextPropertyMenuView: UIView {
         return button
     }()
     
+    private lazy var blockSettingButton: UIButton = {
+        let button = UIButton()
+        let type = MenuButtonType(type: .blcokSetting,
+                                  image:"ellipsis",
+                                  disposeBag: menuButtonDisposeBag,
+                                  viewModel: accessoryViewModel!)
+        button.inputAccessoryButton_Frame_Color_Image_Action_Setting(type)
+        return button
+    }()
     
+    private lazy var blockTapButton: UIButton = {
+        let button = UIButton()
+        let type = MenuButtonType(type: .blockTap,
+                                  image:"decrease.indent",
+                                  disposeBag: menuButtonDisposeBag,
+                                  viewModel: accessoryViewModel!)
+        button.inputAccessoryButton_Frame_Color_Image_Action_Setting(type)
+        return button
+    }()
+    
+    private lazy var blockTapCancelButton: UIButton = {
+        let button = UIButton()
+        let type = MenuButtonType(type: .blcokTapCancel,
+                                  image:"increase.indent",
+                                  disposeBag: menuButtonDisposeBag,
+                                  viewModel: accessoryViewModel!)
+        button.inputAccessoryButton_Frame_Color_Image_Action_Setting(type)
+        return button
+    }()
+    
+    private lazy var blockUpButton: UIButton = {
+        let button = UIButton()
+        let type = MenuButtonType(type: .blockUp,
+                                  image:"arrow.up.to.line",
+                                  disposeBag: menuButtonDisposeBag,
+                                  viewModel: accessoryViewModel!)
+        button.inputAccessoryButton_Frame_Color_Image_Action_Setting(type)
+        return button
+    }()
+    
+    private lazy var blcokDownButton: UIButton = {
+        let button = UIButton()
+        let type = MenuButtonType(type: .blcokDown,
+                                  image:"arrow.down.to.line",
+                                  disposeBag: menuButtonDisposeBag,
+                                  viewModel: accessoryViewModel!)
+        button.inputAccessoryButton_Frame_Color_Image_Action_Setting(type)
+        return button
+    }()
     
     func settingFrame(_ frame: CGRect,_ heihgt: CGFloat){
         var beforeFrame = frame
@@ -152,13 +295,10 @@ class TextPropertyMenuView: UIView {
     }
     
     @objc private func glyphColorMenuTapped(_ sender: UIButton){
-
         NotificationCenter.default.post(Notification(name: Notification.changeInputView))
-        
     }
     
     @objc private func keyDownTapped(_ sender: UIButton){
-        
         
         switch self.state{
         case .originalkeyBoard:
@@ -170,7 +310,6 @@ class TextPropertyMenuView: UIView {
         case .none:
             break
         }
-        
     }
     
     
@@ -224,34 +363,49 @@ private extension TextPropertyMenuView {
             $0.edges.equalToSuperview()
         }
 
+        [blockAddButton,
+         blockParagraphSettingButton,
+         blockImageButton,
+         blockCommentButton,
+         boldItalicUnderLineButton,
+         blockRemoveButton]
+            .forEach{
+            stackView.addArrangedSubview($0)
+        }
         
-        stackView.addArrangedSubview(backGroundPickerButton)
-        
-       
         separatorLine2.snp.makeConstraints{
             $0.height.equalTo(22)
             $0.width.equalTo(1)
         }
-        stackView.addArrangedSubview(separatorLine2)
         
+        stackView.addArrangedSubview(separatorLine2)
         
         [undoButton,redoButton].forEach{
             stackView.addArrangedSubview($0)
-            
             $0.snp.makeConstraints{
                 $0.width.equalTo(30)
                 $0.height.equalTo(44)
             }
         }
         
-        let spacingView = UIView()
-        
-        stackView.addArrangedSubview(spacingView)
-        
-        spacingView.snp.makeConstraints{
-            $0.width.height.equalTo(30)
+        [blockBackGroundPickerButton,
+         blockSettingButton,
+         separatorLine4,
+         blockTapButton,
+         blockTapCancelButton,
+         blockUpButton,
+         blcokDownButton].forEach{
+            stackView.addArrangedSubview($0)
         }
-
+        
+        blockBackGroundPickerButton.snp.makeConstraints{
+            $0.width.equalTo(25)
+            $0.height.equalTo(25)
+        }
+        
+        separatorLine4.snp.makeConstraints{
+            $0.height.equalTo(22)
+            $0.width.equalTo(1)
+        }
     }
-    
 }

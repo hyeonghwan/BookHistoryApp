@@ -43,7 +43,6 @@ class BookPagingViewModel: NSObject, PagingType{
     
     var disposeBag = DisposeBag()
     
-    
     init(_ serviece: RxBookService = BookService() ) {
         
         let pagingPipe = PublishSubject<Void>()

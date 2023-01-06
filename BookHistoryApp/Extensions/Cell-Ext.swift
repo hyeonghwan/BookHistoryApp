@@ -20,3 +20,5 @@ extension CellIdentifiable{
 extension BookPagingTableViewCell: CellIdentifiable {}
 extension PageCell: CellIdentifiable {}
 extension PlanCell: CellIdentifiable {}
+extension BlockTaskCell: CellIdentifiable {}
+extension BlockLogCell: CellIdentifiable {}

@@ -11,9 +11,6 @@ class TextWrapLayoutManager: NSLayoutManager {
     
     var font = UIFont.systemFont(ofSize: 16, weight: .bold)
     
-  
-    
-    
     
     override func drawBackground(forGlyphRange glyphsToShow: NSRange, at origin: CGPoint) {
 
@@ -28,7 +25,7 @@ class TextWrapLayoutManager: NSLayoutManager {
                         in: glyphRange) as? UIColor else { return }
 
             let lineBoundingRect = self.boundingRect(forGlyphRange: glyphRange, in: textContainer)
-
+            
             var adjustedLineRect = lineBoundingRect.offsetBy(dx: origin.x , dy: origin.y )
 
             adjustedLineRect.size.height = self.font.lineHeight
@@ -36,7 +33,7 @@ class TextWrapLayoutManager: NSLayoutManager {
             adjustedLineRect.size.width = usedRect.size.width - 10
 
             let fillColorPath: UIBezierPath = UIBezierPath(rect: adjustedLineRect)
-
+            
             backGroundColor.setFill()
 
             fillColorPath.fill()

@@ -16,7 +16,6 @@ import WebKit
 // Handles tapping on the image view attachment
 class TapHandler: NSObject {
     @objc func handle(_ sender: UIGestureRecognizer!) {
-        print("handle : \(sender)")
         if let imageView = sender.view as? UIImageView {
             imageView.alpha = CGFloat(arc4random_uniform(1000)) / 1000.0
         }
@@ -27,6 +26,27 @@ protocol SecondTextViewScrollDelegate {
     func scrollPostion(_ range: UITextRange)
     func textDidChagned()
 }
+
+
+@objc protocol NSAttachmentSettingProtocol{
+    @objc func blockSubViewAttachmentHandler(_ sender: Any)
+}
+
+
+struct DependencyOfTextView{
+    let colorViewModel: ColorVMType
+    let contentViewModel: ContentVMTypeAble
+    let accessoryViewModel: AccessoryCompositionProtocol
+    
+    init(colorViewModel: ColorVMType,
+         contentViewModel: ContentVMTypeAble,
+         accessoryViewModel: AccessoryCompositionProtocol) {
+        self.colorViewModel = colorViewModel
+        self.contentViewModel = contentViewModel
+        self.accessoryViewModel = accessoryViewModel
+    }
+}
+
 
 class SecondViewController: UIViewController {
     
@@ -47,6 +67,14 @@ class SecondViewController: UIViewController {
     // TextView Save Content State ViewModel
     var contentViewModel: ContentVMTypeAble = BookContentViewModel()
     
+    var accessoryViewModel: AccessoryCompositionProtocol = AccessoryViewModel()
+   
+    
+    //TextViewDependency
+    lazy var dependency: DependencyOfTextView = DependencyOfTextView(colorViewModel: self.colorViewModel,
+                                                                     contentViewModel: self.contentViewModel,
+                                                                     accessoryViewModel: self.accessoryViewModel)
+    
     
     var bookPagingViewModel: PagingType?
     
@@ -55,21 +83,18 @@ class SecondViewController: UIViewController {
     
     var keyBoardDisposeBag = DisposeBag()
     
-    let toolBar = UIToolbar(frame: CGRect(x: 0.0,
-                                          y: 0.0,
-                                          width: UIScreen.main.bounds.size.width,
-                                          height: 44.0))//1
-    
     private var keyBoardHeight: CGFloat = 0
     
     
     lazy var textMenuView: TextPropertyMenuView = {
-        let menu = TextPropertyMenuView(frame:  CGRect(x: 0, y: self.view.frame.size.height,
-                                                       width: UIScreen.main.bounds.size.width, height: 10),
-                                        viewModel: self.inputViewModel)
+        let menu = TextPropertyMenuView(frame:  CGRect(x: 0, y: 0,
+                                                       width: UIScreen.main.bounds.size.width, height: 44),
+                                        viewModel: self.inputViewModel,
+                                        accessoryViewModel: self.accessoryViewModel)
         menu.backgroundColor = .tertiarySystemBackground
         return menu
     }()
+    
     
     
     lazy var textView: SecondTextView = {
@@ -90,9 +115,8 @@ class SecondViewController: UIViewController {
         
         let textView = SecondTextView(frame:.zero,
                                       textContainer: customTextContainer,
-                                      colorViewModel,
-                                      contentViewModel)
-        
+                                      dependency)
+        textView.backgroundColor = .tertiarySystemBackground
         textView.delegate = self
         
         return textView
@@ -102,48 +126,47 @@ class SecondViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.view.backgroundColor = .white
+       
+        self.view.backgroundColor = .tertiarySystemBackground
         
         self.view.addSubview(textView)
 
+        self.textView.inputAccessoryView = textMenuView
+        
         self.addAutoLayout()
         
         self.settingKeyBoardNotification()
-        
-        textView.backgroundColor = .tertiarySystemBackground
         
         settingNavigation()
         
         addTextViewTitlePlaceHolder()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
             guard let self = self else {return}
             self.textView.contentSize.height += 500
-
-
         })
         
         settupBinding()
         
         addLongPressGesture()
-        
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        self.textMenuView.removeFromSuperview()
-        
     }
     
 
     private func settingNavigation(){
-
-//        self.navigationController?.navigationBar.isTranslucent = false
         
-        self.navigationController?.navigationBar.tintColor = .systemCyan
+        self.navigationController?.navigationBar.isTranslucent = true
+        
+        self.navigationController?.navigationBar.tintColor = .label
+        
+        //For back button in navigation bar
+        let backButton = UIBarButtonItem()
+        
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: nil)
     }
@@ -162,15 +185,13 @@ class SecondViewController: UIViewController {
         contentViewModel
             .toTextObservable
             .observe(on: MainScheduler.instance)
-            .compactMap{ $0.bookContent }
-            .bind(to: textView.rx.attributedText)
+            .bind(onNext: self.setAttributedOnTextView_Title(_:))
             .disposed(by: disposeBag)
-        
         
         contentViewModel
             .toMetaDataURL
             .subscribe(onNext: { og in
-//
+
             })
             .disposed(by: disposeBag)
         
@@ -192,10 +213,7 @@ class SecondViewController: UIViewController {
             $0.bottom.equalToSuperview().inset(16)
         }
     }
-    
-    
-    
-    
+
     
     /// AddLongPressGesture to move PragraphBlcok when keyBoard not showing
     private func addLongPressGesture() {
@@ -212,29 +230,6 @@ class SecondViewController: UIViewController {
     @objc private func longpress(_ gestureRecognizer: UIGestureRecognizer){
         print("longPressGesture occur")
     }
-
-    
-    // bind viewModelState to textMenuView( KeyBoard InPutView State)
-    func showTextMenuView(_ kbFrame: CGRect,
-                          _ height: CGFloat) {
-    
-        if !self.view.subviews.contains(where: { view in view == textMenuView}){
-            self.view.addSubview(textMenuView)
-            
-            textMenuView.settingFrame(kbFrame, height)
-            
-            inputViewModel
-                .ouputStateObservable
-                .bind(to: textMenuView.rx.state)
-                .disposed(by: disposeBag)
-            
-            colorViewModel
-                .updateUndoButtonObservable
-                .bind(onNext: updateUndoButtons)
-                .disposed(by: keyBoardDisposeBag)
-        }
-    }
-
     
     func setKeyboardHeight(_ height: CGFloat){
         self.keyBoardHeight = height
@@ -243,22 +238,30 @@ class SecondViewController: UIViewController {
     func getKeyboardHeight() -> CGFloat {
         return self.keyBoardHeight
     }
-}
-private extension SecondViewController{
-    
-    func addTextViewTitlePlaceHolder() {
-        textView.attributedText = titleAttribute
-//        textView.becomeFirstResponder()
-        textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
-        textView.attributedText = subAttatchViewTest()
-    }
-    
     
     func updateUndoButtons() {
+        
         textMenuView.undoButton.isEnabled = textView.undoManager?.canUndo ?? false
         textMenuView.redoButton.isEnabled = textView.undoManager?.canRedo ?? false
     }
         
+}
+private extension SecondViewController{
+    
+    func setAttributedOnTextView_Title(_ bookData: BookViewModelData){
+        guard let title = bookData.bookTitle else {return}
+        guard let content = bookData.bookContent else {return}
+        self.setLeftAlignTitleView(font: UIFont.boldSystemFont(ofSize: 16), text: title, textColor: .label)
+        self.textView.attributedText = content
+    }
+    
+    
+    func addTextViewTitlePlaceHolder() {
+        textView.attributedText = titleAttribute
+        textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+        textView.attributedText = subAttatchViewTest()
+    }
+    
 
     //정규식 으로 추가해서 URL 추출이 필요함!
     func isTextValidURL(_ text: String) -> Bool{
@@ -270,8 +273,8 @@ private extension SecondViewController{
         contentViewModel.onURLData.onNext(url)
         return true
     }
+    
     @objc func handle(_ sender: UIGestureRecognizer!) {
-        print("handle : 시발련아")
         if let imageView = sender.view as? UIImageView {
             imageView.alpha = CGFloat(arc4random_uniform(1000)) / 1000.0
         }
@@ -287,19 +290,6 @@ private extension SecondViewController{
 
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.handle(_:)))
         imageView.addGestureRecognizer(gestureRecognizer)
-        
-        
-        let screenSize = UIScreen.main.bounds.width
-        
-        let containerView = UIView()
-        containerView.backgroundColor = .systemCyan
-        containerView.isUserInteractionEnabled = true
-      
-        containerView.addSubview(imageView)
-        imageView.frame = CGRect(origin: CGPoint(x: (( (screenSize - 12) / 2 ) - 128), y: 0),
-                                 size: CGSize(width: 256, height: 256))
-        
-        
 
         // Create an activity indicator view
         let spinner = UIActivityIndicatorView(style: .large)
@@ -322,24 +312,13 @@ private extension SecondViewController{
         print(self.systemMinimumLayoutMargins)
         
         print("widht : \(width)")
-        richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: containerView,
-                                                                                           size: CGSize(width: width, height: 256)), at: 20))
         
-        imageView.snp.makeConstraints{
-            $0.edges.equalToSuperview()
-        }
-        let button = UIButton()
-        button.setImage(UIImage(systemName: "x.circle"), for: .normal)
-        button.addTarget(self, action: #selector(deleteView(_:)), for: .touchUpInside)
-        containerView.addSubview(button)
-        
-        button.snp.makeConstraints{
-            $0.top.equalToSuperview().inset(12)
-            $0.trailing.equalToSuperview().inset(12)
-            $0.width.height.equalTo(33)
-        }
-        
-        richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: spinner), at: 0))
+        richText.append(UITextView.testSetting().insertingAttachment(SubViewAttachmentContiner.settingContainer(self, imageView,
+                                                                                                                size: CGSize(width: width, height: 256)), at: 20))
+        richText.append(
+            UITextView
+            .testSetting()
+            .insertingAttachment(SubViewAttachmentContiner.settingContainer(self, spinner, size: nil), at: 0))
         
         richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: UISwitch()), at: 10))
         return richText
@@ -353,10 +332,10 @@ private extension SecondViewController{
     }
 }
 extension SecondViewController: UIGestureRecognizerDelegate{
-//    func gestureRecognizer (_ gestureRecognizer: UIGestureRecognizer,
-//                            shouldRecognizerSimultaneouslyWithotherGestureRecognizer: UIGestureRecognizer) -> Bool {
-//        return true
-//    }
+    func gestureRecognizer (_ gestureRecognizer: UIGestureRecognizer,
+                            shouldRecognizerSimultaneouslyWithotherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
 }
 
 
@@ -402,11 +381,19 @@ extension SecondViewController: UITextViewDelegate {
             if range == NSRange(location: 0, length: 0){
                 return false
             }else {
+                let defaultParagraphStyle = NSMutableParagraphStyle()
+//                defaultParagraphStyle.firstLineHeadIndent = 0
+//                defaultParagraphStyle.headIndent = 0
+                
                 textView.typingAttributes = [
                     NSAttributedString.Key.backgroundColor : UIColor.clear,
-                    NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .bold),
-                    NSAttributedString.Key.foregroundColor : UIColor.label
+                    NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+                    NSAttributedString.Key.foregroundColor : UIColor.label,
+                    NSAttributedString.Key.paragraphStyle : defaultParagraphStyle,
                 ]
+                print("seleted : \(self.textView.selectedRange)")
+                
+                
                 return true
             }
         }
@@ -455,5 +442,15 @@ extension SecondViewController: UITextViewDelegate {
     }
 }
 
+
+extension SecondViewController: NSAttachmentSettingProtocol{
+    @objc func blockSubViewAttachmentHandler(_ sender: Any) {
+        
+        let blockOFSettingVC = BlockOfSettingVC()
+        
+        blockOFSettingVC.modalPresentationStyle = .fullScreen
+        self.present(blockOFSettingVC, animated: true)
+    }
+}
 
 

@@ -24,17 +24,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
      
         
         let bookTableViewController = BookPagingViewController()
-      
-        
         let viewController = PlanGoalViewController()
         let secondViewController = SecondViewController()
-        
         let testview = TestViewController()
 
-//        let tabBarController = BottomStackTabViewController([bookTableViewController,
-//                                                             viewController,
-//                                                             secondViewController])
-        
         let nav = UINavigationController(rootViewController: bookTableViewController)
         
         let test = CSTabBarController()

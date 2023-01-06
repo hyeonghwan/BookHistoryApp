@@ -58,6 +58,8 @@ final class ParagraphTrackingUtility: ParagraphTextStorageDelegate{
                 editions.append(index)
             }
         }
+        print("self.presentedParagraphs:::: \(self.presentedParagraphs)")
+        
     }
     
     func attributes(from paragraphDescriptor: ParagraphTextStorage.ParagraphDescriptor) -> [NSAttributedString.Key: Any] {

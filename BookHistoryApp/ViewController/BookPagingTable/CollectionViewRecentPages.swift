@@ -28,7 +28,7 @@ final class PageCell: UICollectionViewCell {
     
     private lazy var contentImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "star.fill")
+        imageView.image = UIImage(systemName: "book")
         imageView.contentMode = .scaleToFill
         imageView.tintColor = .systemPink
         return imageView
