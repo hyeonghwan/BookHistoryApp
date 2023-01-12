@@ -33,8 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let test = CSTabBarController()
         test.setViewControllers([nav,
                                  viewController,
-                                 testview,
-                                 secondViewController], animated: true)
+                                 testview], animated: true)
         
         window.rootViewController = test
         

@@ -10,39 +10,20 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-struct MenuButtonType{
-    let type: MenuActionType?
-    let image: String?
-    let disposeBag: DisposeBag?
-    let viewModel: AccessoryCompositionProtocol?
-    let frame: CGRect?
-    let color: UIColor?
-    
-    init(type: MenuActionType,
-         image: String,
-         disposeBag: DisposeBag,
-         viewModel: AccessoryCompositionProtocol,
-         _ frame: CGRect = CGRect(x: 0, y: 0, width: 30, height: 30),
-         _ color: UIColor = UIColor.lightGray) {
-        
-        self.type = type
-        self.image = image
-        self.disposeBag = disposeBag
-        self.viewModel = viewModel
-        self.frame = frame
-        self.color = color
-    }
-}
 
+struct DependencyOfTextPropertyMenu{
+    weak var viewModel: InputViewModelType?
+    weak var accessoryViewModel: AccessoryCompositionProtocol?
+}
 
 class TextPropertyMenuView: UIView {
         
     //Second TextView UndoManager
-    var textViewUndoManager: UndoManager?
+    weak var textViewUndoManager: UndoManager?
     
-    var viewModel: InputViewModelType?
+    weak var viewModel: InputViewModelType?
     
-    var accessoryViewModel: AccessoryCompositionProtocol?
+    weak var accessoryViewModel: AccessoryCompositionProtocol?
     
     
     var menuButtonDisposeBag = DisposeBag()
@@ -57,13 +38,11 @@ class TextPropertyMenuView: UIView {
             case .backAndForeGroundColorState:
                 self.keyDownButton.setImage(UIImage(systemName: "x.circle"), for: .normal)
 
-            case .none:
-                print("nil")
+            default:
+                self.keyDownButton.setImage(UIImage(systemName: "x.circle"), for: .normal)
             }
         }
     }
-    
-  
     
     var keyBoardObserver: AnyObserver<KeyBoardState>?
     
@@ -77,13 +56,13 @@ class TextPropertyMenuView: UIView {
 
     
     convenience init(frame: CGRect,
-                     viewModel: InputViewModelType,
-                     accessoryViewModel: AccessoryCompositionProtocol){
+                     dependency: DependencyOfTextPropertyMenu){
         
         self.init(frame: frame)
         
-        self.viewModel = viewModel
-        self.accessoryViewModel = accessoryViewModel
+        self.viewModel = dependency.viewModel
+        self.accessoryViewModel = dependency.accessoryViewModel
+    
         configure()
     }
     
@@ -151,13 +130,16 @@ class TextPropertyMenuView: UIView {
         return button
     }()
     
-    private lazy var blockImageButton: UIButton = {
-        let button = UIButton()
-        let type = MenuButtonType(type: .blcokimage,
+    private lazy var blockImageButton: ImageAddButton = {
+        let button = ImageAddButton(.zero,accessoryViewModel)
+        
+        let type = MenuButtonType(type: .blcokimage(.size),
                                   image:"photo.on.rectangle.angled",
                                   disposeBag: menuButtonDisposeBag,
                                   viewModel: accessoryViewModel!)
+        
         button.inputAccessoryButton_Frame_Color_Image_Action_Setting(type)
+        
         return button
     }()
     
@@ -309,6 +291,8 @@ class TextPropertyMenuView: UIView {
         
         case .none:
             break
+        case .some(.blockKeyBoard):
+            NotificationCenter.default.post(Notification(name: Notification.changeOriginalKeyBoard))
         }
     }
     

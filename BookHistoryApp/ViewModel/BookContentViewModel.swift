@@ -11,7 +11,7 @@ import CoreData
 import OpenGraph
 
 
-protocol ContentViewModelType {
+protocol ContentViewModelType: AnyObject {
     
     //input
     var onTextViewData: AnyObserver<BookViewModelData> { get }
@@ -24,7 +24,7 @@ protocol ContentViewModelType {
     var paragraphTrackingUtility: ParagraphTrackingUtility { get }
 }
 
-protocol ContentVMBooMarkAble{
+protocol ContentVMBooMarkAble: AnyObject{
     
     var isPasteValue: Bool { get }
     
@@ -38,7 +38,7 @@ protocol ContentVMBooMarkAble{
 }
 
 
-typealias ContentVMTypeAble = ContentViewModelType & ContentVMBooMarkAble
+typealias ContentViewModelProtocol = ContentViewModelType & ContentVMBooMarkAble
 
 
 struct TextViewData{
@@ -68,7 +68,7 @@ struct BookViewModelData {
     }
 }
 
-class BookContentViewModel: NSObject, ContentVMTypeAble{
+class BookContentViewModel: NSObject, ContentViewModelProtocol{
     
     var paragraphTrackingUtility: ParagraphTrackingUtility = ParagraphTrackingUtility()
     
@@ -97,6 +97,10 @@ class BookContentViewModel: NSObject, ContentVMTypeAble{
     var disposeBag = DisposeBag()
     
     var container: NSPersistentContainer?
+    
+    deinit{
+        print("contentModel deinit")
+    }
     
     init(_ serviece: BookServiceAble = BookService()) {
         
@@ -145,6 +149,7 @@ class BookContentViewModel: NSObject, ContentVMTypeAble{
                                     ,attributedString: textViewAttributedString)
             }
             .flatMap(serviece.rxAddParagraphData(_:))
+            
             .subscribe(onNext: {  result in
                 switch result{
                 case .success(_):

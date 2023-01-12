@@ -19,8 +19,7 @@ extension CustomTextView{
             
             let paragraphRange = composeText.paragraphRange(for: range)
             
-            print("range: \(range)")
-            print("paragraphRange: \(paragraphRange)")
+            
             
             guard let name = container.layoutManager?.textStorage?.attribute(NSAttributedString.Key.presentationIntentAttributeName, at: paragraphRange.location, longestEffectiveRange: nil, in: paragraphRange) as? Color else {print("name is nil"); return}
             

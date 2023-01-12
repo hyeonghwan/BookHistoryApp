@@ -5,17 +5,25 @@
 //  Created by 박형환 on 2023/01/03.
 //
 
-import Foundation
+import UIKit
+import RxSwift
 
 protocol AccessoryButtonActionProtocol {
     func action(_ type: MenuActionType)
 }
+enum ImageAction {
+    case photoLibrary(UIAction)
+    case takePhoto(UIAction)
+    case file(UIAction)
+}
+
+typealias ImageActions = [ImageAction]
 
 enum MenuActionType {
     case blockAdd
     case paragraphSetting
     case blockComment
-    case blcokimage
+    case blcokimage(ContextMenuEventType)
     case boldItalicUnderLine
     case blockRemove
     case blcokSetting
@@ -26,26 +34,34 @@ enum MenuActionType {
     case none
 }
 
+
 extension MenuActionType {
     init(_ type: Self){
         self = type
     }
 }
 
-//final class AccessoryActionHandler:NSObject, AccessoryButtonActionProtocol{
-//    
-//    override init() {
-//        super.init()
-//    }
-//    
-//    func action(_ type: MenuActionType) {
-//        switch type{
-//        case .comment:
-//            break
-//        case .image:
-//            break
-//        case .none:
-//            break
-//        }
-//    }
-//}
+struct MenuButtonType{
+    let type: MenuActionType?
+    let image: String?
+    weak var disposeBag: DisposeBag?
+    weak var viewModel: AccessoryCompositionProtocol?
+    var frame: CGRect?
+    weak var color: UIColor?
+    
+    init(type: MenuActionType,
+         image: String,
+         disposeBag: DisposeBag,
+         viewModel: AccessoryCompositionProtocol,
+         _ frame: CGRect = CGRect(x: 0, y: 0, width: 30, height: 30),
+         _ color: UIColor = UIColor.lightGray) {
+        
+        
+        self.type = type
+        self.image = image
+        self.disposeBag = disposeBag
+        self.viewModel = viewModel
+        self.frame = frame
+        self.color = color
+    }
+}

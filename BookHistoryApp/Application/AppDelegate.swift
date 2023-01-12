@@ -8,7 +8,7 @@
 import UIKit
 import CoreData
 
-@main
+ @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     
@@ -23,7 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 fatalError("coredata Container load Failed : \(error)")
             }
         })
-        print("suceess")
         
         return container
     }()

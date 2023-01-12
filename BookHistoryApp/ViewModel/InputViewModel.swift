@@ -7,24 +7,26 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 
 
 enum KeyBoardState: String {
     case originalkeyBoard
     case backAndForeGroundColorState
+    case blockKeyBoard
     
 }
 
-protocol InputViewModelType {
+protocol InputViewModelType: AnyObject {
 
     // input
     var inputStateObserver: AnyObserver<KeyBoardState> { get }
     
     //output
-    var ouputStateObservable: Observable<KeyBoardState> { get }
+    var outputStateObservable: Observable<KeyBoardState> { get }
 }
 
-protocol InputVMLongPressAble{
+protocol InputVMLongPressAble: AnyObject{
     // input
     var inputLongPressObserver: AnyObserver<Bool> { get }
     
@@ -33,14 +35,16 @@ protocol InputVMLongPressAble{
     
 }
 
-typealias InputVMTypeAble = InputViewModelType & InputVMLongPressAble
 
-class InputViewModel: NSObject, InputVMTypeAble {
+
+typealias InputViewModelProtocol = InputViewModelType & InputVMLongPressAble
+
+class InputViewModel: NSObject, InputViewModelProtocol {
     
     
     var inputStateObserver: AnyObserver<KeyBoardState>
     
-    var ouputStateObservable: Observable<KeyBoardState>
+    var outputStateObservable: Observable<KeyBoardState>
     
     var inputLongPressObserver: AnyObserver<Bool>
     
@@ -59,7 +63,7 @@ class InputViewModel: NSObject, InputVMTypeAble {
         
         inputStateObserver = inputKeyBoardStateSubject.asObserver()
         
-        ouputStateObservable = outputKeyBoardStateSubject
+        outputStateObservable = outputKeyBoardStateSubject
         
         
         let inputLongPressPipe = PublishSubject<Bool>()
@@ -79,8 +83,6 @@ class InputViewModel: NSObject, InputVMTypeAble {
         inputLongPressPipe
             .subscribe(onNext: outputLongPressPipe.onNext(_:))
             .disposed(by: disposeBag)
-            
-        
         
     }
     

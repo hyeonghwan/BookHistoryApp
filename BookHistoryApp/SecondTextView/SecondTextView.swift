@@ -13,26 +13,35 @@ import ParagraphTextKit
 import SubviewAttachingTextView
 import UniformTypeIdentifiers
 
+
+
 public struct DelegateDependency{
-    let attachmentBehavior: SubviewAttachingTextViewBehavior
-    let textView: UITextView
+    weak var attachmentBehavior: SubviewAttachingTextViewBehavior?
+    weak var textView: UITextView?
 }
 
 class SecondTextView: UITextView {
-    private var colorViewModel: ColorVMType?
+    private weak var colorViewModel: ColorViewModelProtocol?
     
-    var contentViewModel: ContentVMTypeAble?
+    weak var contentViewModel: ContentViewModelProtocol?
     
-    private var accessoryViewModel: AccessoryCompositionProtocol?
+    private weak var accessoryViewModel: AccessoryCompositionProtocol?
     
-    private var disposeBag = DisposeBag()
+    weak var photoAndFileDelegate: PhotoAndFileDelegate?
+    
+    weak var inputViewModel: InputViewModelProtocol?
+    
+
+    var disposeBag = DisposeBag()
     
     public let attachmentBehavior = SubviewAttachingTextViewBehavior()
     
-    lazy var dependency: DelegateDependency = DelegateDependency(attachmentBehavior: attachmentBehavior, textView: self)
+    lazy var blockVM: BlockVMProtocol = BlockViewModel()
     
-    private lazy var layoutManagerDelegate = LayoutManagerDelegate(dependency)
+    lazy var layoutManagerDependency: DelegateDependency = DelegateDependency(attachmentBehavior: attachmentBehavior,
+                                                                              textView: self)
     
+    private lazy var layoutManagerDelegate = LayoutManagerDelegate(layoutManagerDependency)
     
     private let topInset: CGFloat = 30
     private let leftInset: CGFloat = 12
@@ -82,33 +91,79 @@ class SecondTextView: UITextView {
     
     convenience init(frame: CGRect,
                      textContainer: NSTextContainer?,
-                     _ dependency: DependencyOfTextView) {
+                     _ dependency: DependencyOfTextView?) {
         
         self.init(frame: frame, textContainer: textContainer)
         
-        self.colorViewModel = dependency.colorViewModel
-        self.contentViewModel = dependency.contentViewModel
-        self.accessoryViewModel = dependency.accessoryViewModel
+        self.colorViewModel = dependency?.colorViewModel
+        self.contentViewModel = dependency?.contentViewModel
+        self.accessoryViewModel = dependency?.accessoryViewModel
+        self.photoAndFileDelegate = dependency?.photoAndFileDelegate
+        self.inputViewModel = dependency?.inputViewModel
         
-//        self.pasteDelegate = self
-        
-        
+        //paragrphTrackingUtility Depenecy Injection
+        self.contentViewModel?.paragraphTrackingUtility.paragraphStorage = self.textStorage as? ParagraphTextStorage
+        self.contentViewModel?.paragraphTrackingUtility.subAttachMentBehavior = self.attachmentBehavior
         
         settUpBinding()
+        setUpBlockActionBinding()
     }
     
     func settUpBinding(){
+        
         colorViewModel?
             .attributedStringObservable
-            .subscribe(onNext: settingTextBackGround(_:))
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] presentationType in
+                guard let self = self else {return}
+                self.settingTextBackGround(presentationType)
+            })
             .disposed(by: disposeBag)
         
         accessoryViewModel?
             .outPutActionObservable
-            .bind(onNext: textViewActionHandler(_:))
+            .observe(on: MainScheduler.instance)
+            .bind(onNext: { [weak self] type in
+                guard let self = self else {return}
+                self.textViewActionHandler(type)
+            })
             .disposed(by: disposeBag)
         
+        accessoryViewModel?
+            .imageAddActionEvent
+            .observe(on: MainScheduler.instance)
+            .bind(onNext: { [weak self] type in
+                guard let self = self else {return}
+                self.textViewActionHandler(.blcokimage(type))  
+            })
+            .disposed(by: disposeBag)
+        
+        inputViewModel?
+            .outputStateObservable
+            .observe(on: MainScheduler.instance)
+            .bind(onNext: { [weak self] state in
+                guard let self = self else {return}
+                self.settingInputView(state)
+            })
+            .disposed(by: disposeBag)
     }
+    
+    func settingInputView(_ state: KeyBoardState){
+        switch state {
+        case .originalkeyBoard:
+            self.inputView = nil
+        case .backAndForeGroundColorState:
+            break
+        case .blockKeyBoard:
+            var blockAddView: BlockAddView = BlockAddView(frame: .zero,
+                                                          inputViewStyle: .keyboard,
+                                                          dependency: blockVM)
+            self.inputView = blockAddView
+        }
+        
+        self.reloadInputViews()
+    }
+    
     
     fileprivate func settingConfiguration() {
         self.allowsEditingTextAttributes = true
@@ -253,9 +308,6 @@ extension SecondTextView: UITextPasteDelegate{
         print("item.itemProvider.self : \(item.itemProvider.self)")
         print("item : \(item)")
         
-        
-        
-        
         if item.itemProvider.hasItemConformingToTypeIdentifier(UTType.flatRTFD.identifier) {
             
             switch checkPlain_Text(){
@@ -293,8 +345,6 @@ extension SecondTextView: UITextPasteDelegate{
         }
         return .failure(PasteError.unknown)
     }
-    
-    
 }
 
 enum PasteError: Error{

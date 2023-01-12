@@ -13,19 +13,6 @@ import ParagraphTextKit
 import SubviewAttachingTextView
 import WebKit
 
-// Handles tapping on the image view attachment
-class TapHandler: NSObject {
-    @objc func handle(_ sender: UIGestureRecognizer!) {
-        if let imageView = sender.view as? UIImageView {
-            imageView.alpha = CGFloat(arc4random_uniform(1000)) / 1000.0
-        }
-    }
-}
-
-protocol SecondTextViewScrollDelegate {
-    func scrollPostion(_ range: UITextRange)
-    func textDidChagned()
-}
 
 
 @objc protocol NSAttachmentSettingProtocol{
@@ -34,16 +21,23 @@ protocol SecondTextViewScrollDelegate {
 
 
 struct DependencyOfTextView{
-    let colorViewModel: ColorVMType
-    let contentViewModel: ContentVMTypeAble
-    let accessoryViewModel: AccessoryCompositionProtocol
+    weak var colorViewModel: ColorViewModelProtocol?
+    weak var contentViewModel: ContentViewModelProtocol?
+    weak var accessoryViewModel: AccessoryCompositionProtocol?
+    weak var photoAndFileDelegate: PhotoAndFileDelegate?
+    weak var inputViewModel: InputViewModelProtocol?
     
-    init(colorViewModel: ColorVMType,
-         contentViewModel: ContentVMTypeAble,
-         accessoryViewModel: AccessoryCompositionProtocol) {
+    init(colorViewModel: ColorViewModelProtocol,
+         contentViewModel: ContentViewModelProtocol,
+         accessoryViewModel: AccessoryCompositionProtocol,
+         photoAndFileDelegate: PhotoAndFileDelegate,
+         inputViewModel: InputViewModelProtocol) {
+        
         self.colorViewModel = colorViewModel
         self.contentViewModel = contentViewModel
         self.accessoryViewModel = accessoryViewModel
+        self.photoAndFileDelegate = photoAndFileDelegate
+        self.inputViewModel = inputViewModel
     }
 }
 
@@ -59,24 +53,26 @@ class SecondViewController: UIViewController {
                                         .presentationIntentAttributeName : titlePresentationKey])
     
     // KeyBoard InputViewType State ViewModel
-    var inputViewModel: InputVMTypeAble = InputViewModel()
+    var inputViewModel: InputViewModelProtocol = InputViewModel()
     
     // TextView Color Type State ViewModel
-    var colorViewModel: ColorVMType = ColorViewModel()
+    var colorViewModel: ColorViewModelProtocol = ColorViewModel()
     
     // TextView Save Content State ViewModel
-    var contentViewModel: ContentVMTypeAble = BookContentViewModel()
+    var contentViewModel: ContentViewModelProtocol = BookContentViewModel()
     
     var accessoryViewModel: AccessoryCompositionProtocol = AccessoryViewModel()
    
     
     //TextViewDependency
-    lazy var dependency: DependencyOfTextView = DependencyOfTextView(colorViewModel: self.colorViewModel,
+    lazy var dependency: DependencyOfTextView? = DependencyOfTextView(colorViewModel: self.colorViewModel,
                                                                      contentViewModel: self.contentViewModel,
-                                                                     accessoryViewModel: self.accessoryViewModel)
+                                                                     accessoryViewModel: self.accessoryViewModel,
+                                                                     photoAndFileDelegate: self,
+                                                                     inputViewModel: self.inputViewModel)
     
     
-    var bookPagingViewModel: PagingType?
+    weak var bookPagingViewModel: PagingType?
     
     
     var disposeBag = DisposeBag()
@@ -89,8 +85,9 @@ class SecondViewController: UIViewController {
     lazy var textMenuView: TextPropertyMenuView = {
         let menu = TextPropertyMenuView(frame:  CGRect(x: 0, y: 0,
                                                        width: UIScreen.main.bounds.size.width, height: 44),
-                                        viewModel: self.inputViewModel,
-                                        accessoryViewModel: self.accessoryViewModel)
+                                        dependency: DependencyOfTextPropertyMenu(viewModel: self.inputViewModel,
+                                                                                 accessoryViewModel: self.accessoryViewModel))
+        
         menu.backgroundColor = .tertiarySystemBackground
         return menu
     }()
@@ -119,10 +116,16 @@ class SecondViewController: UIViewController {
         textView.backgroundColor = .tertiarySystemBackground
         textView.delegate = self
         
+        
         return textView
     }()
     
     
+    deinit{
+//        self.disposeBag = DisposeBag()
+//        self.keyBoardDisposeBag = DisposeBag()
+        print("secondViewController deinit")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -153,7 +156,12 @@ class SecondViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        print("secondViewController : viewWillDisappear")
         
+    }
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        print("secondViewController : viewDidDisappear")
     }
     
 
@@ -175,6 +183,7 @@ class SecondViewController: UIViewController {
         
         // -> TextView Content Save trigger
         self.navigationItem.rightBarButtonItem?.rx.tap
+            .observe(on: MainScheduler.instance)
             .bind(onNext: { [weak self] _ in
                 guard let self = self else {return}
                 self.contentViewModel
@@ -184,14 +193,17 @@ class SecondViewController: UIViewController {
         
         contentViewModel
             .toTextObservable
+            .withUnretained(self)
             .observe(on: MainScheduler.instance)
-            .bind(onNext: self.setAttributedOnTextView_Title(_:))
+            .bind(onNext: { owned, data in
+                owned.setAttributedOnTextView_Title(data)
+            })
             .disposed(by: disposeBag)
         
         contentViewModel
             .toMetaDataURL
-            .subscribe(onNext: { og in
-
+            .subscribe(onNext: { [weak self] og in
+                print(og)
             })
             .disposed(by: disposeBag)
         
@@ -200,7 +212,6 @@ class SecondViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] isEnable in
                 guard let self = self else {return}
-                
                 self.textView.isLongPressGestureEnable(isEnable)
             }).disposed(by: disposeBag)
     }
@@ -257,9 +268,10 @@ private extension SecondViewController{
     
     
     func addTextViewTitlePlaceHolder() {
-        textView.attributedText = titleAttribute
-        textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
-        textView.attributedText = subAttatchViewTest()
+//        textView.attributedText = titleAttribute
+//        textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+//        textView.attributedText = subAttatchViewTest()
+        
     }
     
 
@@ -302,8 +314,7 @@ private extension SecondViewController{
         textField.borderStyle = .roundedRect
         
         // Create a web view, because why not
-        let webView = WKWebView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
-        webView.load(URLRequest(url: URL(string: "https://revealapp.com")!))
+        
         
         // Add attachments to the string and set it on the text view
         // This example avoids evaluating the attachments or attributed strings with attachments in the Playground because Xcode crashes trying to decode attachment objects

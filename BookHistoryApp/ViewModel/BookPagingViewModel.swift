@@ -10,7 +10,7 @@ import RxSwift
 import CoreData
 import RxRelay
 
-protocol PagingType {
+protocol PagingType: AnyObject {
     
     //input
     var onPaging: AnyObserver<Void> { get }

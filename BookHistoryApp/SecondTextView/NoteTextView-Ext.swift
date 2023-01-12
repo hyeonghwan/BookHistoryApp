@@ -16,95 +16,100 @@ extension SecondTextView{
     func textViewActionHandler(_ action: MenuActionType){
         switch action{
         case .blockAdd:
-            break
+            self.inputViewModel?.inputStateObserver.onNext(.blockKeyBoard)
+            
         case .paragraphSetting:
             break
         case .blockComment:
+            //not supported yet
             addBlcokComment("value")
-        case .blcokimage:
-            break
+        case .blcokimage(let eventType):
+            blockImage(self.selectedRange,eventType)
+            
         case .boldItalicUnderLine:
             addBoldAttribute(self.selectedRange)
+            
         case .blockRemove:
-            break
+            blockRemove(self.selectedRange)
+            
         case .blcokSetting:
             settingBlock(self.selectedRange)
+            
         case .blockTap:
             tapCancelBlock(self.selectedRange)
+            
         case .blcokTapCancel:
             tapBlock(self.selectedRange)
+            
         case .blockUp:
-            blockUp(self.selectedRange)
+            exChangeBlock(self.selectedRange, .up)
+            
         case .blcokDown:
-            blockDown(self.selectedRange)
+            exChangeBlock(self.selectedRange, .down)
+            
         case .none:
             break
         }
     }
 
 }
-
 extension SecondTextView{
-    func blockUp(_ range: NSRange){
-        let paragraphRange = self.getParagraphRange(range)
-        guard let paragraphIndex = self.contentViewModel?.paragraphTrackingUtility.ranges.firstIndex(where: {$0 == paragraphRange}) else {return}
-        
-        
-        if paragraphIndex > 1{
-            guard let beforeRange = self.contentViewModel?.paragraphTrackingUtility.ranges[paragraphIndex - 1] else {return}
     
-            guard let beforeString = self.contentViewModel?.paragraphTrackingUtility.paragraphs[paragraphIndex - 1] else {return}
-            
-            guard let beforeAttribute = self.contentViewModel?.paragraphTrackingUtility.attributes[paragraphIndex - 1] else {return}
-            
-            guard let paragraphRange = self.contentViewModel?.paragraphTrackingUtility.ranges[paragraphIndex] else {return}
-            
-            guard let paragraphString = self.contentViewModel?.paragraphTrackingUtility.paragraphs[paragraphIndex] else {return}
-            
-            guard let paragraphAttribute = self.contentViewModel?.paragraphTrackingUtility.attributes[paragraphIndex] else {return}
     
-            self.textStorage.replaceCharacters(in: paragraphRange, with: NSAttributedString(string: "\(beforeString)", attributes: beforeAttribute))
-            
-            
-            self.textStorage.replaceCharacters(in: beforeRange, with: NSAttributedString(string: "\(paragraphString)", attributes: paragraphAttribute))
-        }
-        else{
-            return
-        }
+    func blockImage(_ range: NSRange,_ type: ContextMenuEventType){
+
+        guard let photoDelegate = self.photoAndFileDelegate else {return}
         
-    }
-    func blockDown(_ range: NSRange){
-        let paragraphRange = self.getParagraphRange(range)
-        guard let paragraphIndex = self.contentViewModel?.paragraphTrackingUtility.ranges.firstIndex(where: {$0 == paragraphRange}) else {return}
-        
-        
-        if paragraphIndex > 1{
-            guard let beforeRange = self.contentViewModel?.paragraphTrackingUtility.ranges[paragraphIndex - 1] else {return}
-    
-            guard let beforeString = self.contentViewModel?.paragraphTrackingUtility.paragraphs[paragraphIndex - 1] else {return}
-            
-            guard let beforeAttribute = self.contentViewModel?.paragraphTrackingUtility.attributes[paragraphIndex - 1] else {return}
-            
-            guard let paragraphRange = self.contentViewModel?.paragraphTrackingUtility.ranges[paragraphIndex] else {return}
-            
-            guard let paragraphString = self.contentViewModel?.paragraphTrackingUtility.paragraphs[paragraphIndex] else {return}
-            
-            guard let paragraphAttribute = self.contentViewModel?.paragraphTrackingUtility.attributes[paragraphIndex] else {return}
-    
-            self.textStorage.replaceCharacters(in: paragraphRange, with: NSAttributedString(string: "\(beforeString)", attributes: beforeAttribute))
-            
-            
-            self.textStorage.replaceCharacters(in: beforeRange, with: NSAttributedString(string: "\(paragraphString)", attributes: paragraphAttribute))
-        }
-        else{
-            return
+        switch type {
+        case .size:
+            break
+        case .photoLibrary:
+            photoDelegate.presentPhotoLibrary()
+        case .photoTake:
+            photoDelegate.presentCamera()
+        case .fileAdd:
+            photoDelegate.presentFile()
         }
     }
 }
+
+extension SecondTextView{
+    
+    func blockRemove(_ range: NSRange){
+        let paragraphRange = self.getParagraphRange(range)
+        self.textStorage.replaceCharacters(in: paragraphRange, with: NSAttributedString(string: "", attributes: self.typingAttributes))
+    }
+    
+    /// Current blockUp
+    /// - Parameter range: seletedRange
+    /// before        ---->     current
+    //  curren   -->   before
+    func exChangeBlock(_ range: NSRange,_ direction: BlockDirection){
+        let vibrate = UIImpactFeedbackGenerator(style: .light)
+        vibrate.impactOccurred()
+        
+        guard let viewModel = self.contentViewModel else {return}
+        let paragraphRange = self.getParagraphRange(range)
+        
+        viewModel.paragraphTrackingUtility.exChangeBlock(direction, paragraphRange)
+    }
+}
+
 extension SecondTextView{
     func settingBlock(_ range: NSRange){
-//        let attribute = self.textStorage.attribute(.paragraphStyle, at: range.location, effectiveRange: nil)
-//        print("paragraphattribute: \(attribute)")
+        let paragraphRange = self.getParagraphRange(range)
+        guard let index = self.contentViewModel?.paragraphTrackingUtility.ranges.firstIndex(where: { $0 == paragraphRange}) else {return}
+        
+        var rng = NSRange(location: 34, length: 20){
+            didSet{
+                print("rng : \(rng)")
+            }
+        }
+        // 첫번째
+        let attributedStirng = self.textStorage.attributedSubstring(from: paragraphRange)
+        print("attributedStirng : \(attributedStirng)")
+        print("attribute: \(self.textStorage.attribute(.foregroundColor, at: paragraphRange.location, longestEffectiveRange: &rng, in: paragraphRange)))")
+        
     }
 }
 extension SecondTextView{
@@ -118,11 +123,13 @@ extension SecondTextView{
 extension SecondTextView{
     
     func tapBlock(_ range: NSRange){
+        let vibrate = UIImpactFeedbackGenerator(style: .light)
+        vibrate.impactOccurred()
         let tapParagraphStyle = NSMutableParagraphStyle()
         tapParagraphStyle.firstLineHeadIndent = 30
         tapParagraphStyle.headIndent = 30
         
-        let paragraphRange = self.getParagraphRange(range)
+        var paragraphRange = self.getParagraphRange(range)
         guard let textRange = self.textRangeFromNSRange(range: paragraphRange) else {return}
     
         var attribute = self.textStorage.attributes(at: paragraphRange.location,
@@ -131,20 +138,29 @@ extension SecondTextView{
         
         attribute[.paragraphStyle] = tapParagraphStyle
         
-        guard let text = self.text(in: textRange) else {return}
+        guard var text = self.text(in: textRange) else {return}
+        
+        if text.endsWithNewline{
+            text.removeLast()
+            paragraphRange = NSRange(location: paragraphRange.location, length: paragraphRange.length - 1)
+        }
         
         let nsAttributedString = NSAttributedString(string: text,
                                                     attributes: attribute)
+        self.textStorage.beginEditing()
         self.textStorage.replaceCharacters(in: paragraphRange,
-                                           with: nsAttributedString.string)
-        self.textStorage.addAttribute(.paragraphStyle, value: tapParagraphStyle, range: paragraphRange)
+                                           with: nsAttributedString)
+        self.textStorage.endEditing()
+        
     }
     func tapCancelBlock(_ range: NSRange){
+        let vibrate = UIImpactFeedbackGenerator(style: .light)
+        vibrate.impactOccurred()
         let tapParagraphStyle = NSMutableParagraphStyle()
         tapParagraphStyle.firstLineHeadIndent = 0
         tapParagraphStyle.headIndent = 0
         
-        let paragraphRange = self.getParagraphRange(range)
+        var paragraphRange = self.getParagraphRange(range)
         guard let textRange = self.textRangeFromNSRange(range: paragraphRange) else {return}
     
         var attribute = self.textStorage.attributes(at: paragraphRange.location,
@@ -153,13 +169,20 @@ extension SecondTextView{
         
         attribute[.paragraphStyle] = tapParagraphStyle
         
-        guard let text = self.text(in: textRange) else {return}
+        guard var text = self.text(in: textRange) else {return}
+        
+        if text.endsWithNewline{
+            text.removeLast()
+            paragraphRange = NSRange(location: paragraphRange.location, length: paragraphRange.length - 1)
+        }
         
         let nsAttributedString = NSAttributedString(string: text,
                                                     attributes: attribute)
+        self.textStorage.beginEditing()
         self.textStorage.replaceCharacters(in: paragraphRange,
-                                           with: nsAttributedString.string)
-        self.textStorage.addAttribute(.paragraphStyle, value: tapParagraphStyle, range: paragraphRange)
+                                           with: nsAttributedString)
+        self.textStorage.endEditing()
+        
     }
 }
 

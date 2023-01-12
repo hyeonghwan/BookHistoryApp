@@ -1,32 +1,25 @@
 {
-  "pins" : [
-    {
-      "identity" : "fscalendar",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/WenchaoD/FSCalendar.git",
-      "state" : {
-        "revision" : "0fbdec5172fccb90f707472eeaea4ffe095278f6",
-        "version" : "2.8.4"
+  "object": {
+    "pins": [
+      {
+        "package": "FSCalendar",
+        "repositoryURL": "https://github.com/WenchaoD/FSCalendar.git",
+        "state": {
+          "branch": null,
+          "revision": "0fbdec5172fccb90f707472eeaea4ffe095278f6",
+          "version": "2.8.4"
+        }
+      },
+      {
+        "package": "SnapKit",
+        "repositoryURL": "https://github.com/SnapKit/SnapKit.git",
+        "state": {
+          "branch": null,
+          "revision": "f222cbdf325885926566172f6f5f06af95473158",
+          "version": "5.6.0"
+        }
       }
-    },
-    {
-      "identity" : "paragraphtextkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/CineDev/ParagraphTextKit.git",
-      "state" : {
-        "revision" : "c344237dad1d234ee419369a59ad2b0c27ea8f41",
-        "version" : "1.2.4"
-      }
-    },
-    {
-      "identity" : "snapkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/SnapKit/SnapKit.git",
-      "state" : {
-        "revision" : "f222cbdf325885926566172f6f5f06af95473158",
-        "version" : "5.6.0"
-      }
-    }
-  ],
-  "version" : 2
+    ]
+  },
+  "version": 1
 }

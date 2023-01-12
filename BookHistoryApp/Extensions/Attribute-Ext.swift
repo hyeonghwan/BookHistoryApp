@@ -38,6 +38,7 @@ extension PresentationType{
     }
 }
 
+
 protocol NSAttributedStringExtension {
     static func getAttributeColorKey(_ presentationType: PresentationType ) -> [NSAttributedString.Key : Any]
     
@@ -104,4 +105,5 @@ extension NSAttributedString : NSAttributedStringExtension {
     
     
 }
+
 

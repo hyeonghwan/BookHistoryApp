@@ -19,6 +19,19 @@ class BackORForeColorPickerView: UIInputView{
     
     private let buttonHeight: CGFloat = 60
     
+    
+    // property to change height dynamically
+    var intrinsicHeight: CGFloat = 200 {
+        didSet {
+            self.invalidateIntrinsicContentSize()
+        }
+    }
+    
+    override var intrinsicContentSize: CGSize {
+//        return CGSize(width: UIView.noIntrinsicMetric, height: self.intrinsicHeight)
+        return super.intrinsicContentSize
+    }
+    
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsHorizontalScrollIndicator = false
@@ -92,7 +105,7 @@ class BackORForeColorPickerView: UIInputView{
     private var disposeBag = DisposeBag()
     
     
-    override init(frame: CGRect,inputViewStyle: UIInputView.Style) {
+    override init(frame: CGRect,inputViewStyle: UIInputView.Style = .keyboard) {
         
         let colorObserverPipe = PublishSubject<PresentationType>()
         
@@ -102,12 +115,13 @@ class BackORForeColorPickerView: UIInputView{
         
         buttonObservable = colorObervablePipe
         
-        super.init(frame: frame,inputViewStyle: inputViewStyle)
+        super.init(frame: frame, inputViewStyle: inputViewStyle)
     
-        
         colorObserverPipe
             .bind(onNext: colorObervablePipe.onNext(_:))
             .disposed(by: disposeBag)
+        
+        self.translatesAutoresizingMaskIntoConstraints = false
         
         autoLayoutAdd()
         

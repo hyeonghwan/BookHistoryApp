@@ -12,7 +12,7 @@ import SubviewAttachingTextView
 
 class LayoutManagerDelegate: NSObject, NSLayoutManagerDelegate {
     
-    var subviewAttachmentBehavior: SubviewAttachingTextViewBehavior
+    weak var subviewAttachmentBehavior: SubviewAttachingTextViewBehavior?
     weak var textView: UITextView?
     
     init(_ dependency: DelegateDependency) {
@@ -27,7 +27,7 @@ class LayoutManagerDelegate: NSObject, NSLayoutManagerDelegate {
     // MARK: SubviewAttachingTextViewBehavior -> layoutAttachedSubviews()
     public func layoutManager(_ layoutManager: NSLayoutManager, didCompleteLayoutFor textContainer: NSTextContainer?, atEnd layoutFinishedFlag: Bool) {
         if layoutFinishedFlag {
-            self.subviewAttachmentBehavior.layoutAttachedSubviews()
+            self.subviewAttachmentBehavior?.layoutAttachedSubviews()
         }
     }
     
@@ -44,9 +44,6 @@ class LayoutManagerDelegate: NSObject, NSLayoutManagerDelegate {
         
         let paragraphRange = (textView.textStorage.string as NSString).paragraphRange(for: glyphRange)
         
-        
-        print("glyphRange: \(glyphRange)")
-        print("paragraphRange: \(paragraphRange)")
         
         if let commentBlockPath = textView.textStorage.attribute(.comment, at: paragraphRange.location, effectiveRange: nil) as? CommentBlockPath{
             

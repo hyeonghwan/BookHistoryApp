@@ -10,7 +10,7 @@ import RxCocoa
 import RxSwift
 
 
-protocol ColorVMType {
+protocol ColorViewModelProtocol: AnyObject {
     // input
     var onColorData: AnyObserver<PresentationType> { get }
     
@@ -22,7 +22,7 @@ protocol ColorVMType {
     var updateUndoButtonObservable: Observable<Void> { get }
 }
 
-class ColorViewModel: NSObject, ColorVMType {
+class ColorViewModel: NSObject, ColorViewModelProtocol {
     
     // input
     var onColorData: AnyObserver<PresentationType>
@@ -35,6 +35,9 @@ class ColorViewModel: NSObject, ColorVMType {
     
     var disposeBag = DisposeBag()
     
+    deinit{
+        print("colorViewModel deinit")
+    }
     override init() {
         let colorPipe = PublishSubject<PresentationType>()
         onColorData = colorPipe.asObserver()

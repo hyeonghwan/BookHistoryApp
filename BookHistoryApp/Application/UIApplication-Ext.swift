@@ -22,5 +22,9 @@ extension UIApplication {
             .first(where: \.isKeyWindow)
     }
     
+    var screenWidth: CGFloat? {
+        return self.keyWindow?.frame.width
+    }
+    
 }
 

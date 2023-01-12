@@ -68,6 +68,7 @@ extension SecondViewController{
     
     @objc private func keyBoardchangeInputViewAction(_ notification: Notification?) -> Void {
         
+        
         if let state = self.textMenuView.state,
            state != .backAndForeGroundColorState{
             
@@ -80,12 +81,9 @@ extension SecondViewController{
                 .bind(onNext: colorViewModel.onColorData.onNext(_:))
                 .disposed(by: keyBoardDisposeBag)
             
-            backGroundPickerView.translatesAutoresizingMaskIntoConstraints = false
-            
             self.textView.inputView = backGroundPickerView
             
             self.textView.reloadInputViews()
-           
         }
     }
     
@@ -137,7 +135,7 @@ extension SecondViewController{
     // bind viewModelState to textMenuView( KeyBoard InPutView State)
     func bindingInputAccessoryView() {
             inputViewModel
-                .ouputStateObservable
+                .outputStateObservable
                 .bind(to: textMenuView.rx.state)
                 .disposed(by: disposeBag)
             
@@ -145,6 +143,7 @@ extension SecondViewController{
                 .updateUndoButtonObservable
                 .bind(onNext: updateUndoButtons)
                 .disposed(by: keyBoardDisposeBag)
+        // disposeBag  , keyBoardDisposeBag
     }
 
     

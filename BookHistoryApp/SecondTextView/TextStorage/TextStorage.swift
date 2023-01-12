@@ -15,6 +15,7 @@ class SCTextStorage: NSTextStorage {
     
     
     override var string: String {
+        
         return backingStore.string
     }
     
