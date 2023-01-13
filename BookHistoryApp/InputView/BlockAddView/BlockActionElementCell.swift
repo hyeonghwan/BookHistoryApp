@@ -57,7 +57,6 @@ final class BlockActionElementCell: UICollectionViewCell{
     }
     
     override func prepareForReuse() {
-        self.disposeBag = DisposeBag()
         super.prepareForReuse()
     }
     

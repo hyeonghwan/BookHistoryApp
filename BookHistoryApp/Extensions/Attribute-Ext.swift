@@ -54,6 +54,8 @@ protocol NSAttributedStringExtension {
 
 extension NSAttributedString : NSAttributedStringExtension {
     
+    
+    
     class func getAttributeColorKey(_ presentationType: PresentationType ) -> [Key : Any] {
         switch presentationType {
         case let .backGround(color):

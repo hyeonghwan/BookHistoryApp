@@ -64,21 +64,19 @@ final class BlockAddView: UIInputView{
     }
     
     func settUpBinding(){
-        
-        
         blockVM?
             .blockActionModel
             .bind(to: collectionView.rx.items(cellIdentifier: BlockActionElementCell.identify,
                                               cellType: BlockActionElementCell.self)){
                 index, item, cell in
+                print(item)
                 cell.pipe.onNext(item)
+                
             }.disposed(by: disposeBag)
-            
         
-        let blockInput = BlockInput(blockAction: collectionView.rx.modelSelected(CollectionViewElement.self).asObservable())
+        let blockInput = BlockInput(blockActionInput: collectionView.rx.modelSelected(CollectionViewElement.self).asObservable())
         blockVM?.createBlockActionInPut(blockInput)
     }
-   
 }
 
 private extension BlockAddView{

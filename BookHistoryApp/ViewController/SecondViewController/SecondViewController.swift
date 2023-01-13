@@ -152,10 +152,31 @@ class SecondViewController: UIViewController {
         settupBinding()
         
         addLongPressGesture()
+        var result: [UIFont] = []
+        
+        result.append(UIFont.preferredFont(forTextStyle: .title1, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
+        result.append(UIFont.preferredFont(forTextStyle: .title2, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
+        result.append(UIFont.preferredFont(forTextStyle: .title3, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
+        result.append(UIFont.preferredFont(forTextStyle: .headline, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
+        result.append(UIFont.preferredFont(forTextStyle: .subheadline, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
+        result.append(UIFont.preferredFont(forTextStyle: .body, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
+        result.append(UIFont.preferredFont(forTextStyle: .callout, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
+        result.append(UIFont.preferredFont(forTextStyle: .caption1, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
+        result.append(UIFont.preferredFont(forTextStyle: .caption2, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
+        
+        result.forEach{
+            print("font: \($0)")
+        }
     }
+    
+//    static func preferredFont(forTextStyle style: UIFont.TextStyle, scaleFactor: CGFloat) -> UIFont {
+//      let font = UIFont.preferredFont(forTextStyle: style)
+//      return font.withSize(font.pointSize * scaleFactor)
+//    }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        self.textView.inputAccessoryView = nil
         print("secondViewController : viewWillDisappear")
         
     }
@@ -354,6 +375,18 @@ extension SecondViewController: UITextViewDelegate {
     
     func textViewDidChangeSelection(_ textView: UITextView) {
         
+        let paragraphRange = self.textView.getParagraphRange(textView.selectedRange)
+        let attribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil)
+        guard let seletedForeGround = attribute as? UIColor else {return}
+        
+        if seletedForeGround == UIColor.label{
+            print("same")
+        }else{
+            print("different")
+        }
+        
+        
+        
         if textView.attributedText.string == titleAttribute.string{
             self.textView.selectedRange = NSMakeRange(0, 0)
             return
@@ -395,6 +428,8 @@ extension SecondViewController: UITextViewDelegate {
                 let defaultParagraphStyle = NSMutableParagraphStyle()
 //                defaultParagraphStyle.firstLineHeadIndent = 0
 //                defaultParagraphStyle.headIndent = 0
+                
+                
                 
                 textView.typingAttributes = [
                     NSAttributedString.Key.backgroundColor : UIColor.clear,

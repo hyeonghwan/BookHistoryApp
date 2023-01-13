@@ -44,14 +44,12 @@ class TextPropertyMenuView: UIView {
         }
     }
     
-    var keyBoardObserver: AnyObserver<KeyBoardState>?
-    
     private var disposeBag = DisposeBag()
     
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.layer.addBorder(side: .top, thickness: CGFloat(1), color: UIColor.systemPink.cgColor)
+        self.layer.addBorder(side: .all, thickness: CGFloat(1), color: UIColor.systemPink.cgColor)
     }
 
     

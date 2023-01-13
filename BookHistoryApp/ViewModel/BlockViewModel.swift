@@ -27,7 +27,7 @@ enum BlockType: String{
     case quotation = "인용"
     case separatorLine = "구분선"
     case pageLink = "페이지 링크"
-    case collOut = "콜 아웃"
+    case collOut = "콜아웃"
     case none
 }
 
@@ -39,14 +39,16 @@ enum ActionType{
 }
 
 struct BlockInput{
-    var blockAction: Observable<CollectionViewElement>
+    var blockActionInput: Observable<CollectionViewElement>
 }
 
 struct BlockOutPut{
-    var outPut : Signal<BlockType>?
-    init(outPut: Signal<BlockType>) {
-        self.outPut = outPut
+    var blockActionOutput : Driver<BlockType>?
+    
+    init(outPut: Driver<BlockType>) {
+        self.blockActionOutput = outPut
     }
+    
     init(){
         
     }
@@ -88,16 +90,12 @@ final class BlockViewModel: NSObject,BlockVMProtocol {
     
     private lazy var blockSetting: BehaviorRelay<[ActionType]> = BehaviorRelay<[ActionType]>(value: actionType)
     
-//    var blockInputAction = BehaviorSubject<CollectionViewElement>(value: CollectionViewElement(name: "", image: ""))
-
-    
     private var blockOutPutAction = BehaviorRelay<BlockType>(value: BlockType.none)
     
     var disposeBag = DisposeBag()
     
     deinit{
         self.disposeBag = DisposeBag()
-        print("blockViewModel Deinit")
     }
     
     override init() {
@@ -119,8 +117,7 @@ final class BlockViewModel: NSObject,BlockVMProtocol {
    
     
     func createBlockActionInPut(_ input: BlockInput){
-        
-        let observable: Observable<CollectionViewElement> = input.blockAction
+        let observable: Observable<CollectionViewElement> = input.blockActionInput
        
         observable
             .flatMap(elementToBlockType(_:))
@@ -135,7 +132,7 @@ final class BlockViewModel: NSObject,BlockVMProtocol {
     }
     func createBlockActionOutPut() -> BlockOutPut{
         
-        let outPut = BlockOutPut(outPut: self.blockOutPutAction.asSignal(onErrorJustReturn: .none))
+        let outPut = BlockOutPut(outPut: self.blockOutPutAction.asDriver(onErrorJustReturn: .none))
     
         return outPut
     }
@@ -153,7 +150,6 @@ final class BlockViewModel: NSObject,BlockVMProtocol {
     
     private func settingBlockCollectionViewData(_ model: [ActionType]) -> Observable<[CollectionViewElement]> {
         return Observable<[CollectionViewElement]>.create{ emit in
-            
             let result = model.map{ action in
                 switch action{
                 case .basic(let name):

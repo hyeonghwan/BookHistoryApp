@@ -7,6 +7,7 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 import CoreData
 import OpenGraph
 
@@ -17,8 +18,12 @@ protocol ContentViewModelType: AnyObject {
     var onTextViewData: AnyObserver<BookViewModelData> { get }
     var onParagraphData: AnyObserver<NSAttributedString> {get}
     
+    func createBlockAttributeInput(_ blockType: BlockType,_ current: NSRange)
+    
     //OUtPut
     var toTextObservable: Observable<BookViewModelData> { get }
+    
+    var toParagraphBlockTypeEventResult: Observable<BlockType>? { get }
     
     //utility
     var paragraphTrackingUtility: ParagraphTrackingUtility { get }
@@ -70,6 +75,8 @@ struct BookViewModelData {
 
 class BookContentViewModel: NSObject, ContentViewModelProtocol{
     
+    
+    
     var paragraphTrackingUtility: ParagraphTrackingUtility = ParagraphTrackingUtility()
     
     //MARK: ContentViewModelType
@@ -77,6 +84,10 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
     var onParagraphData: AnyObserver<NSAttributedString>
     
     var onTextViewData: AnyObserver<BookViewModelData>
+    
+    
+    //outPUT Block EventType
+    var toParagraphBlockTypeEventResult: Observable<BlockType>?
     
     //outPUT
     var toTextObservable: Observable<BookViewModelData>
@@ -176,6 +187,21 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
             .bind(onNext: { [weak self] value in
                 guard let self = self else {return}
                 self.isPasteValue = value
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func createBlockAttributeInput(_ blockType: BlockType,_ current: NSRange){
+        let relay = BehaviorRelay<(BlockType,NSRange)>(value: (.none,NSRange()))
+        
+        relay.accept((blockType,current))
+        
+        relay
+            .withUnretained(self)
+            .asDriver(onErrorJustReturn: (self ,(.none, NSRange())))
+            .drive(onNext: { owned,tuple in
+                let (blockType, currentRange) = tuple
+                owned.paragraphTrackingUtility.addBlockActionPropertyToTextStorage(blockType, currentRange)
             })
             .disposed(by: disposeBag)
     }

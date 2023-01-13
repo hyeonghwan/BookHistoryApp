@@ -62,6 +62,8 @@
 		9653C541296EC2D700331143 /* BlockActionElementCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9653C540296EC2D700331143 /* BlockActionElementCell.swift */; };
 		9653C543296EC54E00331143 /* BlockViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9653C542296EC54E00331143 /* BlockViewModel.swift */; };
 		9653C546296FDDDC00331143 /* TextView-BlockAction-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9653C545296FDDDC00331143 /* TextView-BlockAction-Ext.swift */; };
+		9653C54929713C1000331143 /* ParagraphTrackingUtility-MoveBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9653C54829713C1000331143 /* ParagraphTrackingUtility-MoveBlock.swift */; };
+		9653C54B29713C8200331143 /* ParagraphTracking-AddBlockActionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9653C54A29713C8200331143 /* ParagraphTracking-AddBlockActionType.swift */; };
 		9655FE322955FADA008991F1 /* BookData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9655FE302955FADA008991F1 /* BookData.xcdatamodeld */; };
 		9655FE392955FCB2008991F1 /* BookPageMO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9655FE352955FCB2008991F1 /* BookPageMO+CoreDataProperties.swift */; };
 		9655FE3B2955FCB2008991F1 /* BookMO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9655FE372955FCB2008991F1 /* BookMO+CoreDataProperties.swift */; };
@@ -165,6 +167,8 @@
 		9653C540296EC2D700331143 /* BlockActionElementCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockActionElementCell.swift; sourceTree = "<group>"; };
 		9653C542296EC54E00331143 /* BlockViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockViewModel.swift; sourceTree = "<group>"; };
 		9653C545296FDDDC00331143 /* TextView-BlockAction-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextView-BlockAction-Ext.swift"; sourceTree = "<group>"; };
+		9653C54829713C1000331143 /* ParagraphTrackingUtility-MoveBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ParagraphTrackingUtility-MoveBlock.swift"; sourceTree = "<group>"; };
+		9653C54A29713C8200331143 /* ParagraphTracking-AddBlockActionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ParagraphTracking-AddBlockActionType.swift"; sourceTree = "<group>"; };
 		9655FE312955FADA008991F1 /* BookData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BookData.xcdatamodel; sourceTree = "<group>"; };
 		9655FE352955FCB2008991F1 /* BookPageMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BookPageMO+CoreDataProperties.swift"; path = "BookHistoryApp/BookPageMO+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		9655FE372955FCB2008991F1 /* BookMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BookMO+CoreDataProperties.swift"; path = "BookHistoryApp/BookMO+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
@@ -261,6 +265,8 @@
 			isa = PBXGroup;
 			children = (
 				9601D0C8295332730069EF58 /* ParagraphTrackingUtility.swift */,
+				9653C54829713C1000331143 /* ParagraphTrackingUtility-MoveBlock.swift */,
+				9653C54A29713C8200331143 /* ParagraphTracking-AddBlockActionType.swift */,
 			);
 			path = TextStorageDelegate;
 			sourceTree = "<group>";
@@ -333,11 +339,11 @@
 			isa = PBXGroup;
 			children = (
 				962AA0BE292217AA00C2620B /* SecondTextView.swift */,
-				9653C545296FDDDC00331143 /* TextView-BlockAction-Ext.swift */,
 				964D38A9296AD5FD00B826AB /* ParagraphTextStorage.swift */,
 				96CAFA2429669B7100E6D107 /* ViewElement */,
 				96CAFA292966A9FA00E6D107 /* LayoutManager */,
 				96CAFA1E29651EFF00E6D107 /* NoteTextView-Ext.swift */,
+				9653C545296FDDDC00331143 /* TextView-BlockAction-Ext.swift */,
 				9656ACB92967BAB400BB0903 /* TextStorage */,
 				96CAFA202965505D00E6D107 /* CommentTextView.swift */,
 				962AA0C6292233EE00C2620B /* SCTextView-Ext.swift */,
@@ -752,6 +758,7 @@
 				96CAFA1D296400E100E6D107 /* AccessoryViewModel.swift in Sources */,
 				9662285C295C697D00E39FC3 /* PlanMonthView.swift in Sources */,
 				962AA0E1292E307400C2620B /* BookPageViewController.swift in Sources */,
+				9653C54B29713C8200331143 /* ParagraphTracking-AddBlockActionType.swift in Sources */,
 				9655FE3B2955FCB2008991F1 /* BookMO+CoreDataProperties.swift in Sources */,
 				962AA0DA2928F7B400C2620B /* ColorButton.swift in Sources */,
 				962AA0D82928F31A00C2620B /* BackORForeColorPickerView.swift in Sources */,
@@ -779,6 +786,7 @@
 				962AA0B22920E87C00C2620B /* UITextView-Ext.swift in Sources */,
 				96622857295B217600E39FC3 /* PlanCell.swift in Sources */,
 				9601D0BC295029630069EF58 /* StackItemView.swift in Sources */,
+				9653C54929713C1000331143 /* ParagraphTrackingUtility-MoveBlock.swift in Sources */,
 				964D38A8296ACC9E00B826AB /* SecondViewController-Ext.swift in Sources */,
 				96477D33291A24EB00830EFB /* CustomTextView.swift in Sources */,
 				9601D0C22951A5530069EF58 /* CSTabBarController.swift in Sources */,

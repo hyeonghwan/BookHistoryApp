@@ -78,7 +78,8 @@ extension SecondViewController{
             
             backGroundPickerView
                 .buttonObservable
-                .bind(onNext: colorViewModel.onColorData.onNext(_:))
+                .withUnretained(self)
+                .bind(onNext: {owned , data in owned.colorViewModel.onColorData.onNext(data)})
                 .disposed(by: keyBoardDisposeBag)
             
             self.textView.inputView = backGroundPickerView
@@ -141,7 +142,8 @@ extension SecondViewController{
             
             colorViewModel
                 .updateUndoButtonObservable
-                .bind(onNext: updateUndoButtons)
+                .withUnretained(self)
+                .bind(onNext: {owend,_ in owend.updateUndoButtons() })
                 .disposed(by: keyBoardDisposeBag)
         // disposeBag  , keyBoardDisposeBag
     }

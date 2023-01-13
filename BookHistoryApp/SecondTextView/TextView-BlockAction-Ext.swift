@@ -14,10 +14,14 @@ extension SecondTextView {
     
     func setUpBlockActionBinding(){
         let output = blockVM.createBlockActionOutPut()
-        output.outPut?
-            .emit(onNext: { type in
-                print("type ::: \(type)")
-                
+        output.blockActionOutput?
+            .drive(onNext: { [weak self] type in
+                guard let self = self else {return}
+                print("type: \(type)")
+                let currentParagraphRange = self.getParagraphRange(self.selectedRange)
+                self.contentViewModel?.createBlockAttributeInput(type,currentParagraphRange)
+            },onDisposed: {
+                print("onDisposed :")
             }).disposed(by: disposeBag)
     }
 }
