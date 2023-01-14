@@ -75,8 +75,58 @@ import UIKit
 //// Run the playground indefinitely with the text view as the live view
 //PlaygroundPage.current.needsIndefiniteExecution = true
 //PlaygroundPage.current.liveView = textView
-var paragrphs: [String] = ["234"]
-var ranges: [NSRange] = [NSRange(location: 15, length: 10)]
-for paragraph in paragraphs.dropFirst() {
-    ranges.append( NSRange(location: ranges.last!.max, length: paragraph.length) )
+//var paragrphs: [String] = ["234"]
+//var ranges: [NSRange] = [NSRange(location: 15, length: 10)]
+//for paragraph in paragraphs.dropFirst() {
+//    ranges.append( NSRange(location: ranges.last!.max, length: paragraph.length) )
+//}
+
+class Jake3 {
+    let name = "Jake3"
+    var closure: (() -> ())?
+    
+    
+    init() {
+        let outerClosure = {
+            let internalClosure = { [weak self] in // 안쪽 closure에서 weak으로 self를 잡을때 이미 outerClosure에서 strong
+                print("1234")
+                print(self?.name)
+            }
+            print("456")
+            internalClosure()
+        }
+        closure = outerClosure
+        print("789")
+        closure?()
+        closure = nil
+    }
+
+    deinit {
+        print("DEINIT3")
+    }
 }
+
+var jake3: Jake3? = Jake3()
+jake3 = nil
+
+class Jake4 {
+    let name = "Jake"
+
+    lazy var closure: (() -> ())? = {
+        print(self.name) // 참조: closure -> self
+    }
+
+    init() {
+        closure?() // 참조: self -> closure
+        print("jake 4")
+        
+    }
+
+    deinit {
+        print("DEINIT: Jake4")
+    }
+}
+
+var jake4: Jake4? = Jake4()
+jake4?.closure = nil
+jake4 = nil

@@ -46,11 +46,12 @@ class SecondViewController: UIViewController {
     
     let titlePresentationKey: String = "Title"
     
+    var defaultAttribute = [NSAttributedString.Key.backgroundColor : UIColor.clear,
+                          NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+                          NSAttributedString.Key.foregroundColor : UIColor.label]
     
-    lazy var titleAttribute = NSAttributedString(string: "제목을 입력해주세요",
-                                            attributes: [.foregroundColor : UIColor.lightGray,
-                                                         .font : UIFont.boldSystemFont(ofSize: 20),
-                                        .presentationIntentAttributeName : titlePresentationKey])
+    lazy var titleAttributeString = NSAttributedString(string: "제목을 입력해주세요",
+                                            attributes: defaultAttribute)
     
     // KeyBoard InputViewType State ViewModel
     var inputViewModel: InputViewModelProtocol = InputViewModel()
@@ -152,21 +153,6 @@ class SecondViewController: UIViewController {
         settupBinding()
         
         addLongPressGesture()
-        var result: [UIFont] = []
-        
-        result.append(UIFont.preferredFont(forTextStyle: .title1, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
-        result.append(UIFont.preferredFont(forTextStyle: .title2, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
-        result.append(UIFont.preferredFont(forTextStyle: .title3, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
-        result.append(UIFont.preferredFont(forTextStyle: .headline, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
-        result.append(UIFont.preferredFont(forTextStyle: .subheadline, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
-        result.append(UIFont.preferredFont(forTextStyle: .body, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
-        result.append(UIFont.preferredFont(forTextStyle: .callout, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
-        result.append(UIFont.preferredFont(forTextStyle: .caption1, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
-        result.append(UIFont.preferredFont(forTextStyle: .caption2, familyName: UIFont.appleFontFamiliyName, scaleFactor: 1))
-        
-        result.forEach{
-            print("font: \($0)")
-        }
     }
     
 //    static func preferredFont(forTextStyle style: UIFont.TextStyle, scaleFactor: CGFloat) -> UIFont {
@@ -289,6 +275,7 @@ private extension SecondViewController{
     
     
     func addTextViewTitlePlaceHolder() {
+       
 //        textView.attributedText = titleAttribute
 //        textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
 //        textView.attributedText = subAttatchViewTest()
@@ -376,43 +363,93 @@ extension SecondViewController: UITextViewDelegate {
     func textViewDidChangeSelection(_ textView: UITextView) {
         
         let paragraphRange = self.textView.getParagraphRange(textView.selectedRange)
-        let attribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil)
-        guard let seletedForeGround = attribute as? UIColor else {return}
         
-        if seletedForeGround == UIColor.label{
-            print("same")
-        }else{
-            print("different")
+        print("paragraphRange : \(paragraphRange)")
+        if paragraphRange.length == 0 {
+            return
         }
         
+        let attribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil)
+        guard let seletedForeGround = attribute as? UIColor else {return}
+  
         
+        if seletedForeGround == UIColor.placeHolderColor{
+            self.textView.selectedRange = NSMakeRange(paragraphRange.location, 0)
+        }
         
-        if textView.attributedText.string == titleAttribute.string{
+        if textView.attributedText.string == titleAttributeString.string{
             self.textView.selectedRange = NSMakeRange(0, 0)
             return
         }
         
-        
-//        let deSelectionNSRange = contentViewModel.paragraphTrackingUtility.ranges[2]
-//
-//        //        textView.textRangeFromNSRange(range: contentViewModel.paragraphTrackingUtility.ranges[0])
-//
-//        let paragraphRange = (textView.text as NSString).paragraphRange(for: textView.selectedRange)
-//        if deSelectionNSRange == paragraphRange{
-//
-//            self.textView.selectedRange = NSMakeRange(contentViewModel.paragraphTrackingUtility.ranges[0].location, 0)
-//            return
-//        }
-//
-//        print("paragraphRange : \(paragraphRange)")
-//        guard let textRange = textView.textRangeFromNSRange(range: paragraphRange) else { return }
-//        print(textView.text(in: textRange ))
-        
+    }
+    
+    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        print("textViewShouldBeginEditing")
+        return true
+    }
+    
+    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+        print("textViewShouldEndEditing")
+        return true
+    }
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        print("textViewDidBeginEditing")
+    }
+    func textViewDidEndEditing(_ textView: UITextView) {
+        print("textViewDidEndEditing")
     }
 
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-    
+        print("textView : shouldChangeTextIn")
+        
+        let paragraphRange = self.textView.getParagraphRange(range)
+        
+        if paragraphRange.length == 0 {
+            textView.typingAttributes = [
+                NSAttributedString.Key.backgroundColor : UIColor.clear,
+                NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+                NSAttributedString.Key.foregroundColor : UIColor.label
+            ]
+            return true
+        }
+        
+        
+        if let foregroundColor = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil) as? UIColor,
+           foregroundColor == UIColor.placeHolderColor,
+           let originalFont = textView.textStorage.attribute(.font, at: paragraphRange.location, effectiveRange: nil) as? UIFont{
+            
+            var titleAttribute = defaultAttribute
+            titleAttribute[.font] = originalFont
+            
+            var newRange: NSRange = NSRange(location: paragraphRange.location, length: paragraphRange.length - 1)
+            
+            if paragraphRange.max == textView.text.count{
+                newRange = paragraphRange
+            }
+
+            
+            textView.textStorage.beginEditing()
+            textView.textStorage.replaceCharacters(in: newRange, with: "")
+            textView.textStorage.endEditing()
+            
+//            self.textStorage.beginEditing()
+//            self.textStorage.addAttribute(.font, value: UIFont.appleSDGothicNeo.bold.font(size: 16), range: range)
+//            self.textStorage.endEditing()
+            self.textView.typingAttributes[.font] = titleAttribute[.font]
+            
+            self.textView.typingAttributes[.foregroundColor] = titleAttribute[.foregroundColor]
+            
+//            self.contentViewModel.removePlaceHolderAttribute(titleAttribute, newRange.location)
+           
+//            self.textView.typingAttributes = titleAttribute
+//            print("titleAttr : \(titleAttribute)")
+            
+            return true
+        }
+        
+        
         // textView에서 붙여넣기(paste) 이벤트 발생시 -> URL 인지 검사
         if contentViewModel.isPasteValue == true{
             contentViewModel.onPasteValue.onNext(false)
@@ -420,22 +457,18 @@ extension SecondViewController: UITextViewDelegate {
         }
         
         
+        
+        
         if text == "\n"{
             // 제목을 입력하지 않으면 "\n" 입력 -> false
             if range == NSRange(location: 0, length: 0){
                 return false
             }else {
-                let defaultParagraphStyle = NSMutableParagraphStyle()
-//                defaultParagraphStyle.firstLineHeadIndent = 0
-//                defaultParagraphStyle.headIndent = 0
-                
-                
                 
                 textView.typingAttributes = [
                     NSAttributedString.Key.backgroundColor : UIColor.clear,
                     NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
-                    NSAttributedString.Key.foregroundColor : UIColor.label,
-                    NSAttributedString.Key.paragraphStyle : defaultParagraphStyle,
+                    NSAttributedString.Key.foregroundColor : UIColor.red
                 ]
                 print("seleted : \(self.textView.selectedRange)")
                 
@@ -454,7 +487,7 @@ extension SecondViewController: UITextViewDelegate {
         // and set the cursor to the beginning of the text view
         if updatedText.isEmpty {
             
-            textView.attributedText = titleAttribute
+            textView.attributedText = titleAttributeString
             textView.textColor = UIColor.lightGray
             
             textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
@@ -483,6 +516,10 @@ extension SecondViewController: UITextViewDelegate {
     
     
     func textViewDidChange(_ textView: UITextView) {
+        print("textViewDidChange :textViewDidChange")
+        
+     
+        
         updateUndoButtons()
         
     }

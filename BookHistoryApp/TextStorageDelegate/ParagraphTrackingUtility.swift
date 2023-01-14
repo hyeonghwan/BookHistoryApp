@@ -21,21 +21,21 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     var paragraphs: [String] = []
     var attributes: [[NSAttributedString.Key: Any]] = []
     
+    var editObserver: AnyObserver<Int>?
+    
     var insertions: [Int] = []{
         didSet{
-            print("Util insertions: \(self.insertions)")
-            print("self.paragraph: \(self.paragraphs)")
+            
         }
     }
     var removals: [Int] = []{
         didSet{
-            print("Util removals: \(self.removals)")
+            
         }
     }
     var editions: [Int] = []{
         didSet{
-            print("Util editions: \(self.editions)")
-            print("self.paragraph: \(self.paragraphs)")
+
         }
     }
     var disposeBag = DisposeBag()
@@ -94,11 +94,17 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 removals.append(index)
                 
             case .editedParagraph(index: let index, descriptor: let paragraphDescriptor):
+                editObserver?.onNext(index)
                 paragraphs[index] = paragraphDescriptor.text
                 attributes[index] = attributes(from: paragraphDescriptor)
                 editions.append(index)
+                
+                print("paragraphDescriptor.text :\(paragraphDescriptor.text)")
             }
         }
+        
+    
+        print("self.paragraph: \(self.paragraphs)")
     }
     
     func attributes(from paragraphDescriptor: ParagraphTextStorage.ParagraphDescriptor) -> [NSAttributedString.Key: Any] {

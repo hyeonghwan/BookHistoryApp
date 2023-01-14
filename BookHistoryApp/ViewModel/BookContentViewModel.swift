@@ -19,6 +19,8 @@ protocol ContentViewModelType: AnyObject {
     var onParagraphData: AnyObserver<NSAttributedString> {get}
     
     func createBlockAttributeInput(_ blockType: BlockType,_ current: NSRange)
+
+    func removePlaceHolderAttribute(_ attributes: [NSAttributedString.Key : Any], _ range: Int)
     
     //OUtPut
     var toTextObservable: Observable<BookViewModelData> { get }
@@ -154,7 +156,7 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
                 guard original.id != nil else { return TextViewData(id: nil,
                                                                         title: self.paragraphTrackingUtility.paragraphs.first!,
                                                                         attributedString: textViewAttributedString) }
-                print("self.paragraphTrackingUtility.paragraphs : \(self.paragraphTrackingUtility.paragraphs)")
+                
                 return TextViewData(id: original.id,
                                     title: self.paragraphTrackingUtility.paragraphs.first!
                                     ,attributedString: textViewAttributedString)
@@ -204,5 +206,22 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
                 owned.paragraphTrackingUtility.addBlockActionPropertyToTextStorage(blockType, currentRange)
             })
             .disposed(by: disposeBag)
+    }
+    
+    func removePlaceHolderAttribute(_ attributes: [NSAttributedString.Key : Any], _ location: Int){
+//        self.paragraphTrackingUtility.resetPlace(attributes, location)
+        let relay = PublishSubject<([NSAttributedString.Key : Any],Int)>()
+        
+        relay
+            .withUnretained(self)
+            .subscribe(onNext: { owned,tuple in
+                let (key, location) = tuple
+                print("resetPlace")
+                owned.paragraphTrackingUtility.resetPlace(key, location)
+            })
+            .disposed(by: disposeBag)
+        
+        relay.onNext((attributes,location))
+        relay.onCompleted()
     }
 }

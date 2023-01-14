@@ -7,7 +7,9 @@
 
 import UIKit
 import ParagraphTextKit
-
+import RxCocoa
+import RxRelay
+import RxSwift
 
 extension ParagraphTrackingUtility{
     
@@ -47,21 +49,62 @@ extension ParagraphTrackingUtility{
     }
     
     private func addTitle(_ textStyle: UIFont.TextStyle,_ range: NSRange){
-        var currentRange = range
         var style = textStyle
         var font = UIFont.preferredFont(forTextStyle: style, familyName: UIFont.appleFontFamiliyName)
-        font.fontDescriptor.withSymbolicTraits(.traitBold)
+        
         guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
         
-        print("range: \(currentIndex)")
-        print("range: \(ranges[currentIndex])")
+        let placeTitleAttribute: [NSAttributedString.Key : Any ] = [.font : font ,
+                                                                    .foregroundColor : UIColor.placeHolderColor]
+        
+        var resultAttributedString = NSMutableAttributedString()
+        
+        let titleAttributeString = NSAttributedString(string: "제목1",attributes: placeTitleAttribute)
+        
+        resultAttributedString.append(titleAttributeString)
+        
+        resultAttributedString.append(NSAttributedString(string: "\n", attributes: NSAttributedString.Key.defaultAttribute))
+        
         let insertedRange = ranges[currentIndex]
-        
-        
+        if currentIndex == self.ranges.count - 1{
+            let lastInsertedString = NSAttributedString(string: "\n제목1",attributes: placeTitleAttribute)
+            self.paragraphStorage?.beginEditing()
+            self.paragraphStorage?.insert(lastInsertedString,
+                                          at: insertedRange.max)
+            self.paragraphStorage?.endEditing()
+            return
+        }
+
         self.paragraphStorage?.beginEditing()
-        self.paragraphStorage?.insert(NSAttributedString(string: "제목1\n",attributes: [.font : font]), at: insertedRange.max)
+        self.paragraphStorage?.insert(resultAttributedString,
+                                      at: insertedRange.max)
         self.paragraphStorage?.endEditing()
         
+        
+    }
+    
+    
+    func resetPlace(_ attributes: [NSAttributedString.Key : Any], _ location: Int){
+        let subject = PublishSubject<Int>()
+        editObserver = subject.asObserver()
+        print("editObserver setting")
+        subject
+            .observe(on: MainScheduler.instance)
+            .take(4)
+            .subscribe(onNext: { [weak self] index in
+                guard let self = self else {return}
+                
+                let paragraphRange = self.ranges[index]
+                print("paragrphRange for change : \(paragraphRange)")
+                
+                self.paragraphStorage?.beginEditing()
+                self.paragraphStorage?.addAttributes(attributes, range: NSRange(location: paragraphRange.location, length: paragraphRange.length))
+                
+                self.paragraphStorage?.endEditing()
+                
+                
+                
+            }).disposed(by: disposeBag)
         
     }
     

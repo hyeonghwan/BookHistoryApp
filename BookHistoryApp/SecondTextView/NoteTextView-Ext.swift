@@ -188,7 +188,12 @@ extension SecondTextView{
 
 extension SecondTextView{
     func addBoldAttribute(_ range: NSRange){
+        self.textStorage.beginEditing()
+        var font = UIFont.appleSDGothicNeo.bold.font(size: 16)
+        guard let descriptor = font.fontDescriptor.withSymbolicTraits(.traitBold) else { return }
+        let newFont = UIFont(descriptor: descriptor, size: font.pointSize)
         self.textStorage.addAttribute(.font, value: UIFont.appleSDGothicNeo.bold.font(size: 16), range: range)
+        self.textStorage.endEditing()
         self.typingAttributes[.font] = UIFont.appleSDGothicNeo.bold.font(size: 16)
     }
 }

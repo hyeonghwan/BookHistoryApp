@@ -7,7 +7,9 @@
 
 import UIKit
 
-
+extension UIColor{
+    static let placeHolderColor = UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1.0)
+}
 extension NSAttributedString.Key {
     static let comment = NSAttributedString.Key("comment")
     
@@ -15,11 +17,13 @@ extension NSAttributedString.Key {
     static let title_two = NSAttributedString.Key("Title2")
     static let title_three = NSAttributedString.Key("Title3")
     
-    static let placeHolderColor = UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1.0)
+    static let defaultAttribute = [NSAttributedString.Key.backgroundColor : UIColor.clear,
+                          NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+                          NSAttributedString.Key.foregroundColor : UIColor.label]
     
-    static let placeHolderColorAttributeDic: [NSAttributedString.Key : Any] = [ .foregroundColor : placeHolderColor ]
+    static let placeHolderColorAttributeDic: [NSAttributedString.Key : Any] = [ .foregroundColor : UIColor.placeHolderColor ]
     
-    static let placeHolderColorAttribute: (NSAttributedString.Key,UIColor) =  (.foregroundColor, placeHolderColor)
+    static let placeHolderColorAttribute: (NSAttributedString.Key,UIColor) =  (.foregroundColor, UIColor.placeHolderColor)
 //    [.foregroundColor : UIColor.lightGray,
 //                 .font : UIFont.boldSystemFont(ofSize: 20),
 //.presentationIntentAttributeName : titlePresentationKey]

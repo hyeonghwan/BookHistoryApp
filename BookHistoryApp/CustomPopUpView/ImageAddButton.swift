@@ -63,7 +63,7 @@ final class ImageAddButton: UIButton,ImageAddProtocol{
         
     }
     deinit{
-        print("imageButton deinit")
+        
         self.disposeBag = DisposeBag()
     }
     

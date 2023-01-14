@@ -69,7 +69,7 @@ final class BlockAddView: UIInputView{
             .bind(to: collectionView.rx.items(cellIdentifier: BlockActionElementCell.identify,
                                               cellType: BlockActionElementCell.self)){
                 index, item, cell in
-                print(item)
+                
                 cell.pipe.onNext(item)
                 
             }.disposed(by: disposeBag)
