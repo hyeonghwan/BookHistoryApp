@@ -98,8 +98,6 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 paragraphs[index] = paragraphDescriptor.text
                 attributes[index] = attributes(from: paragraphDescriptor)
                 editions.append(index)
-                
-                print("paragraphDescriptor.text :\(paragraphDescriptor.text)")
             }
         }
         

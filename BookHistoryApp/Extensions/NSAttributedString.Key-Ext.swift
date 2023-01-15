@@ -19,7 +19,8 @@ extension NSAttributedString.Key {
     
     static let defaultAttribute = [NSAttributedString.Key.backgroundColor : UIColor.clear,
                           NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
-                          NSAttributedString.Key.foregroundColor : UIColor.label]
+                          NSAttributedString.Key.foregroundColor : UIColor.label,
+                                   .paragraphStyle : NSParagraphStyle.defaultParagraphStyle()]
     
     static let placeHolderColorAttributeDic: [NSAttributedString.Key : Any] = [ .foregroundColor : UIColor.placeHolderColor ]
     

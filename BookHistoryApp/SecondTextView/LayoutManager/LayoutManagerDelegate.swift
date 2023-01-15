@@ -24,6 +24,7 @@ class LayoutManagerDelegate: NSObject, NSLayoutManagerDelegate {
         return 10
     }
     
+    
     // MARK: SubviewAttachingTextViewBehavior -> layoutAttachedSubviews()
     public func layoutManager(_ layoutManager: NSLayoutManager, didCompleteLayoutFor textContainer: NSTextContainer?, atEnd layoutFinishedFlag: Bool) {
         if layoutFinishedFlag {

@@ -46,9 +46,14 @@ class SecondViewController: UIViewController {
     
     let titlePresentationKey: String = "Title"
     
-    var defaultAttribute = [NSAttributedString.Key.backgroundColor : UIColor.clear,
-                          NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
-                          NSAttributedString.Key.foregroundColor : UIColor.label]
+    
+    lazy var defaultAttribute = [NSAttributedString.Key.backgroundColor : UIColor.clear,
+                                 NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+                                 NSAttributedString.Key.foregroundColor : UIColor.label,
+                                 .paragraphStyle : NSParagraphStyle.defaultParagraphStyle()]
+    
+    lazy var titleAttribute = [NSAttributedString.Key.foregroundColor : UIColor.label,
+                               .paragraphStyle : NSParagraphStyle.titleParagraphStyle()]
     
     lazy var titleAttributeString = NSAttributedString(string: "제목을 입력해주세요",
                                             attributes: defaultAttribute)
@@ -269,6 +274,7 @@ private extension SecondViewController{
     func setAttributedOnTextView_Title(_ bookData: BookViewModelData){
         guard let title = bookData.bookTitle else {return}
         guard let content = bookData.bookContent else {return}
+        print("content: \(content)")
         self.setLeftAlignTitleView(font: UIFont.boldSystemFont(ofSize: 16), text: title, textColor: .label)
         self.textView.attributedText = content
     }
@@ -402,16 +408,12 @@ extension SecondViewController: UITextViewDelegate {
 
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        print("textView : shouldChangeTextIn")
-        
+        print("textView : shouldChangeTextIn : \(text)")
+        print("textView : shouldChangeTextIn: \(range)")
         let paragraphRange = self.textView.getParagraphRange(range)
         
         if paragraphRange.length == 0 {
-            textView.typingAttributes = [
-                NSAttributedString.Key.backgroundColor : UIColor.clear,
-                NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
-                NSAttributedString.Key.foregroundColor : UIColor.label
-            ]
+            textView.typingAttributes = defaultAttribute
             return true
         }
         
@@ -420,33 +422,29 @@ extension SecondViewController: UITextViewDelegate {
            foregroundColor == UIColor.placeHolderColor,
            let originalFont = textView.textStorage.attribute(.font, at: paragraphRange.location, effectiveRange: nil) as? UIFont{
             
-            var titleAttribute = defaultAttribute
-            titleAttribute[.font] = originalFont
+            self.titleAttribute[.font] = originalFont
             
             var newRange: NSRange = NSRange(location: paragraphRange.location, length: paragraphRange.length - 1)
             
             if paragraphRange.max == textView.text.count{
                 newRange = paragraphRange
             }
+            
 
             
             textView.textStorage.beginEditing()
             textView.textStorage.replaceCharacters(in: newRange, with: "")
             textView.textStorage.endEditing()
             
-//            self.textStorage.beginEditing()
-//            self.textStorage.addAttribute(.font, value: UIFont.appleSDGothicNeo.bold.font(size: 16), range: range)
-//            self.textStorage.endEditing()
-            self.textView.typingAttributes[.font] = titleAttribute[.font]
+            textView.textStorage.beginEditing()
+            textView.textStorage.replaceCharacters(in: NSRange(location: newRange.location, length: 0),
+                                                   with: NSAttributedString(string: "\(text)", attributes: titleAttribute))
+            textView.textStorage.endEditing()
             
-            self.textView.typingAttributes[.foregroundColor] = titleAttribute[.foregroundColor]
             
-//            self.contentViewModel.removePlaceHolderAttribute(titleAttribute, newRange.location)
-           
-//            self.textView.typingAttributes = titleAttribute
-//            print("titleAttr : \(titleAttribute)")
+            self.textView.selectedRange = NSRange(location: newRange.location + 1, length: 0)
+            return false
             
-            return true
         }
         
         
@@ -465,13 +463,7 @@ extension SecondViewController: UITextViewDelegate {
                 return false
             }else {
                 
-                textView.typingAttributes = [
-                    NSAttributedString.Key.backgroundColor : UIColor.clear,
-                    NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
-                    NSAttributedString.Key.foregroundColor : UIColor.red
-                ]
-                print("seleted : \(self.textView.selectedRange)")
-                
+                textView.typingAttributes = defaultAttribute
                 
                 return true
             }
@@ -518,7 +510,7 @@ extension SecondViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         print("textViewDidChange :textViewDidChange")
         
-     
+//
         
         updateUndoButtons()
         

@@ -34,7 +34,7 @@ extension ParagraphTrackingUtility{
         case .numberList:
             break
         case .toggleList:
-            break
+            addToggle(current)
         case .quotation:
             break
         case .separatorLine:
@@ -55,7 +55,8 @@ extension ParagraphTrackingUtility{
         guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
         
         let placeTitleAttribute: [NSAttributedString.Key : Any ] = [.font : font ,
-                                                                    .foregroundColor : UIColor.placeHolderColor]
+                                                                    .foregroundColor : UIColor.placeHolderColor,
+                                                                    .paragraphStyle : NSParagraphStyle.titleParagraphStyle()]
         
         var resultAttributedString = NSMutableAttributedString()
         
@@ -63,7 +64,9 @@ extension ParagraphTrackingUtility{
         
         resultAttributedString.append(titleAttributeString)
         
-        resultAttributedString.append(NSAttributedString(string: "\n", attributes: NSAttributedString.Key.defaultAttribute))
+        var titleEnterStyle = NSAttributedString.Key.defaultAttribute
+        
+        resultAttributedString.append(NSAttributedString(string: " \n", attributes: titleEnterStyle))
         
         let insertedRange = ranges[currentIndex]
         if currentIndex == self.ranges.count - 1{
@@ -79,6 +82,13 @@ extension ParagraphTrackingUtility{
         self.paragraphStorage?.insert(resultAttributedString,
                                       at: insertedRange.max)
         self.paragraphStorage?.endEditing()
+        
+        
+    }
+    
+    func addToggle(_ range: NSRange){
+        let type = BlockType.toggleList
+        let currentRange = range
         
         
     }

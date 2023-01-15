@@ -16,7 +16,7 @@ final class BlockActionElementCell: UICollectionViewCell{
     
     private lazy var containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .tertiarySystemBackground
         return view
     }()
     

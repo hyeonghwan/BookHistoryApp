@@ -1,4 +1,5 @@
 PODS:
+  - NotionSwift (0.7.3)
   - OpenGraph (1.5.0)
   - RxCocoa (6.5.0):
     - RxRelay (= 6.5.0)
@@ -9,6 +10,7 @@ PODS:
   - SubviewAttachingTextView (1.5.0)
 
 DEPENDENCIES:
+  - NotionSwift (= 0.7.3)
   - OpenGraph
   - RxCocoa (= 6.5.0)
   - RxSwift (= 6.5.0)
@@ -16,6 +18,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - NotionSwift
     - OpenGraph
     - RxCocoa
     - RxRelay
@@ -23,12 +26,13 @@ SPEC REPOS:
     - SubviewAttachingTextView
 
 SPEC CHECKSUMS:
+  NotionSwift: 559e94c4a8d340f69e3542e4cf2b3b0f965e3b43
   OpenGraph: 765d59d309b578182052fdb0a430a0ba97349238
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
   SubviewAttachingTextView: 4b6e2d07bc4200f1d030887ead5c705200d105d1
 
-PODFILE CHECKSUM: ed9006ee9e13f329e803e1ea54688dcc17fafbbc
+PODFILE CHECKSUM: e6a91425242f4ea75b75078ecde5f1eae57cdcd4
 
 COCOAPODS: 1.11.3
