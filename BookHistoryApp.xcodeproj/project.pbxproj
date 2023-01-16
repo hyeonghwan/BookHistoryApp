@@ -68,6 +68,7 @@
 		9653C54F2973EA9100331143 /* NSParagraphStyle - ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9653C54E2973EA9100331143 /* NSParagraphStyle - ext.swift */; };
 		9653C55229740AAC00331143 /* BlockObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9653C55129740AAC00331143 /* BlockObject.swift */; };
 		9653C5542974124A00331143 /* Notion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9653C5532974124A00331143 /* Notion.swift */; };
+		9653C5562974352E00331143 /* ToggleBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9653C5552974352E00331143 /* ToggleBlock.swift */; };
 		9655FE322955FADA008991F1 /* BookData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9655FE302955FADA008991F1 /* BookData.xcdatamodeld */; };
 		9655FE392955FCB2008991F1 /* BookPageMO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9655FE352955FCB2008991F1 /* BookPageMO+CoreDataProperties.swift */; };
 		9655FE3B2955FCB2008991F1 /* BookMO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9655FE372955FCB2008991F1 /* BookMO+CoreDataProperties.swift */; };
@@ -90,6 +91,8 @@
 		9662286E2961F0BF00E39FC3 /* BlockEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662286D2961F0BF00E39FC3 /* BlockEditCell.swift */; };
 		9662287029620E0200E39FC3 /* UIViewController+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662286F29620E0200E39FC3 /* UIViewController+Ext.swift */; };
 		96622872296298CD00E39FC3 /* UIButton-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96622871296298CD00E39FC3 /* UIButton-Ext.swift */; };
+		966F7CB82975691B0037F2B3 /* BlockToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966F7CB72975691B0037F2B3 /* BlockToggleButton.swift */; };
+		966F7CBA29756BEC0037F2B3 /* ParagraphUtility-ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966F7CB929756BEB0037F2B3 /* ParagraphUtility-ext.swift */; };
 		968B7D70296947D500D7A347 /* ImageAddButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968B7D6F296947D500D7A347 /* ImageAddButton.swift */; };
 		96CAFA1B2963FE8B00E6D107 /* MenuActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAFA1A2963FE8B00E6D107 /* MenuActionHandler.swift */; };
 		96CAFA1D296400E100E6D107 /* AccessoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAFA1C296400E100E6D107 /* AccessoryViewModel.swift */; };
@@ -177,6 +180,7 @@
 		9653C54E2973EA9100331143 /* NSParagraphStyle - ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSParagraphStyle - ext.swift"; sourceTree = "<group>"; };
 		9653C55129740AAC00331143 /* BlockObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockObject.swift; sourceTree = "<group>"; };
 		9653C5532974124A00331143 /* Notion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notion.swift; sourceTree = "<group>"; };
+		9653C5552974352E00331143 /* ToggleBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleBlock.swift; sourceTree = "<group>"; };
 		9655FE312955FADA008991F1 /* BookData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BookData.xcdatamodel; sourceTree = "<group>"; };
 		9655FE352955FCB2008991F1 /* BookPageMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BookPageMO+CoreDataProperties.swift"; path = "BookHistoryApp/BookPageMO+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		9655FE372955FCB2008991F1 /* BookMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BookMO+CoreDataProperties.swift"; path = "BookHistoryApp/BookMO+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
@@ -199,6 +203,8 @@
 		9662286D2961F0BF00E39FC3 /* BlockEditCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockEditCell.swift; sourceTree = "<group>"; };
 		9662286F29620E0200E39FC3 /* UIViewController+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Ext.swift"; sourceTree = "<group>"; };
 		96622871296298CD00E39FC3 /* UIButton-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton-Ext.swift"; sourceTree = "<group>"; };
+		966F7CB72975691B0037F2B3 /* BlockToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockToggleButton.swift; sourceTree = "<group>"; };
+		966F7CB929756BEB0037F2B3 /* ParagraphUtility-ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ParagraphUtility-ext.swift"; sourceTree = "<group>"; };
 		968B7D6F296947D500D7A347 /* ImageAddButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAddButton.swift; sourceTree = "<group>"; };
 		96CAFA1A2963FE8B00E6D107 /* MenuActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuActionHandler.swift; sourceTree = "<group>"; };
 		96CAFA1C296400E100E6D107 /* AccessoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessoryViewModel.swift; sourceTree = "<group>"; };
@@ -275,6 +281,7 @@
 				9601D0C8295332730069EF58 /* ParagraphTrackingUtility.swift */,
 				9653C54829713C1000331143 /* ParagraphTrackingUtility-MoveBlock.swift */,
 				9653C54A29713C8200331143 /* ParagraphTracking-AddBlockActionType.swift */,
+				966F7CB929756BEB0037F2B3 /* ParagraphUtility-ext.swift */,
 			);
 			path = TextStorageDelegate;
 			sourceTree = "<group>";
@@ -349,10 +356,10 @@
 			children = (
 				962AA0BE292217AA00C2620B /* SecondTextView.swift */,
 				964D38A9296AD5FD00B826AB /* ParagraphTextStorage.swift */,
-				96CAFA2429669B7100E6D107 /* ViewElement */,
-				96CAFA292966A9FA00E6D107 /* LayoutManager */,
 				96CAFA1E29651EFF00E6D107 /* NoteTextView-Ext.swift */,
 				9653C545296FDDDC00331143 /* TextView-BlockAction-Ext.swift */,
+				96CAFA2429669B7100E6D107 /* ViewElement */,
+				96CAFA292966A9FA00E6D107 /* LayoutManager */,
 				9656ACB92967BAB400BB0903 /* TextStorage */,
 				96CAFA202965505D00E6D107 /* CommentTextView.swift */,
 				962AA0C6292233EE00C2620B /* SCTextView-Ext.swift */,
@@ -490,6 +497,7 @@
 			isa = PBXGroup;
 			children = (
 				9653C55129740AAC00331143 /* BlockObject.swift */,
+				9653C5552974352E00331143 /* ToggleBlock.swift */,
 			);
 			path = BlockObject;
 			sourceTree = "<group>";
@@ -560,6 +568,7 @@
 			isa = PBXGroup;
 			children = (
 				96CAFA2529669B8300E6D107 /* CommentView.swift */,
+				966F7CB72975691B0037F2B3 /* BlockToggleButton.swift */,
 			);
 			path = ViewElement;
 			sourceTree = "<group>";
@@ -762,6 +771,7 @@
 				9601D0C029519C260069EF58 /* VC+EXT.swift in Sources */,
 				9653C53E296EBCE200331143 /* BlockAddView.swift in Sources */,
 				9653C54F2973EA9100331143 /* NSParagraphStyle - ext.swift in Sources */,
+				9653C5562974352E00331143 /* ToggleBlock.swift in Sources */,
 				9656ACBB2967BD2D00BB0903 /* UIFont-Ext.swift in Sources */,
 				962AA0D2292384ED00C2620B /* UIApplication-Ext.swift in Sources */,
 				962AA0AD2920CEAA00C2620B /* CustomTextView-Ext.swift in Sources */,
@@ -787,12 +797,14 @@
 				962AA0CA29237ACF00C2620B /* TextPropertyMenuView.swift in Sources */,
 				962AA11D29322E4000C2620B /* BookService.swift in Sources */,
 				962AA118293224F800C2620B /* BookContentViewModel.swift in Sources */,
+				966F7CBA29756BEC0037F2B3 /* ParagraphUtility-ext.swift in Sources */,
 				962AA0BC2920F61800C2620B /* SecondViewController.swift in Sources */,
 				9601D0C9295332730069EF58 /* ParagraphTrackingUtility.swift in Sources */,
 				9662286C2961E83A00E39FC3 /* BlockEmptySection.swift in Sources */,
 				9662287029620E0200E39FC3 /* UIViewController+Ext.swift in Sources */,
 				962AA0AB2920C6AC00C2620B /* CustomColor.swift in Sources */,
 				962AA0B72920E97000C2620B /* NSTextAttachment-Ext.swift in Sources */,
+				966F7CB82975691B0037F2B3 /* BlockToggleButton.swift in Sources */,
 				962AA0CE29237E9C00C2620B /* KeyboardSecondVC-Ext.swift in Sources */,
 				965AED97291E80A9005B616F /* CustomTextStorage.swift in Sources */,
 				9653C55229740AAC00331143 /* BlockObject.swift in Sources */,

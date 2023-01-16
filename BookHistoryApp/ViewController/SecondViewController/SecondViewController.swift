@@ -119,6 +119,9 @@ class SecondViewController: UIViewController {
         let textView = SecondTextView(frame:.zero,
                                       textContainer: customTextContainer,
                                       dependency)
+        
+        contentViewModel.paragraphTrackingUtility.paragrphTextView = textView
+        
         textView.backgroundColor = .tertiarySystemBackground
         textView.delegate = self
         
@@ -160,10 +163,6 @@ class SecondViewController: UIViewController {
         addLongPressGesture()
     }
     
-//    static func preferredFont(forTextStyle style: UIFont.TextStyle, scaleFactor: CGFloat) -> UIFont {
-//      let font = UIFont.preferredFont(forTextStyle: style)
-//      return font.withSize(font.pointSize * scaleFactor)
-//    }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -376,11 +375,29 @@ extension SecondViewController: UITextViewDelegate {
         }
         
         let attribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil)
+        let blockAttribute = textView.textStorage.attribute(.blockType, at: paragraphRange.location + 1, effectiveRange: nil)
         guard let seletedForeGround = attribute as? UIColor else {return}
-  
         
+        
+    
+        if let blockAttribute = blockAttribute as? BlockType ,
+           blockAttribute == .toggleList{
+            let attribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location + 1, effectiveRange: nil) as? UIColor
+            
+            if let toggleForeGround = attribute,
+            toggleForeGround == UIColor.placeHolderColor{
+                self.textView.selectedRange = NSMakeRange(paragraphRange.location + 1, 0)
+                
+            }else{
+                
+            }
+            return
+        }
+
         if seletedForeGround == UIColor.placeHolderColor{
             self.textView.selectedRange = NSMakeRange(paragraphRange.location, 0)
+            return
+            
         }
         
         if textView.attributedText.string == titleAttributeString.string{
@@ -410,6 +427,7 @@ extension SecondViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         print("textView : shouldChangeTextIn : \(text)")
         print("textView : shouldChangeTextIn: \(range)")
+        
         let paragraphRange = self.textView.getParagraphRange(range)
         
         if paragraphRange.length == 0 {
@@ -417,9 +435,42 @@ extension SecondViewController: UITextViewDelegate {
             return true
         }
         
+        let blockAttribute = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil)
+        let foregroundColor = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil) as? UIColor
         
-        if let foregroundColor = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil) as? UIColor,
-           foregroundColor == UIColor.placeHolderColor,
+        
+        //toggle place holder detect
+        if let blockAttribute = blockAttribute as? BlockType ,
+           blockAttribute == .toggleList{
+            
+            let attribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location + 1, effectiveRange: nil) as? UIColor
+            
+            if let toggleForeGround = attribute,
+            toggleForeGround == UIColor.placeHolderColor{
+                var toggleRange: NSRange = NSRange(location: paragraphRange.location + 1, length: paragraphRange.length - 2)
+                
+                if paragraphRange.max == textView.text.count{
+                    toggleRange = NSRange(location: paragraphRange.location + 1, length: paragraphRange.length - 1)
+                }
+                
+                textView.textStorage.beginEditing()
+                textView.textStorage.replaceCharacters(in: toggleRange, with: "")
+                textView.textStorage.endEditing()
+                
+                textView.textStorage.beginEditing()
+                textView.textStorage.replaceCharacters(in: NSRange(location: toggleRange.location, length: 0),
+                                                       with: NSAttributedString(string: "\(text)",attributes: NSAttributedString.Key.toggleAttributes))
+                textView.textStorage.endEditing()
+                
+                self.textView.selectedRange = NSRange(location: toggleRange.location + 1, length: 0)
+                return false
+            }else{
+                return true
+            }
+        }
+        
+        
+        if foregroundColor == UIColor.placeHolderColor,
            let originalFont = textView.textStorage.attribute(.font, at: paragraphRange.location, effectiveRange: nil) as? UIFont{
             
             self.titleAttribute[.font] = originalFont
@@ -429,8 +480,6 @@ extension SecondViewController: UITextViewDelegate {
             if paragraphRange.max == textView.text.count{
                 newRange = paragraphRange
             }
-            
-
             
             textView.textStorage.beginEditing()
             textView.textStorage.replaceCharacters(in: newRange, with: "")

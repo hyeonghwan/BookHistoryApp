@@ -86,7 +86,8 @@ class SecondTextView: UITextView {
         // Connect the attachment behavior
         self.attachmentBehavior.textView = self
         self.layoutManager.delegate = self.layoutManagerDelegate
-        self.textStorage.delegate = self.attachmentBehavior
+//        self.textStorage.delegate = self.attachmentBehavior
+        self.textStorage.delegate = self.contentViewModel?.paragraphTrackingUtility
     }
     
     convenience init(frame: CGRect,

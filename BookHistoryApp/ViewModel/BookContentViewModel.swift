@@ -145,7 +145,6 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
         toMetaDataURL = metaDataPipe
         
         
-    
         super.init()
         
         paragraphPipe

@@ -17,6 +17,8 @@ extension NSAttributedString.Key {
     static let title_two = NSAttributedString.Key("Title2")
     static let title_three = NSAttributedString.Key("Title3")
     
+    static let blockType = NSAttributedString.Key("BlockType")
+    
     static let defaultAttribute = [NSAttributedString.Key.backgroundColor : UIColor.clear,
                           NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
                           NSAttributedString.Key.foregroundColor : UIColor.label,
@@ -25,9 +27,24 @@ extension NSAttributedString.Key {
     static let placeHolderColorAttributeDic: [NSAttributedString.Key : Any] = [ .foregroundColor : UIColor.placeHolderColor ]
     
     static let placeHolderColorAttribute: (NSAttributedString.Key,UIColor) =  (.foregroundColor, UIColor.placeHolderColor)
-//    [.foregroundColor : UIColor.lightGray,
-//                 .font : UIFont.boldSystemFont(ofSize: 20),
-//.presentationIntentAttributeName : titlePresentationKey]
+    
+    
+    static let togglePlaceHolderAttributes: [NSAttributedString.Key : Any] =
+    [NSAttributedString.Key.blockType : BlockType.toggleList,
+     NSAttributedString.Key.backgroundColor : UIColor.clear,
+     NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+     NSAttributedString.Key.foregroundColor : UIColor.placeHolderColor,
+     .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
+    
+    static let toggleAttributes: [NSAttributedString.Key : Any] =
+    [NSAttributedString.Key.blockType : BlockType.toggleList,
+     NSAttributedString.Key.backgroundColor : UIColor.clear,
+     NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+     NSAttributedString.Key.foregroundColor : UIColor.label,
+     .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
+    //    [.foregroundColor : UIColor.lightGray,
+    //                 .font : UIFont.boldSystemFont(ofSize: 20),
+    //.presentationIntentAttributeName : titlePresentationKey]
 }
 
 extension NSAttributedString{

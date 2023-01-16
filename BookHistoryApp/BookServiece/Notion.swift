@@ -19,7 +19,7 @@ class Notion {
     
         notion.page(pageId: pageId) { [notion] in
             print("---- Properties ----- ")
-            print($0)
+            
             switch $0 {
             case .success(let page):
                 notion.blockChildren(blockId: page.id.toBlockIdentifier) { data in
@@ -35,9 +35,24 @@ class Notion {
                 break
             }
         }
+        let parentPageId = Page.Identifier("{PAGE UUIDv4}")
+
+        let request = PageCreateRequest(
+            parent: .page(parentPageId),
+            properties: [
+                "title": .init(
+                    type: .title([
+                        .init(string: "Lorem ipsum \(Date())")
+                    ])
+                )
+            ]
+        )
+
+        notion.pageCreate(request: request) {
+            print($0)
+        }
         
         
     }
 }
-
 

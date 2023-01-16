@@ -51,11 +51,11 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
             })
         }
     }
+    weak var paragrphTextView: UITextView?
     
     weak var subAttachMentBehavior: SubviewAttachingTextViewBehavior?
     
-    var publish = PublishSubject<Void>()
-    var changeFinish: AnyObserver<Void>?
+    
     
     
     private var firstInit = true

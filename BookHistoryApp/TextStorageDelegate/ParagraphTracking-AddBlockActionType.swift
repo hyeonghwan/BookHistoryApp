@@ -10,6 +10,7 @@ import ParagraphTextKit
 import RxCocoa
 import RxRelay
 import RxSwift
+import SubviewAttachingTextView
 
 extension ParagraphTrackingUtility{
     
@@ -85,11 +86,41 @@ extension ParagraphTrackingUtility{
         
         
     }
+    @objc func toggleButtonClick(_ sender: UIButton){
+        print("toggleButtonClick")
+    }
     
     func addToggle(_ range: NSRange){
-        let type = BlockType.toggleList
-        let currentRange = range
         
+        guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
+        
+        let button = BlockToggleButton(frame: .zero,
+                                       dependency: BlockToggleDependency(toggleAction: self))
+       
+        let insertedRange = ranges[currentIndex]
+        
+        if currentIndex == self.ranges.count - 1{
+            let togglString = NSAttributedString(string: "\n토글", attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
+            var result = togglString.insertingAttachment(SubviewTextAttachment(view: button,
+                                                                               size: CGSize(width: 35, height: 13)), at: 1)
+            result = result.addingAttributes(NSAttributedString.Key.togglePlaceHolderAttributes)
+            
+            self.paragraphStorage?.beginEditing()
+            self.paragraphStorage?.insert(result, at: insertedRange.max)
+            self.paragraphStorage?.endEditing()
+            return
+        }
+        
+        let togglString = NSAttributedString(string: "토글\n", attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
+        var result = togglString.insertingAttachment(SubviewTextAttachment(view: button,
+                                                                           size: CGSize(width: 35, height: 13)), at: 0)
+        result = result.addingAttributes(NSAttributedString.Key.togglePlaceHolderAttributes)
+        
+        self.paragraphStorage?.beginEditing()
+        self.paragraphStorage?.insert(result, at: insertedRange.max)
+        self.paragraphStorage?.endEditing()
+        
+        print(result)
         
     }
     

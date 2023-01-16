@@ -33,7 +33,7 @@ public extension NSAttributedString {
 
     func insertingAttachment(_ attachment: NSTextAttachment,
                              at index: Int,
-                             with paragraphStyle: NSParagraphStyle? = nil) -> NSAttributedString {
+                             with paragraphStyle: NSParagraphStyle? = NSParagraphStyle()) -> NSAttributedString {
         
         let copy = self.mutableCopy() as! NSMutableAttributedString
         
@@ -55,24 +55,20 @@ public extension NSAttributedString {
 
 public extension NSMutableAttributedString {
 
-    func insertAttachment(_ attachment: NSTextAttachment, at index: Int, with paragraphStyle: NSParagraphStyle? = nil) {
+    func insertAttachment(_ attachment: NSTextAttachment, at index: Int, with paragraphStyle: NSParagraphStyle? = NSParagraphStyle()) {
         let plainAttachmentString = NSAttributedString(attachment: attachment)
 
         if let paragraphStyle = paragraphStyle {
             let attachmentString = plainAttachmentString
-                .addingAttributes([
-//                    NSAttributedString.Key.backgroundColor : UIColor.clear,
-//                    NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .bold),
-//                    NSAttributedString.Key.foregroundColor : UIColor.label,
-                    .paragraphStyle : paragraphStyle ])
+                .addingAttributes(NSAttributedString.Key.defaultAttribute)
             let separatorString = NSAttributedString(string: .paragraphSeparator)
 
             // Surround the attachment string with paragraph separators, so that the paragraph style is only applied to it
             let insertion = NSMutableAttributedString()
             insertion.append(separatorString)
             insertion.append(attachmentString)
-            insertion.append(separatorString)
-
+//            insertion.append(separatorString)
+            print("separatorString  \(insertion)")
             self.insert(insertion, at: index)
         } else {
             self.insert(plainAttachmentString, at: index)
