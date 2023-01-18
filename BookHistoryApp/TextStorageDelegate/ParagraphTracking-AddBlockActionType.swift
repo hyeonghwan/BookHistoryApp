@@ -50,18 +50,14 @@ extension ParagraphTrackingUtility{
     }
     
     private func addTitle(_ textStyle: UIFont.TextStyle,_ range: NSRange){
-        var style = textStyle
-        var font = UIFont.preferredFont(forTextStyle: style, familyName: UIFont.appleFontFamiliyName)
         
         guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
         
-        let placeTitleAttribute: [NSAttributedString.Key : Any ] = [.font : font ,
-                                                                    .foregroundColor : UIColor.placeHolderColor,
-                                                                    .paragraphStyle : NSParagraphStyle.titleParagraphStyle()]
+        let titleAttributes = NSAttributedString.Key.getPlaceTitleAttribues(textStyle)
         
         var resultAttributedString = NSMutableAttributedString()
         
-        let titleAttributeString = NSAttributedString(string: "제목1",attributes: placeTitleAttribute)
+        let titleAttributeString = NSAttributedString(string: "제목1",attributes:titleAttributes )
         
         resultAttributedString.append(titleAttributeString)
         
@@ -71,7 +67,7 @@ extension ParagraphTrackingUtility{
         
         let insertedRange = ranges[currentIndex]
         if currentIndex == self.ranges.count - 1{
-            let lastInsertedString = NSAttributedString(string: "\n제목1",attributes: placeTitleAttribute)
+            let lastInsertedString = NSAttributedString(string: "\n제목1",attributes: titleAttributes)
             self.paragraphStorage?.beginEditing()
             self.paragraphStorage?.insert(lastInsertedString,
                                           at: insertedRange.max)
@@ -90,38 +86,67 @@ extension ParagraphTrackingUtility{
         print("toggleButtonClick")
     }
     
-    func addToggle(_ range: NSRange){
+    func addToggle(_ range: NSRange,_ text: String? = nil){
         
         guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
-        
-        let button = BlockToggleButton(frame: .zero,
-                                       dependency: BlockToggleDependency(toggleAction: self))
        
         let insertedRange = ranges[currentIndex]
         
-        if currentIndex == self.ranges.count - 1{
-            let togglString = NSAttributedString(string: "\n토글", attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
-            var result = togglString.insertingAttachment(SubviewTextAttachment(view: button,
-                                                                               size: CGSize(width: 35, height: 13)), at: 1)
-            result = result.addingAttributes(NSAttributedString.Key.togglePlaceHolderAttributes)
-            
-            self.paragraphStorage?.beginEditing()
-            self.paragraphStorage?.insert(result, at: insertedRange.max)
-            self.paragraphStorage?.endEditing()
+        if let restText = text{
+            createToggleAttributedString(restText, currentIndex, insertedRange)
             return
         }
         
-        let togglString = NSAttributedString(string: "토글\n", attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
-        var result = togglString.insertingAttachment(SubviewTextAttachment(view: button,
-                                                                           size: CGSize(width: 35, height: 13)), at: 0)
-        result = result.addingAttributes(NSAttributedString.Key.togglePlaceHolderAttributes)
+        createToggleAttributedString(nil,currentIndex, insertedRange)
+        
+    }
+    
+    private func createToggleAttributedString(_ text: String? = nil, _ index: Int, _ range: NSRange) {
+        
+        let plusIndex =  (index < (self.ranges.count - 1)) ? 1 : 2
+        let insertedRange = range
+        
+        var togglString: NSAttributedString
+        var resultString: NSAttributedString
+        
+        if let text = text{
+            togglString = NSAttributedString(string: "\(text)", attributes: NSAttributedString.Key.toggleAttributes)
+            resultString = insertingToggleAttachment(togglString, attributes: NSAttributedString.Key.toggleAttributes, plusIndex - 1)
+        }else{
+            if plusIndex == 1{
+                togglString = NSAttributedString(string: "토글\n", attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
+            }else{
+                togglString = NSAttributedString(string: "\n토글", attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
+            }
+            resultString = insertingToggleAttachment(togglString, attributes: NSAttributedString.Key.togglePlaceHolderAttributes, plusIndex - 1)
+        }
         
         self.paragraphStorage?.beginEditing()
-        self.paragraphStorage?.insert(result, at: insertedRange.max)
+        self.paragraphStorage?.insert(resultString, at: insertedRange.max)
         self.paragraphStorage?.endEditing()
         
-        print(result)
+        self.paragrphTextView?.selectedRange = NSRange(location: insertedRange.max + plusIndex, length: 0)
         
+    }
+    private func insertingToggleAttachment(_ attString: NSAttributedString ,attributes: [NSAttributedString.Key : Any],_ position: Int) -> NSAttributedString{
+        let textElement = RawTextElement(content: "", link: nil)
+        let richTextElement = RichTextElement(text: textElement)
+        let toggleElement = ToggleBlock(richText: richTextElement, color: nil, children: nil)
+        let object = BlockObject(blockType: .toggleList, object: toggleElement)
+        
+        let dependency = BlockToggleDependency(toggleAction: self,blockObject: object)
+        
+        let button = BlockToggleButton(frame: .zero,
+                                       dependency: dependency)
+        
+        let attachment = SubviewTextAttachment(view: button,
+                                               size: CGSize(width: 35, height: 13))
+        
+        
+        var result = attString.insertingAttachment(attachment, at: position)
+        
+        result = result.addingAttributes(attributes)
+        return result
     }
     
     

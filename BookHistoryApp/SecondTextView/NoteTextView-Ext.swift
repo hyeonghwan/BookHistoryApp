@@ -112,11 +112,16 @@ extension SecondTextView{
         
     }
 }
-extension SecondTextView{
+extension UITextView{
+    func rangeFromTextRange(textRange:UITextRange) -> NSRange {
+        let location:Int = self.offset(from: self.beginningOfDocument, to: textRange.start)
+        let length:Int = self.offset(from: textRange.start, to: textRange.end)
+           return NSMakeRange(location, length)
+       }
     func getParagraphRange(_ range: NSRange) -> NSRange {
         let allText: String = self.text
         let composeText: NSString = allText as NSString
-        var paragraphRange = composeText.paragraphRange(for: range)
+        let paragraphRange = composeText.paragraphRange(for: range)
         return paragraphRange
     }
 }

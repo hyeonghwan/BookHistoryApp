@@ -67,6 +67,7 @@ class SecondTextView: UITextView {
             self.contentSizeObserver = self.contentSize
         }
     }
+    
 
     open override var textContainerInset: UIEdgeInsets {
         didSet {

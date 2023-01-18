@@ -11,17 +11,22 @@ import RxCocoa
 
 
 struct BlockToggleDependency{
-    let toggleAction: BlockToggleAction
+    weak var toggleAction: BlockToggleAction?
+    var blockObject: BlockObject?
+    
 }
 final class BlockToggleButton: UIButton{
     
     var disposeBag = DisposeBag()
-    
+    var element: BlockObject?
     
     convenience init(frame: CGRect,dependency: BlockToggleDependency) {
         self.init(frame: frame)
+        guard let toggleAction = dependency.toggleAction else {return}
+        guard let element = dependency.blockObject else {return}
+        self.element = element
         
-        dependency.toggleAction
+        toggleAction
             .createToggleObservable(
                 self.rx.tap.map{ _ in self.imageView?.transform == CGAffineTransform(rotationAngle: -(.pi / 2))
                 }.asDriver(onErrorJustReturn: false)
@@ -30,6 +35,10 @@ final class BlockToggleButton: UIButton{
         self.rx.tap.asDriver()
             .drive(onNext: { [weak self] in
                 guard let self = self else {return}
+                print("BlockToggleButton : \(self.frame)")
+                print("BlockToggleButton : \(self.bounds)")
+                print("element: \(self.element)")
+                
                 if self.imageView?.transform == CGAffineTransform(rotationAngle: .pi / 2){
                     self.imageView?.transform = self.imageView?.transform.rotated(by: -(.pi / 2)) ?? CGAffineTransform(rotationAngle: -(.pi / 2))
                     

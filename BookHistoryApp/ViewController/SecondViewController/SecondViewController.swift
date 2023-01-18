@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Foundation
 import SnapKit
 import RxCocoa
 import RxSwift
@@ -47,13 +48,14 @@ class SecondViewController: UIViewController {
     let titlePresentationKey: String = "Title"
     
     
-    lazy var defaultAttribute = [NSAttributedString.Key.backgroundColor : UIColor.clear,
-                                 NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
-                                 NSAttributedString.Key.foregroundColor : UIColor.label,
-                                 .paragraphStyle : NSParagraphStyle.defaultParagraphStyle()]
+    lazy var defaultAttribute: [NSAttributedString.Key : Any] =
+    [NSAttributedString.Key.blockType : BlockType.paragraph,
+     NSAttributedString.Key.backgroundColor : UIColor.clear,
+     NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+     NSAttributedString.Key.foregroundColor : UIColor.label,
+     .paragraphStyle : NSParagraphStyle.defaultParagraphStyle()]
     
-    lazy var titleAttribute = [NSAttributedString.Key.foregroundColor : UIColor.label,
-                               .paragraphStyle : NSParagraphStyle.titleParagraphStyle()]
+    
     
     lazy var titleAttributeString = NSAttributedString(string: "제목을 입력해주세요",
                                             attributes: defaultAttribute)
@@ -151,8 +153,6 @@ class SecondViewController: UIViewController {
         
         settingNavigation()
         
-        addTextViewTitlePlaceHolder()
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
             guard let self = self else {return}
             self.textView.contentSize.height += 500
@@ -161,9 +161,12 @@ class SecondViewController: UIViewController {
         settupBinding()
         
         addLongPressGesture()
+        
     }
     
     
+                                            
+                                            
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.textView.inputAccessoryView = nil
@@ -273,20 +276,12 @@ private extension SecondViewController{
     func setAttributedOnTextView_Title(_ bookData: BookViewModelData){
         guard let title = bookData.bookTitle else {return}
         guard let content = bookData.bookContent else {return}
-        print("content: \(content)")
+        print("coontenn : \(content)")
         self.setLeftAlignTitleView(font: UIFont.boldSystemFont(ofSize: 16), text: title, textColor: .label)
         self.textView.attributedText = content
     }
     
-    
-    func addTextViewTitlePlaceHolder() {
-       
-//        textView.attributedText = titleAttribute
-//        textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
-//        textView.attributedText = subAttatchViewTest()
-        
-    }
-    
+   
 
     //정규식 으로 추가해서 URL 추출이 필요함!
     func isTextValidURL(_ text: String) -> Bool{
@@ -364,27 +359,40 @@ extension SecondViewController: UIGestureRecognizerDelegate{
 
 
 extension SecondViewController: UITextViewDelegate {
-    
     func textViewDidChangeSelection(_ textView: UITextView) {
         
         let paragraphRange = self.textView.getParagraphRange(textView.selectedRange)
         
-        print("paragraphRange : \(paragraphRange)")
+        
         if paragraphRange.length == 0 {
             return
         }
         
         let attribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil)
-        let blockAttribute = textView.textStorage.attribute(.blockType, at: paragraphRange.location + 1, effectiveRange: nil)
+        var blockAttribute: Any?
+        
+        if paragraphRange.length > 1{
+            blockAttribute = textView.textStorage.attribute(.blockType, at: paragraphRange.location + 1, effectiveRange: nil)
+        }
+        
         guard let seletedForeGround = attribute as? UIColor else {return}
         
         
     
         if let blockAttribute = blockAttribute as? BlockType ,
            blockAttribute == .toggleList{
-            let attribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location + 1, effectiveRange: nil) as? UIColor
+            var nsRange = NSRange()
+            nsRange = paragraphRange
             
-            if let toggleForeGround = attribute,
+            let toggleFirstAttribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location , effectiveRange: &nsRange) as? UIColor
+            let toggleParagraphattribute = textView.textStorage.attribute(.foregroundColor, at: nsRange.max , effectiveRange: &nsRange) as? UIColor
+            
+            if toggleFirstAttribute == UIColor.placeHolderColor,
+               textView.selectedRange == NSRange(location: paragraphRange.location, length: 0){
+                self.textView.selectedRange = NSMakeRange(paragraphRange.location + 1, 0)
+            }
+            
+            if let toggleForeGround = toggleParagraphattribute,
             toggleForeGround == UIColor.placeHolderColor{
                 self.textView.selectedRange = NSMakeRange(paragraphRange.location + 1, 0)
                 
@@ -425,8 +433,6 @@ extension SecondViewController: UITextViewDelegate {
 
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        print("textView : shouldChangeTextIn : \(text)")
-        print("textView : shouldChangeTextIn: \(range)")
         
         let paragraphRange = self.textView.getParagraphRange(range)
         
@@ -442,38 +448,15 @@ extension SecondViewController: UITextViewDelegate {
         //toggle place holder detect
         if let blockAttribute = blockAttribute as? BlockType ,
            blockAttribute == .toggleList{
-            
-            let attribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location + 1, effectiveRange: nil) as? UIColor
-            
-            if let toggleForeGround = attribute,
-            toggleForeGround == UIColor.placeHolderColor{
-                var toggleRange: NSRange = NSRange(location: paragraphRange.location + 1, length: paragraphRange.length - 2)
-                
-                if paragraphRange.max == textView.text.count{
-                    toggleRange = NSRange(location: paragraphRange.location + 1, length: paragraphRange.length - 1)
-                }
-                
-                textView.textStorage.beginEditing()
-                textView.textStorage.replaceCharacters(in: toggleRange, with: "")
-                textView.textStorage.endEditing()
-                
-                textView.textStorage.beginEditing()
-                textView.textStorage.replaceCharacters(in: NSRange(location: toggleRange.location, length: 0),
-                                                       with: NSAttributedString(string: "\(text)",attributes: NSAttributedString.Key.toggleAttributes))
-                textView.textStorage.endEditing()
-                
-                self.textView.selectedRange = NSRange(location: toggleRange.location + 1, length: 0)
-                return false
-            }else{
-                return true
-            }
+            return toggleValid(text, paragraphRange)
         }
         
         
         if foregroundColor == UIColor.placeHolderColor,
-           let originalFont = textView.textStorage.attribute(.font, at: paragraphRange.location, effectiveRange: nil) as? UIFont{
+           let type = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil) as? BlockType,
+           let font = textView.textStorage.attribute(.font, at: paragraphRange.location, effectiveRange: nil) as? UIFont{
             
-            self.titleAttribute[.font] = originalFont
+            let titleAttributes = NSAttributedString.Key.getTitleAttributes(type, font)
             
             var newRange: NSRange = NSRange(location: paragraphRange.location, length: paragraphRange.length - 1)
             
@@ -481,16 +464,18 @@ extension SecondViewController: UITextViewDelegate {
                 newRange = paragraphRange
             }
             
+            
             textView.textStorage.beginEditing()
             textView.textStorage.replaceCharacters(in: newRange, with: "")
             textView.textStorage.endEditing()
             
+            //첫번째 글자 이후로 Default attribute가 적용이 되는 현상
             textView.textStorage.beginEditing()
             textView.textStorage.replaceCharacters(in: NSRange(location: newRange.location, length: 0),
-                                                   with: NSAttributedString(string: "\(text)", attributes: titleAttribute))
+                                                   with: NSAttributedString(string: "\(text)", attributes: titleAttributes))
             textView.textStorage.endEditing()
             
-            
+            self.textView.typingAttributes = titleAttributes
             self.textView.selectedRange = NSRange(location: newRange.location + 1, length: 0)
             return false
             
@@ -547,6 +532,7 @@ extension SecondViewController: UITextViewDelegate {
         // For every other case, the text should change with the usual
         // behavior...
         else {
+            textView.typingAttributes = defaultAttribute
             return true
         }
         
@@ -558,8 +544,6 @@ extension SecondViewController: UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
         print("textViewDidChange :textViewDidChange")
-        
-//
         
         updateUndoButtons()
         
@@ -576,5 +560,24 @@ extension SecondViewController: NSAttachmentSettingProtocol{
         self.present(blockOFSettingVC, animated: true)
     }
 }
-
+extension SecondViewController{
+    func toggleValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
+        if self.contentViewModel.replaceBlockAttribute(text,paragraphRange){
+            guard let restRange = textView.textRangeFromNSRange(range: paragraphRange) else {return false}
+            guard let restText = textView.text(in: restRange) else {return false}
+            
+            if (restText.length == 3 && text == ""){
+                textView.textStorage.beginEditing()
+                textView.textStorage.replaceCharacters(in: NSRange(location: paragraphRange.location + 1, length: paragraphRange.length - 2), with: NSAttributedString(string: "토글",attributes: NSAttributedString.Key.togglePlaceHolderAttributes))
+                textView.textStorage.endEditing()
+                
+                textView.selectedRange = NSRange(location: paragraphRange.location + 1, length: 0)
+                return false
+            }
+            return true
+        }else{
+            return false
+        }
+    }
+}
 

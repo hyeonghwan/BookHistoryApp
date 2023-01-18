@@ -22,6 +22,8 @@ protocol ContentViewModelType: AnyObject {
 
     func removePlaceHolderAttribute(_ attributes: [NSAttributedString.Key : Any], _ range: Int)
     
+    func replaceBlockAttribute(_ text: String,_ paragraphRange: NSRange) -> Bool
+    
     //OUtPut
     var toTextObservable: Observable<BookViewModelData> { get }
     
@@ -222,5 +224,9 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
         
         relay.onNext((attributes,location))
         relay.onCompleted()
+    }
+    
+    func replaceBlockAttribute(_ text: String,_ paragraphRange: NSRange) -> Bool{
+        return self.paragraphTrackingUtility.replaceToggleAttribues(text,paragraphRange)
     }
 }

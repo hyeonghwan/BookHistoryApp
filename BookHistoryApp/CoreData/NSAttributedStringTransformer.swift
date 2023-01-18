@@ -16,7 +16,6 @@ public class NSAttributedStringTransformer: ValueTransformer {
         guard let attributedString = value as? NSAttributedString else { return nil}
         
         do{
-            print("transformedValue : \(attributedString)")
             let data = try NSKeyedArchiver.archivedData(withRootObject: attributedString,
                                                         requiringSecureCoding: false)
             

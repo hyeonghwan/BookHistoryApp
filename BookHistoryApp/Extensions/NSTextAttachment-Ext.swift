@@ -65,7 +65,7 @@ public extension NSMutableAttributedString {
 
             // Surround the attachment string with paragraph separators, so that the paragraph style is only applied to it
             let insertion = NSMutableAttributedString()
-            insertion.append(separatorString)
+//            insertion.append(separatorString)
             insertion.append(attachmentString)
 //            insertion.append(separatorString)
             print("separatorString  \(insertion)")

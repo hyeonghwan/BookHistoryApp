@@ -42,9 +42,33 @@ extension NSAttributedString.Key {
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.label,
      .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
-    //    [.foregroundColor : UIColor.lightGray,
-    //                 .font : UIFont.boldSystemFont(ofSize: 20),
-    //.presentationIntentAttributeName : titlePresentationKey]
+    
+    
+    static func getPlaceTitleAttribues(_ fontStyle: UIFont.TextStyle) -> [NSAttributedString.Key : Any]{
+        var font = UIFont.preferredFont(forTextStyle: fontStyle, familyName: UIFont.appleFontFamiliyName)
+        
+        var result : [NSAttributedString.Key : Any] = [.font : font,
+                       .foregroundColor : UIColor.placeHolderColor,
+                       .paragraphStyle : NSParagraphStyle.titleParagraphStyle()]
+        switch fontStyle{
+        case .title1:
+            result[.blockType] = BlockType.title1
+        case .title2:
+            result[.blockType] = BlockType.title2
+        case .title3:
+            result[.blockType] = BlockType.title3
+        default:
+            return [:]
+        }
+        return result
+    }
+    
+    static func getTitleAttributes(_ type: BlockType,_ font: UIFont) -> [NSAttributedString.Key : Any]{
+        return [NSAttributedString.Key.blockType : type,
+                .font : font,
+                NSAttributedString.Key.foregroundColor : UIColor.label,
+                .paragraphStyle : NSParagraphStyle.titleParagraphStyle()]
+    }
 }
 
 extension NSAttributedString{

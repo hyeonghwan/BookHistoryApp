@@ -19,13 +19,17 @@ enum BlockDirection{
 final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     
     var paragraphs: [String] = []
+    
+    var blocks: [BlockType] = []
+    
+    var blockObject: [BlockObject] = []
+    
     var attributes: [[NSAttributedString.Key: Any]] = []
     
     var editObserver: AnyObserver<Int>?
     
     var insertions: [Int] = []{
         didSet{
-            
         }
     }
     var removals: [Int] = []{
@@ -86,23 +90,46 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 }
                 
                 paragraphs.insert(paragraphDescriptor.text, at: index)
-                attributes.insert(attributes(from: paragraphDescriptor), at: index)
+                
+                let allAttributes = attributes(from: paragraphDescriptor)
+                
+                if let blockAttribute = allAttributes[.blockType] as? BlockType {
+                    blocks.insert(blockAttribute, at: index)
+                    
+                }else{
+                    blocks.insert(.paragraph, at: index)
+                }
+                
+                attributes.insert(allAttributes, at: index)
+                
                 
             case .removedParagraph(index: let index):
                 paragraphs.remove(at: index)
+                blocks.remove(at: index)
                 attributes.remove(at: index)
                 removals.append(index)
                 
             case .editedParagraph(index: let index, descriptor: let paragraphDescriptor):
                 editObserver?.onNext(index)
+                
+                let allAttributes = attributes(from: paragraphDescriptor)
+                
                 paragraphs[index] = paragraphDescriptor.text
-                attributes[index] = attributes(from: paragraphDescriptor)
+                attributes[index] = allAttributes
                 editions.append(index)
+                
+                if let blockAttribute = allAttributes[.blockType] as? BlockType {
+                    blocks[index] = blockAttribute
+                    print("editedParagraph : \(index), \(paragraphDescriptor)")
+                }else{
+                    blocks[index] = .paragraph
+                }
             }
         }
         
-    
+        
         print("self.paragraph: \(self.paragraphs)")
+        print("self.blocks : \(self.blocks)")
     }
     
     func attributes(from paragraphDescriptor: ParagraphTextStorage.ParagraphDescriptor) -> [NSAttributedString.Key: Any] {
