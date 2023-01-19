@@ -56,6 +56,10 @@
 		96477D33291A24EB00830EFB /* CustomTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96477D32291A24EB00830EFB /* CustomTextView.swift */; };
 		964D38A8296ACC9E00B826AB /* SecondViewController-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964D38A7296ACC9E00B826AB /* SecondViewController-Ext.swift */; };
 		964D38AA296AD5FD00B826AB /* ParagraphTextStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964D38A9296AD5FD00B826AB /* ParagraphTextStorage.swift */; };
+		964F3542297852B000925229 /* RichTextElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F3541297852B000925229 /* RichTextElement.swift */; };
+		964F35442978536800925229 /* ParagraphBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F35432978536800925229 /* ParagraphBlock.swift */; };
+		964F3546297854DE00925229 /* ParagraphUtility-(Block create Method) ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F3545297854DE00925229 /* ParagraphUtility-(Block create Method) ext.swift */; };
+		964F3548297962D600925229 /* BlockCreateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F3547297962D600925229 /* BlockCreateHelper.swift */; };
 		96512BCB291B8CA00090F90B /* CustomLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96512BCA291B8CA00090F90B /* CustomLayoutManager.swift */; };
 		9653C53C296D5F4A00331143 /* ParagraphTextKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9653C53B296D5F4A00331143 /* ParagraphTextKit */; };
 		9653C53E296EBCE200331143 /* BlockAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9653C53D296EBCE200331143 /* BlockAddView.swift */; };
@@ -168,6 +172,10 @@
 		964D38A5296AC4EC00B826AB /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		964D38A7296ACC9E00B826AB /* SecondViewController-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SecondViewController-Ext.swift"; sourceTree = "<group>"; };
 		964D38A9296AD5FD00B826AB /* ParagraphTextStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParagraphTextStorage.swift; sourceTree = "<group>"; };
+		964F3541297852B000925229 /* RichTextElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RichTextElement.swift; sourceTree = "<group>"; };
+		964F35432978536800925229 /* ParagraphBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParagraphBlock.swift; sourceTree = "<group>"; };
+		964F3545297854DE00925229 /* ParagraphUtility-(Block create Method) ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ParagraphUtility-(Block create Method) ext.swift"; sourceTree = "<group>"; };
+		964F3547297962D600925229 /* BlockCreateHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockCreateHelper.swift; sourceTree = "<group>"; };
 		96512BCA291B8CA00090F90B /* CustomLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayoutManager.swift; sourceTree = "<group>"; };
 		9653C53A296D5F3B00331143 /* ParagraphTextKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ParagraphTextKit; path = ../../Desktop/ParagraphTextKit; sourceTree = "<group>"; };
 		9653C53D296EBCE200331143 /* BlockAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockAddView.swift; sourceTree = "<group>"; };
@@ -281,6 +289,7 @@
 				9601D0C8295332730069EF58 /* ParagraphTrackingUtility.swift */,
 				9653C54829713C1000331143 /* ParagraphTrackingUtility-MoveBlock.swift */,
 				9653C54A29713C8200331143 /* ParagraphTracking-AddBlockActionType.swift */,
+				964F3545297854DE00925229 /* ParagraphUtility-(Block create Method) ext.swift */,
 				966F7CB929756BEB0037F2B3 /* ParagraphUtility-ext.swift */,
 			);
 			path = TextStorageDelegate;
@@ -497,7 +506,10 @@
 			isa = PBXGroup;
 			children = (
 				9653C55129740AAC00331143 /* BlockObject.swift */,
+				964F3547297962D600925229 /* BlockCreateHelper.swift */,
 				9653C5552974352E00331143 /* ToggleBlock.swift */,
+				964F35432978536800925229 /* ParagraphBlock.swift */,
+				964F3541297852B000925229 /* RichTextElement.swift */,
 			);
 			path = BlockObject;
 			sourceTree = "<group>";
@@ -799,6 +811,7 @@
 				962AA118293224F800C2620B /* BookContentViewModel.swift in Sources */,
 				966F7CBA29756BEC0037F2B3 /* ParagraphUtility-ext.swift in Sources */,
 				962AA0BC2920F61800C2620B /* SecondViewController.swift in Sources */,
+				964F3548297962D600925229 /* BlockCreateHelper.swift in Sources */,
 				9601D0C9295332730069EF58 /* ParagraphTrackingUtility.swift in Sources */,
 				9662286C2961E83A00E39FC3 /* BlockEmptySection.swift in Sources */,
 				9662287029620E0200E39FC3 /* UIViewController+Ext.swift in Sources */,
@@ -809,6 +822,7 @@
 				965AED97291E80A9005B616F /* CustomTextStorage.swift in Sources */,
 				9653C55229740AAC00331143 /* BlockObject.swift in Sources */,
 				962AA0DD292B8A5A00C2620B /* InputViewModel.swift in Sources */,
+				964F3542297852B000925229 /* RichTextElement.swift in Sources */,
 				9653C543296EC54E00331143 /* BlockViewModel.swift in Sources */,
 				96477D1C291A041D00830EFB /* AppDelegate.swift in Sources */,
 				9601D0C52951B84C0069EF58 /* CollectionViewRecentPages.swift in Sources */,
@@ -833,6 +847,7 @@
 				962AA0C329221D7900C2620B /* TextContainer.swift in Sources */,
 				962AA0C529222D9200C2620B /* TextStorage.swift in Sources */,
 				96622859295B22B600E39FC3 /* PlanDataModel.swift in Sources */,
+				964F3546297854DE00925229 /* ParagraphUtility-(Block create Method) ext.swift in Sources */,
 				962AA0BF292217AA00C2620B /* SecondTextView.swift in Sources */,
 				9662286A2961E26300E39FC3 /* BlockTaskCell.swift in Sources */,
 				96CAFA2829669CE800E6D107 /* NSAttributedString.Key-Ext.swift in Sources */,
@@ -842,6 +857,7 @@
 				962AA0B52920E90400C2620B /* NSLayoutManagerDelegate.swift in Sources */,
 				962AA0D62926351D00C2620B /* CALayer-Ext.swift in Sources */,
 				96477D1E291A041D00830EFB /* SceneDelegate.swift in Sources */,
+				964F35442978536800925229 /* ParagraphBlock.swift in Sources */,
 				962AA0AF2920DA6400C2620B /* String-Ext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

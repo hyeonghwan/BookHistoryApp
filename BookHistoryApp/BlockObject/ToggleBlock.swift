@@ -6,51 +6,47 @@
 //
 
 import UIKit
-//{
-//  "type": "toggle",
-//  //...other keys excluded
-//  "toggle": {
-//    "rich_text": [{
-//      "type": "text",
-//      "text": {
-//        "content": "Lacinato kale",
-//        "link": null
-//      }
-//    }],
-//    "color": "default",
-//    "children":[{
-//      "type": "paragraph"
-//      // ..other keys excluded
-//    }]
-//  }
-//}
-protocol BlockObjectType{}
-protocol BlockElement{}
 
-struct BlockObject: BlockObjectType{
-    let blockType: BlockType?
-    let object: BlockElement?
-}
 
-struct ToggleBlock : BlockElement{
-    let richText: BlockElement?
+
+class ToggleBlock: BlockElement {
+    let richText: RichTextElement?
     let color: UIColor?
-    let children: [BlockElement]?
+    var children: [BlockElement]?
+    
+    var decription: String {
+        self.richText?.decription ?? "nil"
+    }
+    
+    public init(
+        richText: RichTextElement,
+        children: [BlockElement]? = nil,
+        color: UIColor? = nil
+    ) {
+        self.richText = richText
+        self.children = children
+        self.color = color
+    }
+ 
+    
+    func editRawText(_ text: String) {
+        richText?.editRawText(text)
+    }
+    
 }
 
-struct RichTextElement: BlockElement{
-    let type: String = "text"
-    let text: RawTextElement
-}
-
-struct RawTextElement{
-    let content: String?
-    let link: String?
-}
-
-
-
-extension NSAttributedString{
-    static let toggleAttributedString: NSAttributedString = NSAttributedString(string: "", attributes: [:])
-//    static let toggleAttributes: [NSAttributedString.Key : Any] = [ NSAttributedString.Key.toggle : "toggle"]
-}
+//private class ToggleChildren_PlaceHolder: BlockElement{
+//    
+//    let placeHolderString: String = "빈 토글입니다. 내용을 입력하시거나 드래그해서 가져와 시발련아"
+//    
+//    init(){
+//        
+//    }
+//    
+//    func editRawText(_ text: String){
+//        fatalError("this is impossibe edit struct")
+//    }
+//    var decription: String {
+//        self.placeHolderString
+//    }
+//}

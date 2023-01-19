@@ -12,24 +12,30 @@ import RxCocoa
 
 struct BlockToggleDependency{
     weak var toggleAction: BlockToggleAction?
-    var blockObject: BlockObject?
+    var blockObjectIndex: Int?
     
 }
 final class BlockToggleButton: UIButton{
     
     var disposeBag = DisposeBag()
-    var element: BlockObject?
+    var object: BlockObject?{
+        didSet{
+            print("self.object?.blockType : \(self.object?.object?.decription)")
+        }
+    }
+    var blockObjectIndex: Int?
     
     convenience init(frame: CGRect,dependency: BlockToggleDependency) {
         self.init(frame: frame)
         guard let toggleAction = dependency.toggleAction else {return}
-        guard let element = dependency.blockObject else {return}
-        self.element = element
+        guard let blockObjectIndex = dependency.blockObjectIndex else {return}
+        self.blockObjectIndex = blockObjectIndex
         
         toggleAction
             .createToggleObservable(
-                self.rx.tap.map{ _ in self.imageView?.transform == CGAffineTransform(rotationAngle: -(.pi / 2))
-                }.asDriver(onErrorJustReturn: false)
+                self.rx.tap.map{ _ in self.imageView?.transform == CGAffineTransform(rotationAngle: 0)
+                }.asDriver(onErrorJustReturn: false),
+                self
             )
         
         self.rx.tap.asDriver()
@@ -37,7 +43,6 @@ final class BlockToggleButton: UIButton{
                 guard let self = self else {return}
                 print("BlockToggleButton : \(self.frame)")
                 print("BlockToggleButton : \(self.bounds)")
-                print("element: \(self.element)")
                 
                 if self.imageView?.transform == CGAffineTransform(rotationAngle: .pi / 2){
                     self.imageView?.transform = self.imageView?.transform.rotated(by: -(.pi / 2)) ?? CGAffineTransform(rotationAngle: -(.pi / 2))

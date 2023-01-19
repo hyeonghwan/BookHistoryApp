@@ -108,17 +108,18 @@ extension ParagraphTrackingUtility{
         
         var togglString: NSAttributedString
         var resultString: NSAttributedString
+        print("toggle Index: \(index)")
         
         if let text = text{
             togglString = NSAttributedString(string: "\(text)", attributes: NSAttributedString.Key.toggleAttributes)
-            resultString = insertingToggleAttachment(togglString, attributes: NSAttributedString.Key.toggleAttributes, plusIndex - 1)
+            resultString = insertingToggleAttachment(togglString, attributes: NSAttributedString.Key.toggleAttributes, plusIndex - 1,index)
         }else{
             if plusIndex == 1{
                 togglString = NSAttributedString(string: "토글\n", attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
             }else{
                 togglString = NSAttributedString(string: "\n토글", attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
             }
-            resultString = insertingToggleAttachment(togglString, attributes: NSAttributedString.Key.togglePlaceHolderAttributes, plusIndex - 1)
+            resultString = insertingToggleAttachment(togglString, attributes: NSAttributedString.Key.togglePlaceHolderAttributes, plusIndex - 1,index)
         }
         
         self.paragraphStorage?.beginEditing()
@@ -128,13 +129,13 @@ extension ParagraphTrackingUtility{
         self.paragrphTextView?.selectedRange = NSRange(location: insertedRange.max + plusIndex, length: 0)
         
     }
-    private func insertingToggleAttachment(_ attString: NSAttributedString ,attributes: [NSAttributedString.Key : Any],_ position: Int) -> NSAttributedString{
-        let textElement = RawTextElement(content: "", link: nil)
-        let richTextElement = RichTextElement(text: textElement)
-        let toggleElement = ToggleBlock(richText: richTextElement, color: nil, children: nil)
-        let object = BlockObject(blockType: .toggleList, object: toggleElement)
+    private func insertingToggleAttachment(_ attString: NSAttributedString ,
+                                           attributes: [NSAttributedString.Key : Any],
+                                           _ position: Int,
+                                           _ index : Int) -> NSAttributedString{
+        let blockObjectIndex = index + 1
         
-        let dependency = BlockToggleDependency(toggleAction: self,blockObject: object)
+        let dependency = BlockToggleDependency(toggleAction: self,blockObjectIndex: blockObjectIndex )
         
         let button = BlockToggleButton(frame: .zero,
                                        dependency: dependency)

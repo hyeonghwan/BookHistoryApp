@@ -11,18 +11,60 @@ import RxRelay
 import RxCocoa
 
 protocol BlockToggleAction: AnyObject{
-    func createToggleObservable(_ toggle: Driver<Bool>)
+    func createToggleObservable(_ toggle: Driver<Bool>,_ button: BlockToggleButton)
 }
 
 extension ParagraphTrackingUtility: BlockToggleAction{
  
-    func createToggleObservable(_ toggle: Driver<Bool>) {
+    func createToggleObservable(_ toggle: Driver<Bool>,_ button: BlockToggleButton) {
+        let finishChanging = PublishSubject<Void>()
+        var toggleDisposeBag = DisposeBag()
+        
+        self.changeFinishObserver = finishChanging.asObserver()
+        
+        finishChanging
+            .observe(on: MainScheduler.instance)
+            .take(1)
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else {return}
+                guard let index = button.blockObjectIndex else {return}
+                button.object = self.blockObject[index]
+                toggleDisposeBag = DisposeBag()
+            }).disposed(by: toggleDisposeBag)
+        
         toggle
             .drive(onNext: { [weak self] flag in
                 guard let self = self else {return}
+                guard let object = button.object else {return}
                 
-                print(flag)
-                print("createToggleObservable : \(self)")
+                //if flag is true, toggle must show childern element
+                if flag {
+                    //show children
+                    guard let toggleBlock = object.object as? ToggleBlock else {return}
+                    guard let index = button.blockObjectIndex else {return}
+                    
+                    if toggleBlock.children == nil{
+                        
+                        let insertRange = NSRange(location: self.ranges[index].max, length: 0)
+                        var string: String
+                        
+                        if index == self.ranges.count - 1{
+                            string = "\n빈 토글입니다. 내용을 입력하시거나 드래그해서 가져와 시발련아"
+                        }else{
+                            string = "빈 토글입니다. 내용을 입력하시거나 드래그해서 가져와 시발련아\n"
+                        }
+                        var attString = NSAttributedString(string: string, attributes: NSAttributedString.Key.togglePlaceHolderChildAttributes)
+                        
+                        self.paragraphStorage?.beginEditing()
+                        self.paragraphStorage?.replaceCharacters(in: insertRange, with: attString)
+                        self.paragraphStorage?.endEditing()
+                    }
+                    
+                    
+                }else{
+                    //hide children
+                }
+                
             }).disposed(by: disposeBag)
     }
 }

@@ -22,11 +22,13 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     
     var blocks: [BlockType] = []
     
-    var blockObject: [BlockObject] = []
+    var blockObject: [BlockObject?] = []
     
     var attributes: [[NSAttributedString.Key: Any]] = []
     
     var editObserver: AnyObserver<Int>?
+    
+    var changeFinishObserver: AnyObserver<Void>?
     
     var insertions: [Int] = []{
         didSet{
@@ -83,6 +85,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
         for change in changes {
             switch change {
             case .insertedParagraph(index: let index, descriptor: let paragraphDescriptor):
+                
                 if firstInit {
                     firstInit = false
                 } else {
@@ -92,20 +95,23 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 paragraphs.insert(paragraphDescriptor.text, at: index)
                 
                 let allAttributes = attributes(from: paragraphDescriptor)
+                attributes.insert(allAttributes, at: index)
                 
-                if let blockAttribute = allAttributes[.blockType] as? BlockType {
-                    blocks.insert(blockAttribute, at: index)
+                if let blockType = allAttributes[.blockType] as? BlockType {
+                    blocks.insert(blockType, at: index)
+                    guard let blockObj = BlockCreateHelper.shared.createBlock(blockType, paragraphDescriptor.text) else {return}
+                    blockObject.insert(blockObj, at: index)
                     
                 }else{
                     blocks.insert(.paragraph, at: index)
+                    guard let blockObj = BlockCreateHelper.shared.createBlock(.paragraph,  paragraphDescriptor.text) else {return}
+                    blockObject.insert(blockObj, at: index)
                 }
-                
-                attributes.insert(allAttributes, at: index)
-                
                 
             case .removedParagraph(index: let index):
                 paragraphs.remove(at: index)
                 blocks.remove(at: index)
+                blockObject.remove(at: index)
                 attributes.remove(at: index)
                 removals.append(index)
                 
@@ -116,20 +122,46 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 
                 paragraphs[index] = paragraphDescriptor.text
                 attributes[index] = allAttributes
+                
                 editions.append(index)
                 
-                if let blockAttribute = allAttributes[.blockType] as? BlockType {
-                    blocks[index] = blockAttribute
-                    print("editedParagraph : \(index), \(paragraphDescriptor)")
+                if let blockType = allAttributes[.blockType] as? BlockType {
+                    
+                    blocks[index] = blockType
+                    
+                    guard let originalType = blockObject[index]?.blockType else {return}
+                    
+                    if originalType == blockType{
+                        blockObject[index]?.object?.editRawText(paragraphDescriptor.text)
+                    }else{
+                        blockObject[index] = BlockCreateHelper.shared.createBlock(blockType, paragraphDescriptor.text)
+                    }
                 }else{
                     blocks[index] = .paragraph
+                    
+                    
+                    guard let originalType = blockObject[index]?.blockType else {return}
+                    
+                    if originalType == .paragraph{
+                        blockObject[index]?.object?.editRawText(paragraphDescriptor.text)
+                        print("is editRawText")
+                    }else{
+                        blockObject[index] = BlockCreateHelper.shared.createBlock(.paragraph, paragraphDescriptor.text)
+                        print("is editRawText not")
+                    }
+                    print("is not block Type when editeParagraph util")
                 }
             }
         }
-        
+        changeFinishObserver?.onNext(())
         
         print("self.paragraph: \(self.paragraphs)")
         print("self.blocks : \(self.blocks)")
+        
+        self.blockObject.forEach{ object in
+            print("objec,Type: \(object?.blockType)")
+            print("object?.object?.decription : \(object?.object?.decription)")
+        }
     }
     
     func attributes(from paragraphDescriptor: ParagraphTextStorage.ParagraphDescriptor) -> [NSAttributedString.Key: Any] {
