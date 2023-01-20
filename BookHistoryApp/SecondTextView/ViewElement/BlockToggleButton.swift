@@ -20,7 +20,7 @@ final class BlockToggleButton: UIButton{
     var disposeBag = DisposeBag()
     var object: BlockObject?{
         didSet{
-            print("self.object?.blockType : \(self.object?.object?.decription)")
+            print("self.object?.blockType : \(String(describing: self.object?.object?.decription))")
         }
     }
     var blockObjectIndex: Int?

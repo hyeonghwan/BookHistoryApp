@@ -456,7 +456,16 @@ extension SecondViewController: UITextViewDelegate {
            let type = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil) as? BlockType,
            let font = textView.textStorage.attribute(.font, at: paragraphRange.location, effectiveRange: nil) as? UIFont{
             
-            let titleAttributes = NSAttributedString.Key.getTitleAttributes(type, font)
+            let paragraphStyle = textView.textStorage.attribute(.paragraphStyle, at: paragraphRange.location, effectiveRange: nil) as? NSParagraphStyle
+            
+            var attributes: [NSAttributedString.Key : Any] = [:]
+            
+            if type == .title1 || type == .title2 || type == .title3{
+                attributes = NSAttributedString.Key.getTitleAttributes(type, font)
+            }else{
+                attributes = NSAttributedString.Key.defaultAttribute
+                attributes[.paragraphStyle] = paragraphStyle
+            }
             
             var newRange: NSRange = NSRange(location: paragraphRange.location, length: paragraphRange.length - 1)
             
@@ -472,10 +481,10 @@ extension SecondViewController: UITextViewDelegate {
             //첫번째 글자 이후로 Default attribute가 적용이 되는 현상
             textView.textStorage.beginEditing()
             textView.textStorage.replaceCharacters(in: NSRange(location: newRange.location, length: 0),
-                                                   with: NSAttributedString(string: "\(text)", attributes: titleAttributes))
+                                                   with: NSAttributedString(string: "\(text)", attributes: attributes))
             textView.textStorage.endEditing()
             
-            self.textView.typingAttributes = titleAttributes
+            self.textView.typingAttributes = attributes
             self.textView.selectedRange = NSRange(location: newRange.location + 1, length: 0)
             return false
             

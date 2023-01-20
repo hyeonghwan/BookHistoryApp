@@ -9,7 +9,9 @@ import Foundation
 
 
 class RichTextElement: BlockElement {
-    var children: [BlockElement]?
+    var richText: RichTextElement?
+    
+    var children: [BlockObject]?
     
     let type: String = "text"
     let text: RawTextElement

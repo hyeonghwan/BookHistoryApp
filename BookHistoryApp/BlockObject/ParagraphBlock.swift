@@ -9,9 +9,9 @@ import UIKit
 
 class ParagraphBlock: BlockElement{
     
-    let richText: RichTextElement?
+    var richText: RichTextElement?
     let color: UIColor?
-    let children: [BlockElement]?
+    var children: [BlockObject]?
     
     var decription: String {
         self.richText?.decription ?? "nil"
@@ -19,7 +19,7 @@ class ParagraphBlock: BlockElement{
     
     public init(
         richText: RichTextElement,
-        children: [BlockElement]? = nil,
+        children: [BlockObject]? = nil,
         color: UIColor? = nil
     ) {
         self.richText = richText

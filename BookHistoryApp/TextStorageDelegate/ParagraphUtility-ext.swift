@@ -36,33 +36,93 @@ extension ParagraphTrackingUtility: BlockToggleAction{
             .drive(onNext: { [weak self] flag in
                 guard let self = self else {return}
                 guard let object = button.object else {return}
+                guard let toggleBlock = object.object as? ToggleBlock else {return}
+                guard let currentIndex = button.blockObjectIndex else {return}
                 
+                print("objectID : \(object.object)")
                 //if flag is true, toggle must show childern element
                 if flag {
                     //show children
-                    guard let toggleBlock = object.object as? ToggleBlock else {return}
-                    guard let index = button.blockObjectIndex else {return}
-                    
                     if toggleBlock.children == nil{
-                        
-                        let insertRange = NSRange(location: self.ranges[index].max, length: 0)
+                        let insertRange = NSRange(location: self.ranges[currentIndex].max, length: 0)
                         var string: String
                         
-                        if index == self.ranges.count - 1{
+                        if currentIndex == self.ranges.count - 1{
                             string = "\n빈 토글입니다. 내용을 입력하시거나 드래그해서 가져와 시발련아"
                         }else{
                             string = "빈 토글입니다. 내용을 입력하시거나 드래그해서 가져와 시발련아\n"
                         }
-                        var attString = NSAttributedString(string: string, attributes: NSAttributedString.Key.togglePlaceHolderChildAttributes)
+                        let attString = NSAttributedString(string: string, attributes: NSAttributedString.Key.togglePlaceHolderChildAttributes)
                         
                         self.paragraphStorage?.beginEditing()
                         self.paragraphStorage?.replaceCharacters(in: insertRange, with: attString)
                         self.paragraphStorage?.endEditing()
+                    }else{
+                        
+                        var currentChildIndex = currentIndex
+                        object.object?.children?.forEach{ toggleChildrenBlock in
+                            
+                            if let paragraphBlock = toggleChildrenBlock.object?.richText as? RichTextElement {
+                                let text = paragraphBlock.text.content ?? "\n"
+                                
+                                var attributes = NSAttributedString.Key.toggleAttributes
+                                attributes[.paragraphStyle] = NSParagraphStyle.toggleChildIndentParagraphStyle()
+                                self.paragraphStorage?.beginEditing()
+                                self.paragraphStorage?.insert(NSAttributedString(string: text, attributes: attributes), at: self.ranges[currentChildIndex].max)
+                                self.paragraphStorage?.endEditing()
+                                currentChildIndex += 1
+                            }else{
+                                print("not paragraphBlock")
+                            }
+                        }
+                    }
+                }else{
+                    
+                    //hide children
+                    //paragraphStyle.headIndent != 35 아닐때 까지 반복 해서 range를 search 하여 토글 에 삽입
+                    print("current : \(self.paragraphs[currentIndex])")
+                    var hideRange: [NSRange] = []
+                    var searchIndex: Int = 0
+                    
+                    for index in currentIndex + 1..<self.paragraphs.count{
+                        defer{
+                            searchIndex += 1
+                        }
+                        guard let attributes = self.paragraphStorage?.attributes(at: self.ranges[index].location, effectiveRange: nil) else {return}
+                        
+                        guard let childStyle = attributes[.paragraphStyle] as? NSParagraphStyle else {return}
+                        
+                        var blockType: BlockType
+                        
+                        if let type = attributes[.blockType] as? BlockType{
+                            blockType = type
+                        }else{
+                            blockType = .paragraph
+                        }
+                        
+                        if childStyle == NSParagraphStyle.toggleChildIndentParagraphStyle(){
+                            
+                            guard let block: BlockObject = BlockCreateHelper.shared.createBlock(blockType, self.paragraphs[index]) else { return }
+                            
+                            if toggleBlock.children == nil{
+                                toggleBlock.children = []
+                                toggleBlock.children?.append(block)
+                            }else{
+                                toggleBlock.children?[searchIndex] = block
+                            }
+                            hideRange.append(self.ranges[index])
+                        }else{
+                            break
+                        }
+                        
                     }
                     
-                    
-                }else{
-                    //hide children
+                    hideRange.forEach{ range in
+                        self.paragraphStorage?.beginEditing()
+                        self.paragraphStorage?.replaceCharacters(in: range, with: "")
+                        self.paragraphStorage?.endEditing()
+                    }
+                   
                 }
                 
             }).disposed(by: disposeBag)
@@ -77,8 +137,8 @@ extension ParagraphTrackingUtility{
         let attribute = paragraphTextView.textStorage.attribute(.foregroundColor, at: paragraphRange.location + 1, effectiveRange: nil) as? UIColor
         
         if let toggleForeGround = attribute,
-        toggleForeGround == UIColor.placeHolderColor,
-        text != "\n" {
+           toggleForeGround == UIColor.placeHolderColor,
+           text != "\n" {
             
             //toggle 은 첫번째 range 에 NSattachMent를 가지기 때문에 location을 1plus 하였다.
             var toggleRange: NSRange = NSRange(location: paragraphRange.location + 1, length: paragraphRange.length - 2)

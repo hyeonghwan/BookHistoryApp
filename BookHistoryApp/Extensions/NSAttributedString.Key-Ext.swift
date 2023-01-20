@@ -37,11 +37,12 @@ extension NSAttributedString.Key {
      .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
     
     static let togglePlaceHolderChildAttributes: [NSAttributedString.Key : Any] =
-    [NSAttributedString.Key.blockType : BlockType.toggleList,
+    [NSAttributedString.Key.blockType : BlockType.paragraph,
      NSAttributedString.Key.backgroundColor : UIColor.clear,
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.placeHolderColor,
      .paragraphStyle : NSParagraphStyle.toggleChildIndentParagraphStyle()]
+   
     
     static let toggleAttributes: [NSAttributedString.Key : Any] =
     [NSAttributedString.Key.blockType : BlockType.toggleList,

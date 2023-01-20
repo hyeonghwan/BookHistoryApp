@@ -10,9 +10,9 @@ import UIKit
 
 
 class ToggleBlock: BlockElement {
-    let richText: RichTextElement?
+    var richText: RichTextElement?
     let color: UIColor?
-    var children: [BlockElement]?
+    var children: [BlockObject]?
     
     var decription: String {
         self.richText?.decription ?? "nil"
@@ -20,7 +20,7 @@ class ToggleBlock: BlockElement {
     
     public init(
         richText: RichTextElement,
-        children: [BlockElement]? = nil,
+        children: [BlockObject]? = nil,
         color: UIColor? = nil
     ) {
         self.richText = richText

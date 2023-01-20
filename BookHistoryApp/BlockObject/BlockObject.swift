@@ -11,8 +11,8 @@ protocol BlockObjectType: AnyObject{}
 
 protocol BlockElement: AnyObject{
     func editRawText(_ text: String)
-    
-    var children: [BlockElement]? { get }
+    var richText: RichTextElement? {get set}
+    var children: [BlockObject]? { get set }
     var decription: String { get }
 }
 
