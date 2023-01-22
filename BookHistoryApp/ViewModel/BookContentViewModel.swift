@@ -22,7 +22,11 @@ protocol ContentViewModelType: AnyObject {
 
     func removePlaceHolderAttribute(_ attributes: [NSAttributedString.Key : Any], _ range: Int)
     
-    func replaceBlockAttribute(_ text: String,_ paragraphRange: NSRange) -> Bool
+    func replaceBlockAttribute(_ text: String,_ paragraphRange: NSRange,_ blockType: BlockType) -> Bool
+    
+    //input to store blockData on COreData
+    func storeBlockValues(_ tap: Signal<Void>)
+    
     
     //OUtPut
     var toTextObservable: Observable<BookViewModelData> { get }
@@ -79,7 +83,7 @@ struct BookViewModelData {
 
 class BookContentViewModel: NSObject, ContentViewModelProtocol{
     
-    
+    var service: BookServiceAble
     
     var paragraphTrackingUtility: ParagraphTrackingUtility = ParagraphTrackingUtility()
     
@@ -97,6 +101,8 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
     var toTextObservable: Observable<BookViewModelData>
     
     
+    var toBlockObservable: Observable<[BlockObject?]>?
+    
     //MARK: ContentVMBooMarkAble
     var isPasteValue: Bool = false
     
@@ -108,20 +114,15 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
     var toMetaDataURL: Observable<MetaDataDictionatyOnURL>
     
     
-    
     var disposeBag = DisposeBag()
     
-    var container: NSPersistentContainer?
     
     deinit{
         print("contentModel deinit")
     }
     
     init(_ serviece: BookServiceAble = BookService()) {
-        
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        
-        container = appDelegate.persistentContainer
+        self.service = serviece
         
         
         //ContentViewModelType
@@ -194,6 +195,32 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
             .disposed(by: disposeBag)
     }
     
+    func storeBlockValues(_ tap: Signal<Void>){
+        
+        let pipe = BehaviorSubject<[BlockObject?]>(value: [nil])
+        toBlockObservable = pipe.asObservable()
+        
+        tap
+            .asObservable()
+            .observe(on: MainScheduler.instance)
+            .withUnretained(self)
+            .flatMap{ owend, _ in
+                owend.paragraphTrackingUtility
+                .getBlockObjectObservable()
+                .withLatestFrom(pipe){ i , k in
+                    print("block1 ; \(i)")
+                    print("block2 ; \(k)")
+                    return k
+                }
+            }
+            .withUnretained(self)
+            .subscribe(onNext: {owned,  blocks in
+                print("block3 ; \(blocks)")
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    
     func createBlockAttributeInput(_ blockType: BlockType,_ current: NSRange){
         let relay = BehaviorRelay<(BlockType,NSRange)>(value: (.none,NSRange()))
         
@@ -210,14 +237,13 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
     }
     
     func removePlaceHolderAttribute(_ attributes: [NSAttributedString.Key : Any], _ location: Int){
-//        self.paragraphTrackingUtility.resetPlace(attributes, location)
         let relay = PublishSubject<([NSAttributedString.Key : Any],Int)>()
         
         relay
             .withUnretained(self)
             .subscribe(onNext: { owned,tuple in
                 let (key, location) = tuple
-                print("resetPlace")
+                
                 owned.paragraphTrackingUtility.resetPlace(key, location)
             })
             .disposed(by: disposeBag)
@@ -226,7 +252,7 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
         relay.onCompleted()
     }
     
-    func replaceBlockAttribute(_ text: String,_ paragraphRange: NSRange) -> Bool{
-        return self.paragraphTrackingUtility.replaceToggleAttribues(text,paragraphRange)
+    func replaceBlockAttribute(_ text: String,_ paragraphRange: NSRange,_ blockType: BlockType) -> Bool{
+        return self.paragraphTrackingUtility.replaceToggleAttribues(text,paragraphRange,blockType)
     }
 }

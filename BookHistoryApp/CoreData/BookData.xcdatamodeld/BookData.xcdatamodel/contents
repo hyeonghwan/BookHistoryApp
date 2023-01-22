@@ -10,4 +10,16 @@
         <attribute name="bookName" optional="YES" attributeType="String"/>
         <relationship name="bookData" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookData" inverseName="bookPage" inverseEntity="BookData"/>
     </entity>
+    <entity name="MyPage" representedClassName=".MyPage" syncable="YES">
+        <attribute name="archived" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="cover" optional="YES" attributeType="Transformable"/>
+        <attribute name="createdBy" optional="YES" attributeType="Transformable"/>
+        <attribute name="createdTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="icon" optional="YES" attributeType="Transformable"/>
+        <attribute name="id" optional="YES" attributeType="Transformable"/>
+        <attribute name="lastEditedBy" optional="YES" attributeType="Transformable"/>
+        <attribute name="lastEditedTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="parent" optional="YES" attributeType="Transformable"/>
+        <attribute name="properties" optional="YES" attributeType="Transformable"/>
+    </entity>
 </model>

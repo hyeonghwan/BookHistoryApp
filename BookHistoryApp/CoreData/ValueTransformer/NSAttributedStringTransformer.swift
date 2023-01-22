@@ -30,7 +30,7 @@ public class NSAttributedStringTransformer: ValueTransformer {
         
         do{
             let attributedString = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSAttributedString.self, from: data)
-            print("reverseTransformedValue: \(attributedString)")
+            
             return attributedString
         }catch{
             print("reverseTransformedValue nil")

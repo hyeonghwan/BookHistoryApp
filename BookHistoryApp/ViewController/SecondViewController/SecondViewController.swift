@@ -195,6 +195,11 @@ class SecondViewController: UIViewController {
     
     private func settupBinding(){
         
+        if let saveButton = self.navigationItem.rightBarButtonItem{
+            self.contentViewModel.storeBlockValues(saveButton.rx.tap.asSignal())
+        }
+
+        
         // -> TextView Content Save trigger
         self.navigationItem.rightBarButtonItem?.rx.tap
             .observe(on: MainScheduler.instance)
@@ -380,7 +385,7 @@ extension SecondViewController: UITextViewDelegate {
         
     
         if let blockAttribute = blockAttribute as? BlockType ,
-           blockAttribute == .toggleList{
+           (blockAttribute == .toggleList ) || (blockAttribute == .textHeadSymbolList){
             var nsRange = NSRange()
             nsRange = paragraphRange
             
@@ -446,10 +451,14 @@ extension SecondViewController: UITextViewDelegate {
         
         
         //toggle place holder detect
-        if let blockAttribute = blockAttribute as? BlockType ,
-           blockAttribute == .toggleList{
-            return toggleValid(text, paragraphRange)
+        if !isValidBlock(text,
+                        paragraphRange,
+                        blockAttribute as? BlockType){
+            return false
+        }else{
+            return true
         }
+        
         
         
         if foregroundColor == UIColor.placeHolderColor,
@@ -570,8 +579,65 @@ extension SecondViewController: NSAttachmentSettingProtocol{
     }
 }
 extension SecondViewController{
-    func toggleValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
-        if self.contentViewModel.replaceBlockAttribute(text,paragraphRange){
+    
+    func isValidBlock(_ text: String,_ paragraphRange: NSRange,_ type: BlockType?) -> Bool {
+        guard let blockType = type else {return true}
+        switch blockType {
+        case .paragraph:
+            return true
+        case .page:
+            break
+        case .todoList:
+            break
+        case .title1:
+            break
+        case .title2:
+            break
+        case .title3:
+            break
+        case .graph:
+            break
+        case .textHeadSymbolList:
+            return textHeadSymbolListValid(text, paragraphRange)
+        case .numberList:
+            break
+        case .toggleList:
+            return toggleValid(text, paragraphRange)
+        case .quotation:
+            break
+        case .separatorLine:
+            break
+        case .pageLink:
+            break
+        case .collOut:
+            break
+        case .none:
+            break
+        }
+        return true
+        
+        
+    }
+    private func textHeadSymbolListValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
+        if self.contentViewModel.replaceBlockAttribute(text,paragraphRange,.textHeadSymbolList){
+            guard let restRange = textView.textRangeFromNSRange(range: paragraphRange) else {return false}
+            guard let restText = textView.text(in: restRange) else {return false}
+            
+            if (restText.length == 3 && text == ""){
+                textView.textStorage.beginEditing()
+                textView.textStorage.replaceCharacters(in: NSRange(location: paragraphRange.location + 1, length: paragraphRange.length - 2), with: NSAttributedString(string: "리스트",attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes))
+                textView.textStorage.endEditing()
+                
+                textView.selectedRange = NSRange(location: paragraphRange.location + 1, length: 0)
+                return false
+            }
+            return true
+        }else{
+            return false
+        }
+    }
+    private func toggleValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
+        if self.contentViewModel.replaceBlockAttribute(text,paragraphRange,.toggleList){
             guard let restRange = textView.textRangeFromNSRange(range: paragraphRange) else {return false}
             guard let restText = textView.text(in: restRange) else {return false}
             
@@ -585,6 +651,7 @@ extension SecondViewController{
             }
             return true
         }else{
+            print("toggleValid false")
             return false
         }
     }

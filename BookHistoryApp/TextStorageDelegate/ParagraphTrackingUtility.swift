@@ -16,6 +16,10 @@ enum BlockDirection{
     case down
 }
 
+protocol BlockTrackingToCoreDataConvertible{
+    
+}
+
 final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     
     var paragraphs: [String] = []
@@ -149,19 +153,10 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                         blockObject[index] = BlockCreateHelper.shared.createBlock(.paragraph, paragraphDescriptor.text)
                         print("is editRawText not")
                     }
-                    print("is not block Type when editeParagraph util")
                 }
             }
         }
         changeFinishObserver?.onNext(())
-        
-        print("self.paragraph: \(self.paragraphs)")
-        print("self.blocks : \(self.blocks)")
-        
-        self.blockObject.forEach{ object in
-            print("objec,Type: \(object?.blockType)")
-            print("object?.object?.decription : \(object?.object?.decription)")
-        }
     }
     
     func attributes(from paragraphDescriptor: ParagraphTextStorage.ParagraphDescriptor) -> [NSAttributedString.Key: Any] {
@@ -176,12 +171,24 @@ extension ParagraphTrackingUtility: NSTextStorageDelegate{
     
     // MARK: NSTextStorageDelegate
     public func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorage.EditActions, range editedRange: NSRange, changeInLength delta: Int) {
-        print("em2 storage: \(editedMask)")
-        print("\n")
+        
         if editedMask.contains(.editedAttributes) {
             self.subAttachMentBehavior?.updateAttachedSubviews()
         }
         
     }
     
+}
+
+extension ParagraphTrackingUtility{
+    func getBlockObjectObservable() -> Observable<[BlockObject?]>{
+        return Observable.create{ [weak self] emit in
+            guard let self = self else {return Disposables.create()}
+            emit.onNext(self.blockObject)
+            return Disposables.create()
+        }
+    }
+    func getBlockObject() -> [BlockObject?]{
+        return self.blockObject
+    }
 }

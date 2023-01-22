@@ -12,24 +12,33 @@ import RxCocoa
 
 struct BlockToggleDependency{
     weak var toggleAction: BlockToggleAction?
-    var blockObjectIndex: Int?
-    
+    var firstInitIndex: Int?
 }
 final class BlockToggleButton: UIButton{
     
     var disposeBag = DisposeBag()
+    
+    private var depenedency: BlockToggleDependency?
+    
     var object: BlockObject?{
         didSet{
             print("self.object?.blockType : \(String(describing: self.object?.object?.decription))")
         }
     }
-    var blockObjectIndex: Int?
+    
+   
+    var firstInitIndex: Int?
+    
+    var blockRange: NSRange? {
+        getRangeButtonUsingRect(self.frame)
+    }
+    
     
     convenience init(frame: CGRect,dependency: BlockToggleDependency) {
         self.init(frame: frame)
+        self.depenedency = dependency
+        self.firstInitIndex = dependency.firstInitIndex
         guard let toggleAction = dependency.toggleAction else {return}
-        guard let blockObjectIndex = dependency.blockObjectIndex else {return}
-        self.blockObjectIndex = blockObjectIndex
         
         toggleAction
             .createToggleObservable(
@@ -41,8 +50,6 @@ final class BlockToggleButton: UIButton{
         self.rx.tap.asDriver()
             .drive(onNext: { [weak self] in
                 guard let self = self else {return}
-                print("BlockToggleButton : \(self.frame)")
-                print("BlockToggleButton : \(self.bounds)")
                 
                 if self.imageView?.transform == CGAffineTransform(rotationAngle: .pi / 2){
                     self.imageView?.transform = self.imageView?.transform.rotated(by: -(.pi / 2)) ?? CGAffineTransform(rotationAngle: -(.pi / 2))
@@ -65,5 +72,20 @@ final class BlockToggleButton: UIButton{
         fatalError("required init fatalError")
         
     }
+    
+    private func getRangeButtonUsingRect(_ frame: CGRect) -> NSRange?{
+        guard let layoutManager = depenedency?.toggleAction?.layoutManager else {return nil}
+        guard let containerInset = depenedency?.toggleAction?.textContainerInset else {return nil}
+        guard let firstContainer = layoutManager.textContainers.first else {return nil}
+        
+        var buttonFrame = frame
+        buttonFrame.origin.x -= containerInset.left
+        buttonFrame.origin.y  -= containerInset.top
+        
+        let toggleTitleRange = layoutManager.glyphRange(forBoundingRect: buttonFrame, in: firstContainer)
+        print("toggleTitleRange : \(toggleTitleRange)")
+        return toggleTitleRange
+    }
+    
     
 }

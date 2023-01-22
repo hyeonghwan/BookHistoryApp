@@ -27,13 +27,13 @@ public extension UIFont {
     static func preferredFont(forTextStyle style: UIFont.TextStyle,familyName: String ,scaleFactor: CGFloat = 1) -> UIFont {
         let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: style)
         //      let font = UIFont.preferredFont(forTextStyle: style)
-        var family = fontDescriptor.withFamily(familyName)
+        let family = fontDescriptor.withFamily(familyName)
         
         guard let newDescriptor = family.withSymbolicTraits(.traitBold) else {return UIFont.boldSystemFont(ofSize: 16)}
         
         let font = UIFont(descriptor: newDescriptor, size: newDescriptor.pointSize * scaleFactor)
         //        font.withSize(font.pointSize * scaleFactor)
-        print("font.fontDescriptor.symbolicTraits ; \(font.fontDescriptor.symbolicTraits)")
+//        print("font.fontDescriptor.symbolicTraits ; \(font.fontDescriptor.symbolicTraits)")
         return font
     }
 }

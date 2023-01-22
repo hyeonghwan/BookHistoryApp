@@ -36,8 +36,11 @@ class BlockCreateHelper{
             break
         case .graph:
             break
-        case .textSymbolList:
-            break
+        case .textHeadSymbolList:
+            let richTextElement = RichTextElement(text: RawTextElement(content: "\(rawText)", link: nil))
+            let paragraphBlock = TextHeadSymbolListBlock(richText: richTextElement)
+            let object = BlockObject(blockType: type, object: paragraphBlock)
+            return object
         case .numberList:
             break
         case .toggleList:

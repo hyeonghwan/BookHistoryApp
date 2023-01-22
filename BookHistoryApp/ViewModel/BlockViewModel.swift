@@ -14,6 +14,8 @@ import RxCocoa
 //                                .basic("표"),.basic("글머리 기호 목록"),.basic("번호 매기기 목록"),.basic("토글 목록"),
 //                                .basic("인용"), .basic("구분선"), .basic("페이지 링크"), .basic("콜아웃")]
 enum BlockType: String{
+    
+    
     case paragraph = "텍스트"
     case page = "페이지"
     case todoList = "할 일 목록"
@@ -21,7 +23,7 @@ enum BlockType: String{
     case title2 = "제목2"
     case title3 = "제목3"
     case graph = "표"
-    case textSymbolList = "글머리 기호 목록"
+    case textHeadSymbolList = "글머리 기호 목록"
     case numberList = "번호 매기기 목록"
     case toggleList = "토글 목록"
     case quotation = "인용"

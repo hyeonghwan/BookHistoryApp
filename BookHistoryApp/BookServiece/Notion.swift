@@ -4,7 +4,6 @@
 //
 //  Created by 박형환 on 2023/01/15.
 //
-
 import Foundation
 import RxSwift
 import RxCocoa
@@ -55,4 +54,3 @@ class Notion {
         
     }
 }
-

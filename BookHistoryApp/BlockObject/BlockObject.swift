@@ -6,8 +6,15 @@
 //
 
 import Foundation
+import NotionSwift
 
-protocol BlockObjectType: AnyObject{}
+
+
+protocol BlockObjectType: AnyObject{
+//    var block: Block {get set}
+}
+
+
 
 protocol BlockElement: AnyObject{
     func editRawText(_ text: String)
@@ -17,7 +24,9 @@ protocol BlockElement: AnyObject{
 }
 
 
+
 class BlockObject: BlockObjectType{
+
     let blockType: BlockType?
     let object: BlockElement?
     init(blockType: BlockType,

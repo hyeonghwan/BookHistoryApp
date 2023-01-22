@@ -28,6 +28,12 @@ extension NSAttributedString.Key {
     
     static let placeHolderColorAttribute: (NSAttributedString.Key,UIColor) =  (.foregroundColor, UIColor.placeHolderColor)
     
+    static let textHeadSymbolListPlaceHolderAttributes: [NSAttributedString.Key : Any] =
+    [NSAttributedString.Key.blockType : BlockType.textHeadSymbolList,
+     NSAttributedString.Key.backgroundColor : UIColor.clear,
+     NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+     NSAttributedString.Key.foregroundColor : UIColor.placeHolderColor,
+     .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
     
     static let togglePlaceHolderAttributes: [NSAttributedString.Key : Any] =
     [NSAttributedString.Key.blockType : BlockType.toggleList,
@@ -50,6 +56,13 @@ extension NSAttributedString.Key {
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.label,
      .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
+    
+    static let paragrphStyleInTogle: [NSAttributedString.Key : Any] =
+    [NSAttributedString.Key.blockType : BlockType.paragraph,
+     NSAttributedString.Key.backgroundColor : UIColor.clear,
+     NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+     NSAttributedString.Key.foregroundColor : UIColor.label,
+     .paragraphStyle : NSParagraphStyle.toggleChildIndentParagraphStyle()]
     
     
     static func getPlaceTitleAttribues(_ fontStyle: UIFont.TextStyle) -> [NSAttributedString.Key : Any]{

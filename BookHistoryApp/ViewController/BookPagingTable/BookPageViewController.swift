@@ -58,7 +58,7 @@ class BookPagingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        Notion()
+        
         
         layoutConfigure()
         
