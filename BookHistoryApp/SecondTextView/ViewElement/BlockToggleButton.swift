@@ -22,7 +22,7 @@ final class BlockToggleButton: UIButton{
     
     var object: BlockObject?{
         didSet{
-            print("self.object?.blockType : \(String(describing: self.object?.object?.decription))")
+            print("self.object?.blockType : \(String(describing: self.object?.object?.e.base.rawValue))")
         }
     }
     

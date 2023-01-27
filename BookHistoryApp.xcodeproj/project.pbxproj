@@ -17,6 +17,7 @@
 		9601D0C9295332730069EF58 /* ParagraphTrackingUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9601D0C8295332730069EF58 /* ParagraphTrackingUtility.swift */; };
 		9601D0D12953364B0069EF58 /* ParagraphTextStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9601D0D02953364B0069EF58 /* ParagraphTextStorageTests.swift */; };
 		9623C0F32959D90B00E3C3C6 /* allTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9623C0F22959D90B00E3C3C6 /* allTest.swift */; };
+		96284D552982FFEA00B05444 /* CustomBlockType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96284D542982FFEA00B05444 /* CustomBlockType.swift */; };
 		962AA0A92920BF2D00C2620B /* Attribute-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0A82920BF2D00C2620B /* Attribute-Ext.swift */; };
 		962AA0AB2920C6AC00C2620B /* CustomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0AA2920C6AC00C2620B /* CustomColor.swift */; };
 		962AA0AD2920CEAA00C2620B /* CustomTextView-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0AC2920CEAA00C2620B /* CustomTextView-Ext.swift */; };
@@ -63,7 +64,7 @@
 		964F354B297C06DB00925229 /* TextHeadSymbolView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F354A297C06DB00925229 /* TextHeadSymbolView.swift */; };
 		964F354D297D4DF700925229 /* TextHeadSymbolListBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F354C297D4DF700925229 /* TextHeadSymbolListBlock.swift */; };
 		964F3552297D650B00925229 /* Page-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F3551297D650B00925229 /* Page-Ext.swift */; };
-		964F3554297D661700925229 /* PageParentType-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F3553297D661700925229 /* PageParentType-Ext.swift */; };
+		964F3554297D661700925229 /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F3553297D661700925229 /* Block.swift */; };
 		964F355E297D752000925229 /* MyPage+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F355D297D752000925229 /* MyPage+CoreDataProperties.swift */; };
 		964F3561297D756400925229 /* PageTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F3560297D756400925229 /* PageTransformer.swift */; };
 		96512BCB291B8CA00090F90B /* CustomLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96512BCA291B8CA00090F90B /* CustomLayoutManager.swift */; };
@@ -85,6 +86,9 @@
 		9656ACBB2967BD2D00BB0903 /* UIFont-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9656ACBA2967BD2D00BB0903 /* UIFont-Ext.swift */; };
 		965AED95291E3EF0005B616F /* ColorBlockManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965AED94291E3EF0005B616F /* ColorBlockManager.swift */; };
 		965AED97291E80A9005B616F /* CustomTextStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965AED96291E80A9005B616F /* CustomTextStorage.swift */; };
+		965BF35229805E81003A9644 /* Page_core.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965BF35129805E81003A9644 /* Page_core.swift */; };
+		965BF35429807551003A9644 /* PageParentType_c.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965BF35329807551003A9644 /* PageParentType_c.swift */; };
+		965BF36229808238003A9644 /* Page_ChildBlock+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965BF35F29808238003A9644 /* Page_ChildBlock+CoreDataProperties.swift */; };
 		96622850295AFA9400E39FC3 /* PlanGoalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662284F295AFA9300E39FC3 /* PlanGoalViewController.swift */; };
 		96622852295AFFFA00E39FC3 /* LineContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96622851295AFFFA00E39FC3 /* LineContainerView.swift */; };
 		96622854295B12C900E39FC3 /* DotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96622853295B12C900E39FC3 /* DotView.swift */; };
@@ -137,6 +141,7 @@
 		9601D0CE2953364B0069EF58 /* BookHistoryAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BookHistoryAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9601D0D02953364B0069EF58 /* ParagraphTextStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParagraphTextStorageTests.swift; sourceTree = "<group>"; };
 		9623C0F22959D90B00E3C3C6 /* allTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = allTest.swift; sourceTree = "<group>"; };
+		96284D542982FFEA00B05444 /* CustomBlockType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBlockType.swift; sourceTree = "<group>"; };
 		962AA0A82920BF2D00C2620B /* Attribute-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Attribute-Ext.swift"; sourceTree = "<group>"; };
 		962AA0AA2920C6AC00C2620B /* CustomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColor.swift; sourceTree = "<group>"; };
 		962AA0AC2920CEAA00C2620B /* CustomTextView-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomTextView-Ext.swift"; sourceTree = "<group>"; };
@@ -185,7 +190,7 @@
 		964F354A297C06DB00925229 /* TextHeadSymbolView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextHeadSymbolView.swift; sourceTree = "<group>"; };
 		964F354C297D4DF700925229 /* TextHeadSymbolListBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextHeadSymbolListBlock.swift; sourceTree = "<group>"; };
 		964F3551297D650B00925229 /* Page-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Page-Ext.swift"; sourceTree = "<group>"; };
-		964F3553297D661700925229 /* PageParentType-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PageParentType-Ext.swift"; sourceTree = "<group>"; };
+		964F3553297D661700925229 /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
 		964F355D297D752000925229 /* MyPage+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MyPage+CoreDataProperties.swift"; path = "/Users/baghyeonghwan/IOSPROJECT/BookHistoryApp/BookHistoryApp/CoreData/MyPage+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		964F3560297D756400925229 /* PageTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageTransformer.swift; sourceTree = "<group>"; };
 		96512BCA291B8CA00090F90B /* CustomLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayoutManager.swift; sourceTree = "<group>"; };
@@ -208,6 +213,9 @@
 		9656ACBA2967BD2D00BB0903 /* UIFont-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont-Ext.swift"; sourceTree = "<group>"; };
 		965AED94291E3EF0005B616F /* ColorBlockManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorBlockManager.swift; sourceTree = "<group>"; };
 		965AED96291E80A9005B616F /* CustomTextStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextStorage.swift; sourceTree = "<group>"; };
+		965BF35129805E81003A9644 /* Page_core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page_core.swift; sourceTree = "<group>"; };
+		965BF35329807551003A9644 /* PageParentType_c.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageParentType_c.swift; sourceTree = "<group>"; };
+		965BF35F29808238003A9644 /* Page_ChildBlock+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Page_ChildBlock+CoreDataProperties.swift"; path = "/Users/baghyeonghwan/IOSPROJECT/BookHistoryApp/BookHistoryApp/CoreData/Page_ChildBlock+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		9662284F295AFA9300E39FC3 /* PlanGoalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanGoalViewController.swift; sourceTree = "<group>"; };
 		96622851295AFFFA00E39FC3 /* LineContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineContainerView.swift; sourceTree = "<group>"; };
 		96622853295B12C900E39FC3 /* DotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotView.swift; sourceTree = "<group>"; };
@@ -508,8 +516,12 @@
 		964F3550297D64F200925229 /* NotionSwift-Extension */ = {
 			isa = PBXGroup;
 			children = (
+				965BF35129805E81003A9644 /* Page_core.swift */,
+				965BF35329807551003A9644 /* PageParentType_c.swift */,
 				964F3551297D650B00925229 /* Page-Ext.swift */,
-				964F3553297D661700925229 /* PageParentType-Ext.swift */,
+				964F3553297D661700925229 /* Block.swift */,
+				96284D542982FFEA00B05444 /* CustomBlockType.swift */,
+				965BF3632982381A003A9644 /* BlockTypeValue */,
 			);
 			path = "NotionSwift-Extension";
 			sourceTree = "<group>";
@@ -549,6 +561,7 @@
 		9655FE2F2955FAC0008991F1 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				965BF35F29808238003A9644 /* Page_ChildBlock+CoreDataProperties.swift */,
 				964F355D297D752000925229 /* MyPage+CoreDataProperties.swift */,
 				9655FE352955FCB2008991F1 /* BookPageMO+CoreDataProperties.swift */,
 				9655FE372955FCB2008991F1 /* BookMO+CoreDataProperties.swift */,
@@ -575,6 +588,13 @@
 				962AA0C429222D9200C2620B /* TextStorage.swift */,
 			);
 			path = TextStorage;
+			sourceTree = "<group>";
+		};
+		965BF3632982381A003A9644 /* BlockTypeValue */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = BlockTypeValue;
 			sourceTree = "<group>";
 		};
 		96622855295B215100E39FC3 /* PlanTable */ = {
@@ -803,6 +823,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9601D0C729530A6E0069EF58 /* TestViewController.swift in Sources */,
+				965BF35429807551003A9644 /* PageParentType_c.swift in Sources */,
 				966228652960270E00E39FC3 /* SubviewTextAttachment+Ext.swift in Sources */,
 				96CAFA2B2966AA1800E6D107 /* LayoutManagerDelegate.swift in Sources */,
 				96622863295F0EA900E39FC3 /* UIView-Ext.swift in Sources */,
@@ -835,13 +856,14 @@
 				962AA0C7292233EE00C2620B /* SCTextView-Ext.swift in Sources */,
 				962AA0EA292E3C7500C2620B /* BookPagingViewModel.swift in Sources */,
 				96CAFA1D296400E100E6D107 /* AccessoryViewModel.swift in Sources */,
+				965BF35229805E81003A9644 /* Page_core.swift in Sources */,
 				9662285C295C697D00E39FC3 /* PlanMonthView.swift in Sources */,
 				962AA0E1292E307400C2620B /* BookPageViewController.swift in Sources */,
 				9653C54B29713C8200331143 /* ParagraphTracking-AddBlockActionType.swift in Sources */,
 				9655FE3B2955FCB2008991F1 /* BookMO+CoreDataProperties.swift in Sources */,
 				964F354D297D4DF700925229 /* TextHeadSymbolListBlock.swift in Sources */,
 				964F3552297D650B00925229 /* Page-Ext.swift in Sources */,
-				964F3554297D661700925229 /* PageParentType-Ext.swift in Sources */,
+				964F3554297D661700925229 /* Block.swift in Sources */,
 				962AA0DA2928F7B400C2620B /* ColorButton.swift in Sources */,
 				962AA0D82928F31A00C2620B /* BackORForeColorPickerView.swift in Sources */,
 				962AA0CA29237ACF00C2620B /* TextPropertyMenuView.swift in Sources */,
@@ -886,8 +908,10 @@
 				962AA0C12922183F00C2620B /* SecondLayoutManager.swift in Sources */,
 				962AA0C329221D7900C2620B /* TextContainer.swift in Sources */,
 				962AA0C529222D9200C2620B /* TextStorage.swift in Sources */,
+				96284D552982FFEA00B05444 /* CustomBlockType.swift in Sources */,
 				96622859295B22B600E39FC3 /* PlanDataModel.swift in Sources */,
 				964F3546297854DE00925229 /* ParagraphUtility-(Block create Method) ext.swift in Sources */,
+				965BF36229808238003A9644 /* Page_ChildBlock+CoreDataProperties.swift in Sources */,
 				962AA0BF292217AA00C2620B /* SecondTextView.swift in Sources */,
 				9662286A2961E26300E39FC3 /* BlockTaskCell.swift in Sources */,
 				96CAFA2829669CE800E6D107 /* NSAttributedString.Key-Ext.swift in Sources */,

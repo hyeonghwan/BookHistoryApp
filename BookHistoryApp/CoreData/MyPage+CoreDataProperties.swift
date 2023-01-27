@@ -12,7 +12,7 @@ import CoreData
 
 @objc(MyPage)
 public class MyPage: NSManagedObject {
-
+    
 }
 
 extension MyPage {
@@ -20,16 +20,18 @@ extension MyPage {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<MyPage> {
         return NSFetchRequest<MyPage>(entityName: "MyPage")
     }
+    public typealias Identifier = EntityIdentifier_C
 
-    @NSManaged public var properties: NSObject?
+
     @NSManaged public var archived: Bool
-    @NSManaged public var parent: NSObject?
-    @NSManaged public var cover: NSObject?
-    @NSManaged public var icon: NSObject?
-    @NSManaged public var lastEditedBy: NSObject?
-    @NSManaged public var createdBy: NSObject?
+    @NSManaged public var parent: PageParentType_C
+    @NSManaged public var cover: String?
+    @NSManaged public var icon: String?
+    @NSManaged public var lastEditedBy: String?
+    @NSManaged public var createdBy: String?
     @NSManaged public var lastEditedTime: Date?
     @NSManaged public var createdTime: Date?
-    @NSManaged public var id: NSObject?
-
+    @NSManaged public var id: EntityIdentifier_C
+    @NSManaged public var childBlocks: [Page_ChildBlock]?
 }
+extension MyPage : Identifiable{ }

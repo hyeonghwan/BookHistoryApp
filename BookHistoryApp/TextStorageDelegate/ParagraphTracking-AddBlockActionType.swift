@@ -14,7 +14,7 @@ import SubviewAttachingTextView
 
 extension ParagraphTrackingUtility{
     
-    func addBlockActionPropertyToTextStorage(_ block: BlockType,_ current: NSRange,_ text: String? = nil){
+    func addBlockActionPropertyToTextStorage(_ block: CustomBlockType.Base,_ current: NSRange,_ text: String? = nil){
         switch block {
         case .paragraph:
             break
@@ -42,7 +42,7 @@ extension ParagraphTrackingUtility{
             break
         case .pageLink:
             break
-        case .collOut:
+        case .callOut:
             break
         case .none:
             break

@@ -24,7 +24,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     
     var paragraphs: [String] = []
     
-    var blocks: [BlockType] = []
+    var blocks: [CustomBlockType.Base] = []
     
     var blockObject: [BlockObject?] = []
     
@@ -101,9 +101,10 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 let allAttributes = attributes(from: paragraphDescriptor)
                 attributes.insert(allAttributes, at: index)
                 
-                if let blockType = allAttributes[.blockType] as? BlockType {
+                if let blockType = allAttributes[.blockType] as? CustomBlockType.Base {
                     blocks.insert(blockType, at: index)
                     guard let blockObj = BlockCreateHelper.shared.createBlock(blockType, paragraphDescriptor.text) else {return}
+                    
                     blockObject.insert(blockObj, at: index)
                     
                 }else{
@@ -129,16 +130,18 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 
                 editions.append(index)
                 
-                if let blockType = allAttributes[.blockType] as? BlockType {
-                    
+                if let blockType = allAttributes[.blockType] as? CustomBlockType.Base {
+        
                     blocks[index] = blockType
                     
-                    guard let originalType = blockObject[index]?.blockType else {return}
-                    
+                    guard let originalType = blockObject[index]?.blockType?.base else {return}
+        
                     if originalType == blockType{
-                        blockObject[index]?.object?.editRawText(paragraphDescriptor.text)
+                        let value = blockObject[index]?.object?.e.getSelfValue() as? TextAndChildrenBlockValueObject
+                        blockObject[index]?.object?.e.editRawText(paragraphDescriptor.text)
                     }else{
                         blockObject[index] = BlockCreateHelper.shared.createBlock(blockType, paragraphDescriptor.text)
+                        blocks[index] = blockType
                     }
                 }else{
                     blocks[index] = .paragraph
@@ -146,16 +149,18 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                     
                     guard let originalType = blockObject[index]?.blockType else {return}
                     
-                    if originalType == .paragraph{
-                        blockObject[index]?.object?.editRawText(paragraphDescriptor.text)
+                    if originalType.base == .paragraph{
+                        blockObject[index]?.object?.e.editRawText(paragraphDescriptor.text)
                         print("is editRawText")
                     }else{
                         blockObject[index] = BlockCreateHelper.shared.createBlock(.paragraph, paragraphDescriptor.text)
                         print("is editRawText not")
                     }
                 }
+                
             }
         }
+        
         changeFinishObserver?.onNext(())
     }
     

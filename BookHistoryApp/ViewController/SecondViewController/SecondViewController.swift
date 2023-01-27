@@ -49,7 +49,7 @@ class SecondViewController: UIViewController {
     
     
     lazy var defaultAttribute: [NSAttributedString.Key : Any] =
-    [NSAttributedString.Key.blockType : BlockType.paragraph,
+    [NSAttributedString.Key.blockType : CustomBlockType.Base.paragraph,
      NSAttributedString.Key.backgroundColor : UIColor.clear,
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.label,
@@ -210,6 +210,7 @@ class SecondViewController: UIViewController {
                     .onNext(self.textView.attributedText)
             }).disposed(by: disposeBag)
         
+        
         contentViewModel
             .toTextObservable
             .withUnretained(self)
@@ -278,10 +279,12 @@ class SecondViewController: UIViewController {
 }
 private extension SecondViewController{
     
+    
+    // load from ContentVM
     func setAttributedOnTextView_Title(_ bookData: BookViewModelData){
         guard let title = bookData.bookTitle else {return}
         guard let content = bookData.bookContent else {return}
-        print("coontenn : \(content)")
+        
         self.setLeftAlignTitleView(font: UIFont.boldSystemFont(ofSize: 16), text: title, textColor: .label)
         self.textView.attributedText = content
     }
@@ -384,7 +387,7 @@ extension SecondViewController: UITextViewDelegate {
         
         
     
-        if let blockAttribute = blockAttribute as? BlockType ,
+        if let blockAttribute = blockAttribute as? CustomBlockType.Base ,
            (blockAttribute == .toggleList ) || (blockAttribute == .textHeadSymbolList){
             var nsRange = NSRange()
             nsRange = paragraphRange
@@ -453,7 +456,7 @@ extension SecondViewController: UITextViewDelegate {
         //toggle place holder detect
         if !isValidBlock(text,
                         paragraphRange,
-                        blockAttribute as? BlockType){
+                         blockAttribute as? CustomBlockType.Base){
             return false
         }else{
             return true
@@ -462,7 +465,7 @@ extension SecondViewController: UITextViewDelegate {
         
         
         if foregroundColor == UIColor.placeHolderColor,
-           let type = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil) as? BlockType,
+           let type = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil) as? CustomBlockType.Base,
            let font = textView.textStorage.attribute(.font, at: paragraphRange.location, effectiveRange: nil) as? UIFont{
             
             let paragraphStyle = textView.textStorage.attribute(.paragraphStyle, at: paragraphRange.location, effectiveRange: nil) as? NSParagraphStyle
@@ -580,7 +583,7 @@ extension SecondViewController: NSAttachmentSettingProtocol{
 }
 extension SecondViewController{
     
-    func isValidBlock(_ text: String,_ paragraphRange: NSRange,_ type: BlockType?) -> Bool {
+    func isValidBlock(_ text: String,_ paragraphRange: NSRange,_ type: CustomBlockType.Base?) -> Bool {
         guard let blockType = type else {return true}
         switch blockType {
         case .paragraph:
@@ -609,7 +612,7 @@ extension SecondViewController{
             break
         case .pageLink:
             break
-        case .collOut:
+        case .callOut:
             break
         case .none:
             break

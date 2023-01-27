@@ -18,11 +18,11 @@ protocol ContentViewModelType: AnyObject {
     var onTextViewData: AnyObserver<BookViewModelData> { get }
     var onParagraphData: AnyObserver<NSAttributedString> {get}
     
-    func createBlockAttributeInput(_ blockType: BlockType,_ current: NSRange)
+    func createBlockAttributeInput(_ blockType: CustomBlockType.Base,_ current: NSRange)
 
     func removePlaceHolderAttribute(_ attributes: [NSAttributedString.Key : Any], _ range: Int)
     
-    func replaceBlockAttribute(_ text: String,_ paragraphRange: NSRange,_ blockType: BlockType) -> Bool
+    func replaceBlockAttribute(_ text: String,_ paragraphRange: NSRange,_ blockType: CustomBlockType.Base) -> Bool
     
     //input to store blockData on COreData
     func storeBlockValues(_ tap: Signal<Void>)
@@ -31,7 +31,7 @@ protocol ContentViewModelType: AnyObject {
     //OUtPut
     var toTextObservable: Observable<BookViewModelData> { get }
     
-    var toParagraphBlockTypeEventResult: Observable<BlockType>? { get }
+    var toParagraphBlockTypeEventResult: Observable<CustomBlockType.Base>? { get }
     
     //utility
     var paragraphTrackingUtility: ParagraphTrackingUtility { get }
@@ -95,7 +95,7 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
     
     
     //outPUT Block EventType
-    var toParagraphBlockTypeEventResult: Observable<BlockType>?
+    var toParagraphBlockTypeEventResult: Observable<CustomBlockType.Base>?
     
     //outPUT
     var toTextObservable: Observable<BookViewModelData>
@@ -207,22 +207,24 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
             .flatMap{ owend, _ in
                 owend.paragraphTrackingUtility
                 .getBlockObjectObservable()
-                .withLatestFrom(pipe){ i , k in
-                    print("block1 ; \(i)")
-                    print("block2 ; \(k)")
-                    return k
+                .withLatestFrom(pipe){ newObject , original in
+                    print("block1 ; \(newObject)")
+                    print("block2 ; \(original)")
+                    return newObject
                 }
             }
             .withUnretained(self)
             .subscribe(onNext: {owned,  blocks in
                 print("block3 ; \(blocks)")
+                
+                owned.service.rxAddBlockObjectDatas(blocks)
             })
             .disposed(by: disposeBag)
     }
     
     
-    func createBlockAttributeInput(_ blockType: BlockType,_ current: NSRange){
-        let relay = BehaviorRelay<(BlockType,NSRange)>(value: (.none,NSRange()))
+    func createBlockAttributeInput(_ blockType: CustomBlockType.Base,_ current: NSRange){
+        let relay = BehaviorRelay<(CustomBlockType.Base,NSRange)>(value: (.none,NSRange()))
         
         relay.accept((blockType,current))
         
@@ -252,7 +254,7 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
         relay.onCompleted()
     }
     
-    func replaceBlockAttribute(_ text: String,_ paragraphRange: NSRange,_ blockType: BlockType) -> Bool{
+    func replaceBlockAttribute(_ text: String,_ paragraphRange: NSRange,_ blockType: CustomBlockType.Base) -> Bool{
         return self.paragraphTrackingUtility.replaceToggleAttribues(text,paragraphRange,blockType)
     }
 }

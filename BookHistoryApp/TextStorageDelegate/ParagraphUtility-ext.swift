@@ -55,16 +55,18 @@ extension ParagraphTrackingUtility: BlockToggleAction{
                 }
                 
                 guard let object = button.object else {return}
-                guard let toggleBlock = object.object as? ToggleBlock else {return}
+                
+                guard let toggleBlock = object.object?.e as? CustomBlockType  else {return}
                 guard let buttonRange = button.blockRange else {return}
                 let toggleTitleRange = textView.getParagraphRange(buttonRange)
                 
                 guard let toggleIndex = self.ranges.firstIndex(where: { $0 == toggleTitleRange }) else {return}
+                guard let toggleValue = toggleBlock.getSelfValue() as? TextAndChildrenBlockValueObject else {return}
                 
                 //if flag is true, toggle must show childern element
                 if flag {
                     //show children
-                    if toggleBlock.children == nil{
+                    if toggleValue.children == nil{
                         let insertRange = NSRange(location: self.ranges[toggleIndex].max, length: 0)
                         var string: String
                         
@@ -81,10 +83,11 @@ extension ParagraphTrackingUtility: BlockToggleAction{
                     }else{
                         
                         var currentChildIndex = toggleIndex
-                        object.object?.children?.forEach{ toggleChildrenBlock in
+
+                        toggleValue.children?.forEach{ blockObject in
                             
-                            if let paragraphBlock = toggleChildrenBlock.object?.richText as? RichTextElement {
-                                let text = paragraphBlock.text.content ?? "\n"
+                            if let paragraphBlock = blockObject.object?.e.getSelfValue() as? TextAndChildrenBlockValueObject {
+                                let text = paragraphBlock.richText.first?.text.content ?? "\n"
                                 
                                 var attributes = NSAttributedString.Key.paragrphStyleInTogle
                                 
@@ -114,9 +117,9 @@ extension ParagraphTrackingUtility: BlockToggleAction{
                         
                         guard let childStyle = attributes[.paragraphStyle] as? NSParagraphStyle else {return}
                         
-                        var blockType: BlockType
+                        var blockType: CustomBlockType.Base
                         
-                        if let type = attributes[.blockType] as? BlockType{
+                        if let type = attributes[.blockType] as? CustomBlockType.Base{
                             blockType = type
                         }else{
                             blockType = .paragraph
@@ -125,15 +128,15 @@ extension ParagraphTrackingUtility: BlockToggleAction{
                         
                         if self.isValidParagraphStyle(childStyle){
                             guard let block: BlockObject = BlockCreateHelper.shared.createBlock(blockType, self.paragraphs[index]) else { return }
-                            
-                            if toggleBlock.children == nil{
-                                toggleBlock.children = []
-                                toggleBlock.children?.append(block)
+                        
+                            if toggleValue.children == nil{
+                                toggleValue.children = []
+                                toggleValue.children?.append(block)
                             }else{
-                                if searchIndex > (toggleBlock.children!.count) - 1{
-                                    toggleBlock.children?.append(block)
+                                if searchIndex > (toggleValue.children!.count) - 1{
+                                    toggleValue.children?.append(block)
                                 }else{
-                                    toggleBlock.children?[searchIndex] = block
+                                    toggleValue.children?[searchIndex] = block
                                 }
                             }
                             hideRange.append(self.ranges[index])
@@ -164,7 +167,7 @@ extension ParagraphTrackingUtility{
         }
         return false
     }
-    func replaceToggleAttribues(_ text: String,_ range: NSRange,_ blockType: BlockType) -> Bool{
+    func replaceToggleAttribues(_ text: String,_ range: NSRange,_ blockType: CustomBlockType.Base) -> Bool{
         guard let paragraphTextView = self.paragrphTextView else {return false}
         let paragraphRange = range
         

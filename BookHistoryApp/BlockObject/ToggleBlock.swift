@@ -9,13 +9,13 @@ import UIKit
 
 
 
-class ToggleBlock: BlockElement {
+class ToggleBlock:NSObject, BlockElement {
     var richText: RichTextElement?
     let color: UIColor?
     var children: [BlockObject]?
     
     var decription: String {
-        self.richText?.decription ?? "nil"
+        self.richText?.description ?? "nil"
     }
     
     public init(

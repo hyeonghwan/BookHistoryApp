@@ -12,14 +12,19 @@
     </entity>
     <entity name="MyPage" representedClassName=".MyPage" syncable="YES">
         <attribute name="archived" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="cover" optional="YES" attributeType="Transformable"/>
-        <attribute name="createdBy" optional="YES" attributeType="Transformable"/>
+        <attribute name="cover" optional="YES" attributeType="String" valueTransformerName="CoverFileTransformer"/>
+        <attribute name="createdBy" optional="YES" attributeType="String" valueTransformerName="PartialUserTransformer"/>
         <attribute name="createdTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="icon" optional="YES" attributeType="Transformable"/>
-        <attribute name="id" optional="YES" attributeType="Transformable"/>
-        <attribute name="lastEditedBy" optional="YES" attributeType="Transformable"/>
+        <attribute name="icon" optional="YES" attributeType="String" valueTransformerName="IconFileTransformer"/>
+        <attribute name="id" optional="YES" attributeType="Transformable" valueTransformerName="IdentifierTransformer" customClassName="EntityIdentifier_C"/>
+        <attribute name="lastEditedBy" optional="YES" attributeType="String" valueTransformerName="PartialUserTransformer"/>
         <attribute name="lastEditedTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="parent" optional="YES" attributeType="Transformable"/>
-        <attribute name="properties" optional="YES" attributeType="Transformable"/>
+        <attribute name="parent" optional="YES" attributeType="Transformable" valueTransformerName="PageParentTypeTransformer"/>
+        <relationship name="childBlock" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Page_ChildBlock" inverseName="parentPage" inverseEntity="Page_ChildBlock"/>
+    </entity>
+    <entity name="Page_ChildBlock" representedClassName=".Page_ChildBlock" syncable="YES">
+        <attribute name="object" optional="YES" attributeType="Transformable" valueTransformerName="" allowsCloudEncryption="YES" customClassName="BlockObject"/>
+        <relationship name="block_ChildBlock" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Page_ChildBlock" inverseName="block_ChildBlock" inverseEntity="Page_ChildBlock"/>
+        <relationship name="parentPage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MyPage" inverseName="childBlock" inverseEntity="MyPage"/>
     </entity>
 </model>

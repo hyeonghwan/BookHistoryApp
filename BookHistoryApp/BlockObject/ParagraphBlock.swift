@@ -7,14 +7,27 @@
 
 import UIKit
 
-class ParagraphBlock: BlockElement{
+class ParagraphBlock:NSObject, BlockElement{
+    static var supportsSecureCoding: Bool {
+        true
+    }
+    
+    func encode(with coder: NSCoder) {
+        
+    }
+    
+    required convenience init?(coder: NSCoder) {
+        
+        self.init(richText: RichTextObject(text: RawTextElement(content: "", link: "")))
+    }
+    
     
     var richText: RichTextElement?
     let color: UIColor?
     var children: [BlockObject]?
     
     var decription: String {
-        self.richText?.decription ?? "nil"
+        self.richText?.description ?? "nil"
     }
     
     public init(

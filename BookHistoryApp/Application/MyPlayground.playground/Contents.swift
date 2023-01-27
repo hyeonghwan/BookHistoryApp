@@ -81,52 +81,75 @@ import UIKit
 //    ranges.append( NSRange(location: ranges.last!.max, length: paragraph.length) )
 //}
 
-class Jake3 {
-    let name = "Jake3"
-    var closure: (() -> ())?
-    
-    
-    init() {
-        let outerClosure = {
-            let internalClosure = { [weak self] in // 안쪽 closure에서 weak으로 self를 잡을때 이미 outerClosure에서 strong
-                print("1234")
-                print(self?.name)
-            }
-            print("456")
-            internalClosure()
-        }
-        closure = outerClosure
-        print("789")
-        closure?()
-        closure = nil
-    }
+//class Jake3 {
+//    let name = "Jake3"
+//    var closure: (() -> ())?
+//
+//
+//    init() {
+//        let outerClosure = {
+//            let internalClosure = { [weak self] in // 안쪽 closure에서 weak으로 self를 잡을때 이미 outerClosure에서 strong
+//                print("1234")
+//                print(self?.name)
+//            }
+//            print("456")
+//            internalClosure()
+//        }
+//        closure = outerClosure
+//        print("789")
+//        closure?()
+//        closure = nil
+//    }
+//
+//    deinit {
+//        print("DEINIT3")
+//    }
+//}
+//
+//var jake3: Jake3? = Jake3()
+//jake3 = nil
+//
+//class Jake4 {
+//    let name = "Jake"
+//
+//    lazy var closure: (() -> ())? = {
+//        print(self.name) // 참조: closure -> self
+//    }
+//
+//    init() {
+//        closure?() // 참조: self -> closure
+//        print("jake 4")
+//
+//    }
+//
+//    deinit {
+//        print("DEINIT: Jake4")
+//    }
+//}
+//
+//var jake4: Jake4? = Jake4()
+//jake4?.closure = nil
+//jake4 = nil
 
-    deinit {
-        print("DEINIT3")
-    }
-}
+import Foundation
 
-var jake3: Jake3? = Jake3()
-jake3 = nil
+func solution(_ k:Int, _ m:Int, _ score:[Int]) -> Int {
 
-class Jake4 {
-    let name = "Jake"
-
-    lazy var closure: (() -> ())? = {
-        print(self.name) // 참조: closure -> self
-    }
-
-    init() {
-        closure?() // 참조: self -> closure
-        print("jake 4")
+    let bestPrice = k
+    var boxCount = m
+    var list = score.sorted(by: { $0 > $1})
+    print(list)
+    var sum: Int = 0
+    var result: [Int] = []
+    while list.count == 0{
+        let e = list.remove(at: 0)
+        result.append(e)
         
     }
-
-    deinit {
-        print("DEINIT: Jake4")
-    }
+    
+    
+    return 0
 }
 
-var jake4: Jake4? = Jake4()
-jake4?.closure = nil
-jake4 = nil
+
+solution(3, 4, [1,2,3,4,1,2,3,4])

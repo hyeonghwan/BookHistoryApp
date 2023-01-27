@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class TextHeadSymbolListBlock: BlockElement{
+final class TextHeadSymbolListBlock:NSObject, BlockElement{
     
     var richText: RichTextElement?
     
@@ -16,7 +16,7 @@ final class TextHeadSymbolListBlock: BlockElement{
     var color: UIColor?
     
     var decription: String {
-        self.richText?.decription ?? "nil"
+        self.richText?.description ?? "nil"
     }
     
     public init(

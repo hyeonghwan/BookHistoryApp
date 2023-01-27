@@ -10,6 +10,38 @@ import UIKit
 import CoreData
 import NotionSwift
 
+
+@objc(BlockTypeTransformer)
+class BlockTypeTransformer: ValueTransformer {
+    
+    override class func allowsReverseTransformation() -> Bool {
+        return true
+    }
+    
+    override func transformedValue(_ value: Any?) -> Any? {
+        guard let blockType = value as? BlockType_C else { return nil }
+        
+        do{
+            let data = try NSKeyedArchiver.archivedData(withRootObject: blockType,
+                                                        requiringSecureCoding: true)
+            return data
+        }catch{
+            return nil
+        }
+    }
+    
+    override func reverseTransformedValue(_ value: Any?) -> Any? {
+        guard let data = value as? Data else { return nil}
+        do{
+            let blockType = try NSKeyedUnarchiver.unarchivedObject(ofClass: BlockType_C.self, from: data)
+            return blockType
+        }catch{
+            print("id blockType")
+            return nil
+        }
+    }
+}
+
 @objc(IdentifierTransformer)
 class IdentifierTransformer: ValueTransformer {
     
@@ -18,19 +50,26 @@ class IdentifierTransformer: ValueTransformer {
     }
     
     override func transformedValue(_ value: Any?) -> Any? {
-        guard let identifier = value as? EntityIdentifier<Page, UUIDv4> else { return nil }
-        let jsonEncoder = JSONEncoder()
-        jsonEncoder.dateEncodingStrategy = .formatted(DateFormatter.iso8601Full)
+        guard let identifier = value as? EntityIdentifier_C else { return nil }
         
-        let data = try? jsonEncoder.encode(identifier)
-        
-        return data
+        do{
+            let data = try NSKeyedArchiver.archivedData(withRootObject: identifier,
+                                                        requiringSecureCoding: true)
+            return data
+        }catch{
+            return nil
+        }
     }
     
     override func reverseTransformedValue(_ value: Any?) -> Any? {
-        guard let data = value as? Data else { return nil }
-      
-        return try? JSONDecoder().decode(EntityIdentifier<Page, UUIDv4>.self, from: data)
+        guard let data = value as? Data else { return nil}
+        do{
+            let id = try NSKeyedUnarchiver.unarchivedObject(ofClass: EntityIdentifier_C.self, from: data)
+            return id
+        }catch{
+            print("id nil")
+            return nil
+        }
     }
 }
 
@@ -105,6 +144,28 @@ class CoverFileTransformer: ValueTransformer {
 }
 
 @objc(PageParentTypeTransformer)
+class PageParentTypeTransformer: ValueTransformer{
+    override class func allowsReverseTransformation() -> Bool {
+        return true
+    }
+    
+    override func transformedValue(_ value: Any?) -> Any? {
+        guard let parent = value as? PageParentType else { return nil }
+        let jsonEncoder = JSONEncoder()
+        
+        let data = try? jsonEncoder.encode(parent)
+        
+        return data
+    }
+    
+    override func reverseTransformedValue(_ value: Any?) -> Any? {
+        guard let data = value as? Data else { return nil }
+      
+        return try? JSONDecoder().decode(PageParentType.self, from: data)
+    }
+}
+
+@objc(PagePropertiedTransformer)
 class PagePropertiedTransformer: ValueTransformer {
     
     override class func allowsReverseTransformation() -> Bool {

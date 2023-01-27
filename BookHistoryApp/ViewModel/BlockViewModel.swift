@@ -13,25 +13,6 @@ import RxCocoa
 //                                .basic("제목1"),.basic("제목2"),.basic("제목3"),
 //                                .basic("표"),.basic("글머리 기호 목록"),.basic("번호 매기기 목록"),.basic("토글 목록"),
 //                                .basic("인용"), .basic("구분선"), .basic("페이지 링크"), .basic("콜아웃")]
-enum BlockType: String{
-    
-    
-    case paragraph = "텍스트"
-    case page = "페이지"
-    case todoList = "할 일 목록"
-    case title1 = "제목1"
-    case title2 = "제목2"
-    case title3 = "제목3"
-    case graph = "표"
-    case textHeadSymbolList = "글머리 기호 목록"
-    case numberList = "번호 매기기 목록"
-    case toggleList = "토글 목록"
-    case quotation = "인용"
-    case separatorLine = "구분선"
-    case pageLink = "페이지 링크"
-    case collOut = "콜아웃"
-    case none
-}
 
 
 enum ActionType{
@@ -45,9 +26,9 @@ struct BlockInput{
 }
 
 struct BlockOutPut{
-    var blockActionOutput : Driver<BlockType>?
+    var blockActionOutput : Driver<CustomBlockType.Base>?
     
-    init(outPut: Driver<BlockType>) {
+    init(outPut: Driver<CustomBlockType.Base>) {
         self.blockActionOutput = outPut
     }
     
@@ -92,7 +73,7 @@ final class BlockViewModel: NSObject,BlockVMProtocol {
     
     private lazy var blockSetting: BehaviorRelay<[ActionType]> = BehaviorRelay<[ActionType]>(value: actionType)
     
-    private var blockOutPutAction = BehaviorRelay<BlockType>(value: BlockType.none)
+    private var blockOutPutAction = BehaviorRelay<CustomBlockType.Base>(value: CustomBlockType.Base.none)
     
     var disposeBag = DisposeBag()
     
@@ -140,9 +121,9 @@ final class BlockViewModel: NSObject,BlockVMProtocol {
     }
     
     
-    private func elementToBlockType(_ element: CollectionViewElement) -> Observable<BlockType>{
-        return Observable<BlockType>.create{ emit in
-            guard let type = BlockType(rawValue: element.name) else { return Disposables.create() }
+    private func elementToBlockType(_ element: CollectionViewElement) -> Observable<CustomBlockType.Base>{
+        return Observable<CustomBlockType.Base>.create{ emit in
+            guard let type = CustomBlockType.Base(rawValue: element.name) else { return Disposables.create() }
             
             emit.onNext(type)
             

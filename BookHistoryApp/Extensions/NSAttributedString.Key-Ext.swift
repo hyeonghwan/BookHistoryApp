@@ -29,21 +29,21 @@ extension NSAttributedString.Key {
     static let placeHolderColorAttribute: (NSAttributedString.Key,UIColor) =  (.foregroundColor, UIColor.placeHolderColor)
     
     static let textHeadSymbolListPlaceHolderAttributes: [NSAttributedString.Key : Any] =
-    [NSAttributedString.Key.blockType : BlockType.textHeadSymbolList,
+    [NSAttributedString.Key.blockType : CustomBlockType.Base.textHeadSymbolList,
      NSAttributedString.Key.backgroundColor : UIColor.clear,
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.placeHolderColor,
      .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
     
     static let togglePlaceHolderAttributes: [NSAttributedString.Key : Any] =
-    [NSAttributedString.Key.blockType : BlockType.toggleList,
+    [NSAttributedString.Key.blockType : CustomBlockType.Base.toggleList,
      NSAttributedString.Key.backgroundColor : UIColor.clear,
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.placeHolderColor,
      .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
     
     static let togglePlaceHolderChildAttributes: [NSAttributedString.Key : Any] =
-    [NSAttributedString.Key.blockType : BlockType.paragraph,
+    [NSAttributedString.Key.blockType : CustomBlockType.Base.paragraph,
      NSAttributedString.Key.backgroundColor : UIColor.clear,
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.placeHolderColor,
@@ -51,14 +51,14 @@ extension NSAttributedString.Key {
    
     
     static let toggleAttributes: [NSAttributedString.Key : Any] =
-    [NSAttributedString.Key.blockType : BlockType.toggleList,
+    [NSAttributedString.Key.blockType : CustomBlockType.Base.toggleList,
      NSAttributedString.Key.backgroundColor : UIColor.clear,
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.label,
      .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
     
     static let paragrphStyleInTogle: [NSAttributedString.Key : Any] =
-    [NSAttributedString.Key.blockType : BlockType.paragraph,
+    [NSAttributedString.Key.blockType : CustomBlockType.Base.paragraph,
      NSAttributedString.Key.backgroundColor : UIColor.clear,
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.label,
@@ -73,18 +73,18 @@ extension NSAttributedString.Key {
                        .paragraphStyle : NSParagraphStyle.titleParagraphStyle()]
         switch fontStyle{
         case .title1:
-            result[.blockType] = BlockType.title1
+            result[.blockType] = CustomBlockType.Base.title1
         case .title2:
-            result[.blockType] = BlockType.title2
+            result[.blockType] = CustomBlockType.Base.title2
         case .title3:
-            result[.blockType] = BlockType.title3
+            result[.blockType] = CustomBlockType.Base.title3
         default:
             return [:]
         }
         return result
     }
     
-    static func getTitleAttributes(_ type: BlockType,_ font: UIFont) -> [NSAttributedString.Key : Any]{
+    static func getTitleAttributes(_ type: CustomBlockType.Base,_ font: UIFont) -> [NSAttributedString.Key : Any]{
         return [NSAttributedString.Key.blockType : type,
                 .font : font,
                 NSAttributedString.Key.foregroundColor : UIColor.label,

@@ -6,25 +6,31 @@
 //
 
 import Foundation
-//import NotionSwift
 
+public typealias NSObjCoding = NSObject & NSSecureCoding
+public final class EntityIdentifier_C: NSObjCoding{
+    
+    public static var supportsSecureCoding: Bool {
+        true
+    }
+    
+    public func encode(with coder: NSCoder) {
+        coder.encode(rawValue, forKey: "rawValue")
+    }
+    
+    public init?(coder: NSCoder) {
+        guard let raw = coder.decodeObject(forKey: "rawValue") as? String else {return nil}
+        self.rawValue = raw
+    }
+    
+    public var rawValue: String
 
-//protocol TILPageType{
-//    typealias Identifier = EntityIdentifier<Page, UUIDv4>
-//    typealias PropertyName = String
-//    var id: Identifier { get }
-//    var createdTime: Date { get }
-//    var lastEditedTime: Date { get }
-//    var createdBy: PartialUser { get }
-//    var lastEditedBy: PartialUser { get }
-//    var icon: IconFile? { get }
-//    var cover: CoverFile? { get }
-//    var parent: PageParentType { get }
-//    var archived: Bool { get }
-//    var properties: [PropertyName: PageProperty] { get }
-//    
-//    func getTitle() -> [RichText]?
-//}
-//
-//extension Page: TILPageType{}
+    public init(_ rawValue: String) {
+        self.rawValue = rawValue
+    }
 
+    public override var description: String {
+        "ID:\(rawValue)"
+    }
+  
+}
