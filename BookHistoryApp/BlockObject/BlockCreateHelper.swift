@@ -76,10 +76,28 @@ class BlockCreateHelper{
         }
         let blockWrapping = BlockTypeWrapping(blockType)
         
+        let blockInfo = makeBlockInfo(type)
+        
+        let blockObject = BlockObject(blockInfo: blockInfo ,
+                                      object: blockWrapping,
+                                      blockType: blockWrapping.e)
+        return blockObject
+    }
+    
+    private func makeBlockInfo(_ type: CustomBlockType.Base) -> BlockInfo{
         let id = EntityIdentifier_C(UUID().uuidString)
         
-        let blockObject = BlockObject(id: id , object: blockWrapping, blockType: blockWrapping.e)
-        return blockObject
+        let info = BlockInfo(id: id,
+                             type: type,
+                             archived: false,
+                             createdTime: Date(),
+                             lastEditedTime: Date(),
+                             hasChildren: false,
+                             color: "",
+                             createdBy: "hwan",
+                             lastEditedBy: "hwan")
+        return info
+        
     }
     
     

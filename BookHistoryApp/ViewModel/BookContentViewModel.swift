@@ -209,12 +209,14 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
                 .getBlockObjectObservable()
                 .withLatestFrom(pipe){ newObject , original in
                     print("block1 ; \(newObject)")
+                    
                     print("block2 ; \(original)")
                     return newObject
                 }
             }
             .withUnretained(self)
             .subscribe(onNext: {owned,  blocks in
+                
                 print("block3 ; \(blocks)")
                 
                 owned.service.rxAddBlockObjectDatas(blocks)

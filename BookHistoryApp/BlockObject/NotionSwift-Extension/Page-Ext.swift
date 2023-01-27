@@ -14,6 +14,8 @@ public final class EntityIdentifier_C: NSObjCoding{
         true
     }
     
+    public var rawValue: String
+    
     public func encode(with coder: NSCoder) {
         coder.encode(rawValue, forKey: "rawValue")
     }
@@ -23,7 +25,7 @@ public final class EntityIdentifier_C: NSObjCoding{
         self.rawValue = raw
     }
     
-    public var rawValue: String
+    
 
     public init(_ rawValue: String) {
         self.rawValue = rawValue
@@ -32,5 +34,5 @@ public final class EntityIdentifier_C: NSObjCoding{
     public override var description: String {
         "ID:\(rawValue)"
     }
-  
 }
+extension EntityIdentifier_C: Codable{}

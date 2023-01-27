@@ -5,7 +5,7 @@
 //  Created by 박형환 on 2023/01/15.
 //
 
-import UIKit
+import Foundation
 
 
 protocol BlockObjectType: NSObjCoding{
@@ -33,6 +33,9 @@ protocol BlockElement{
 //@NSManaged public var lastEditedBy: String?
 //@NSManaged public var parentPage: MyPage
 enum BlockObjectKeys: String{
+    
+    case blockInfos
+    
     case id
     case type
     case archived
@@ -45,43 +48,26 @@ enum BlockObjectKeys: String{
     case lastEditedBy
     case parentPage
 }
-final class BlockInfo: NSObjCoding{
-    var info: BlockInfos
-    static var supportsSecureCoding: Bool {
-        true
-    }
-  
-    func encode(with coder: NSCoder) {
-        coder..encode
-    }
-    
-    init?(coder: NSCoder) {
-        <#code#>
-    }
-    
-    
-    override init(){
-        super.init()
-    }
-}
 
-struct BlockInfos {
+
+struct BlockInfo {
     var id: EntityIdentifier_C? // class type
-    var type: CustomBlockType.Base // class type
-    var archived: String
-    var createdTime: Date
-    var lastEditedTime: Date
-    var hasChildren: Bool
-    var color: UIColor
-    var createdBy: String
-    var lastEditedBy: String
+    var type: CustomBlockType.Base? // class type
+    var archived: Bool?
+    var createdTime: Date?
+    var lastEditedTime: Date?
+    var hasChildren: Bool?
+    var color: String?
+    var createdBy: String?
+    var lastEditedBy: String?
 }
-extension BlockInfos: Equatable,Hashable{
-    static func == (lhs: BlockInfos, rhs: BlockInfos) -> Bool{
+extension BlockInfo: Equatable,Hashable{
+    static func == (lhs: BlockInfo, rhs: BlockInfo) -> Bool{
         return lhs.id == rhs.id
     }
 }
-extension BlockInfos: Codable{
+
+extension BlockInfo: Codable{
     enum CodingKeys: String, CodingKey {
           case id
           case type
@@ -95,32 +81,35 @@ extension BlockInfos: Codable{
       }
       public func encode(to encoder: Encoder) throws {
           var container = encoder.container(keyedBy: CodingKeys.self)
-//          try container.encode(id, forKey: .id)
-          try container.encode(type.rawValue, forKey: .type)
+          try container.encode(id, forKey: .id)
+          try container.encode(type?.rawValue, forKey: .type)
           try container.encode(archived, forKey: .archived)
           try container.encode(createdTime, forKey: .createdTime)
           try container.encode(lastEditedTime, forKey: .lastEditedTime)
           try container.encode(hasChildren, forKey: .hasChildren)
-//          try container.encode(color, forKey: .color)
+          try container.encode(color, forKey: .color)
           try container.encode(createdBy, forKey: .createdBy)
           try container.encode(lastEditedBy, forKey: .lastEditedBy)
       }
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-//        id = try container.decode(EntityIdentifier_C.self, forKey: .id)
+        id = try container.decode(EntityIdentifier_C.self, forKey: .id)
         let typeValue = try container.decode(String.self, forKey: .type)
-//        type = CustomBlockType.Base(rawValue: typeValue) ?? .unknown
-        archived = try container.decode(String.self, forKey: .archived)
+        type = CustomBlockType.Base(rawValue: typeValue) ?? Optional.none
+        archived = try container.decode(Bool.self, forKey: .archived)
         createdTime = try container.decode(Date.self, forKey: .createdTime)
         lastEditedTime = try container.decode(Date.self, forKey: .lastEditedTime)
-        
+        hasChildren = try container.decode(Bool.self, forKey: .hasChildren)
+        color = try container.decode(String.self, forKey: .color)
+        createdBy = try container.decode(String.self, forKey: .createdBy)
+        lastEditedBy = try container.decode(String.self, forKey: .lastEditedBy)
     }
 }
 
 
 
 public final class BlockObject: NSObject, BlockObjectType{
-    
+    var blockInfo: BlockInfo?
     var object: BlockTypeWrapping?
     var blockType: CustomBlockType?
     
@@ -129,7 +118,7 @@ public final class BlockObject: NSObject, BlockObjectType{
     }
     enum Key: String{
         case object
-        case id
+        case blockInfo
         
     }
     
@@ -137,25 +126,25 @@ public final class BlockObject: NSObject, BlockObjectType{
         if let blockType = blockType {
             coder.encode(blockType, forKey: Key.object.rawValue)
         }
-        if let id = id{
-            coder.encode(id, forKey: Key.id.rawValue)
+        if let blockInfo = blockInfo{
+            coder.encode(blockInfo, forKey: Key.blockInfo.rawValue)
         }
         
     }
     
     public convenience init?(coder: NSCoder) {
         guard let object = coder.decodeObject(forKey: Key.object.rawValue) as? BlockTypeWrapping else {return nil}
-        let id = coder.decodeObject(forKey: Key.id.rawValue) as? EntityIdentifier_C
+        let blockInfo = coder.decodeObject(forKey: Key.blockInfo.rawValue) as? BlockInfo
         let type: CustomBlockType = object.e
 
-        self.init(id: id, object: object, blockType:type )
+        self.init(blockInfo: blockInfo, object: object, blockType:type )
     }
 
     
-    init(id: EntityIdentifier_C?,
+    init(blockInfo: BlockInfo?,
         object: BlockTypeWrapping?,
          blockType: CustomBlockType?) {
-        self.id = id
+        self.blockInfo = blockInfo
         self.object = object
         self.blockType = blockType
     }

@@ -13,6 +13,7 @@ import OpenGraph
 
 
 protocol RxBookService {
+    func rxAddBlockObjectDatas(_ blocks: [BlockObject?]) -> Observable<Result<Bool,Error>>
     
     func rxAddParagraphData(_ textViewData: TextViewData) -> Observable<Result<Bool,Error>>
     
@@ -88,10 +89,10 @@ extension BookService: URLBookMarkMakable{
 }
 
 extension BookService{
-    func rxAddBlockObjectDatas(_ blocks: [BlockObject]) -> Observable<Result<Bool,Error>>{
-        return Observable.create{ emit in
+    func rxAddBlockObjectDatas(_ blocks: [BlockObject?]) -> Observable<Result<Bool,Error>>{
+        return Observable.create{ [weak self] emit in
             guard let self = self else {return Disposables.create()}
-            self.addToCoreData(<#T##textViewData: TextViewData##TextViewData#>)
+//            self.addToCoreData(<#T##textViewData: TextViewData##TextViewData#>)
             
             return Disposables.create()
             
@@ -185,28 +186,34 @@ extension BookService{
 
 extension BookService{
     
-    private func addBlockObjects(_ objects: [BlockObject]) -> Result<Bool,Error>{
+    private func addBlockObjects(_ objects: [BlockObject?]) -> Result<Bool,Error>{
         guard let container = container else {return .failure(CoreDataError.fetchContainerError)}
         
         guard let entity = NSEntityDescription.entity(forEntityName: "Page_ChildBlock", in: container.viewContext )
         else { return .failure(CoreDataError.entityNameError) }
         do{
+            
             try objects.forEach{ object in
-                if let objectID = object.id{
+                
+                guard let object = object else { throw CoreDataError.unknown("casting") }
+                
+                if let objectID = object.blockInfo?.id?.rawValue{
                     
                 }else{
-    //                @NSManaged public var parentPage: MyPage
+    
                     let data = NSManagedObject(entity: entity, insertInto: container.viewContext)
-                    data.setValue(EntityIdentifier_C(UUID().uuidString), forKey: BlockObjectKeys.id.rawValue)
+                    
                     data.setValue(object, forKey: BlockObjectKeys.object.rawValue)
                     
                     guard let obj = data as? Page_ChildBlock else {throw CoreDataError.objectCastingError}
                     
                 }
             }
+            return .success(true)
         }catch {
             return .failure(error)
         }
+        
         
         
         
