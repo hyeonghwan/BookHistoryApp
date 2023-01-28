@@ -215,11 +215,10 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
                 }
             }
             .withUnretained(self)
-            .subscribe(onNext: {owned,  blocks in
+            .flatMap{ owend ,value in owend.service.rxAddBlockObjectDatas(value) }
+            .subscribe(onNext: {  blocks in
                 
                 print("block3 ; \(blocks)")
-                
-                owned.service.rxAddBlockObjectDatas(blocks)
             })
             .disposed(by: disposeBag)
     }

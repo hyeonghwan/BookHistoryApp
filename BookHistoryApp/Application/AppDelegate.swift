@@ -16,6 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         ValueTransformer.setValueTransformer(NSAttributedStringTransformer(), forName: NSValueTransformerName( "NSAttributedStringTransformer"))
         
+        ValueTransformer.setValueTransformer(BlockObjectTransformer(), forName: NSValueTransformerName( "BlockObjectTransformer"))
+        
         let container = NSPersistentContainer(name:"BookData")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error {

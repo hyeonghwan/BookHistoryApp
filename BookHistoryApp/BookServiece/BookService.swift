@@ -90,9 +90,13 @@ extension BookService: URLBookMarkMakable{
 
 extension BookService{
     func rxAddBlockObjectDatas(_ blocks: [BlockObject?]) -> Observable<Result<Bool,Error>>{
+        print("456")
         return Observable.create{ [weak self] emit in
+            print("123")
             guard let self = self else {return Disposables.create()}
-//            self.addToCoreData(<#T##textViewData: TextViewData##TextViewData#>)
+
+            let result = self.addBlockObjects(blocks)
+            emit.onNext(result)
             
             return Disposables.create()
             
@@ -191,33 +195,49 @@ extension BookService{
         
         guard let entity = NSEntityDescription.entity(forEntityName: "Page_ChildBlock", in: container.viewContext )
         else { return .failure(CoreDataError.entityNameError) }
+        
         do{
             
-            try objects.forEach{ object in
-                
-                guard let object = object else { throw CoreDataError.unknown("casting") }
-                
-                if let objectID = object.blockInfo?.id?.rawValue{
+            switch addRootPage(){
+            case .success(let pageObject):
+                guard let pageMO = pageObject else {return .failure(CoreDataError.objectCastingError)}
+                try objects.forEach{ object in
                     
-                }else{
-    
+                    guard let object = object else { throw CoreDataError.unknown("optional unwrapping error") }
+                    
                     let data = NSManagedObject(entity: entity, insertInto: container.viewContext)
                     
-                    data.setValue(object, forKey: BlockObjectKeys.object.rawValue)
-                    
-                    guard let obj = data as? Page_ChildBlock else {throw CoreDataError.objectCastingError}
-                    
-                }
+                    data.setValue(object, forKey: BlockKey.object.rawValue)
+                    data.setValue(pageMO, forKey: BlockKey.parentPage.rawValue)
+                 }
+                return saveContext()
+            case .failure(let error):
+                throw error
             }
-            return .success(true)
         }catch {
             return .failure(error)
         }
-        
-        
-        
-        
     }
+    
+    private func addRootPage() -> Result<NSManagedObject?,Error>{
+        
+        guard let container = container else {return .failure(CoreDataError.fetchContainerError)}
+        
+        guard let entity = NSEntityDescription.entity(forEntityName: "MyPage", in: container.viewContext ) else {return .failure(CoreDataError.entityNameError)}
+        
+        let myPage = NSManagedObject(entity: entity, insertInto: container.viewContext)
+//        myPage.setValue(childBlocks, forKey: PageKey.childBlocks.rawValue)
+        myPage.setValue(EntityIdentifier_C(UUID().uuidString), forKey: PageKey.id.rawValue)
+        myPage.setValue(true, forKey: PageKey.archived.rawValue)
+        myPage.setValue("hwan", forKey: PageKey.createdBy.rawValue)
+        myPage.setValue("hwan", forKey: PageKey.lastEditedBy.rawValue)
+        myPage.setValue(Date(), forKey: PageKey.createdTime.rawValue)
+        myPage.setValue(Date(), forKey: PageKey.lastEditedTime.rawValue)
+        myPage.setValue(nil, forKey: PageKey.icon.rawValue)
+        
+        return .success(myPage)
+    }
+    
     private func addBookPageData(_ object: BookMO) -> Result<Bool,Error> {
         guard let container = container else {return .failure(CoreDataError.fetchContainerError)}
         

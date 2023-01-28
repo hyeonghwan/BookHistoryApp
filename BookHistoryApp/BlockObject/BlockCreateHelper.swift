@@ -22,9 +22,6 @@ class BlockCreateHelper{
         case .paragraph:
             return makeTextAndChildrenBlockValueObject(type,rawText)!
             
-//            let richTextElement = RichTextObject(text: RawTextElement(content: "\(rawText)", link: nil))
-//            let paragraphBlock = ParagraphBlock(richText: richTextElement)
-//            let object = BlockObject(blockType: type, object: paragraphBlock)
         case .page:
             break
         case .todoList:
@@ -44,6 +41,7 @@ class BlockCreateHelper{
             break
         case .toggleList:
             return makeTextAndChildrenBlockValueObject(type,rawText)!
+            
         case .quotation:
             break
         case .separatorLine:
@@ -64,6 +62,7 @@ class BlockCreateHelper{
         let richText = [RichTextObject(text: raw)]
         let value = TextAndChildrenBlockValueObject(richText: richText, children: nil, color: nil)
         let blockType: CustomBlockType
+        
         switch type {
         case .paragraph:
             blockType = CustomBlockType.paragraph(value)
@@ -74,8 +73,10 @@ class BlockCreateHelper{
         default:
             return nil
         }
+        
         let blockWrapping = BlockTypeWrapping(blockType)
         
+        //make Block Info
         let blockInfo = makeBlockInfo(type)
         
         let blockObject = BlockObject(blockInfo: blockInfo ,

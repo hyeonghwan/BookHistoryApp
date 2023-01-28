@@ -116,6 +116,7 @@
 		96CAFA2629669B8300E6D107 /* CommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAFA2529669B8300E6D107 /* CommentView.swift */; };
 		96CAFA2829669CE800E6D107 /* NSAttributedString.Key-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAFA2729669CE800E6D107 /* NSAttributedString.Key-Ext.swift */; };
 		96CAFA2B2966AA1800E6D107 /* LayoutManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAFA2A2966AA1800E6D107 /* LayoutManagerDelegate.swift */; };
+		96CD923329851BC000DFFF0D /* BlockObjectTranfomer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CD923229851BC000DFFF0D /* BlockObjectTranfomer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -242,6 +243,7 @@
 		96CAFA2529669B8300E6D107 /* CommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentView.swift; sourceTree = "<group>"; };
 		96CAFA2729669CE800E6D107 /* NSAttributedString.Key-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString.Key-Ext.swift"; sourceTree = "<group>"; };
 		96CAFA2A2966AA1800E6D107 /* LayoutManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutManagerDelegate.swift; sourceTree = "<group>"; };
+		96CD923229851BC000DFFF0D /* BlockObjectTranfomer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockObjectTranfomer.swift; sourceTree = "<group>"; };
 		A50DDEE5B459107E26A04E3E /* Pods_BookHistoryApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookHistoryApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -530,6 +532,7 @@
 			isa = PBXGroup;
 			children = (
 				962AA11229311C3600C2620B /* NSAttributedStringTransformer.swift */,
+				96CD923229851BC000DFFF0D /* BlockObjectTranfomer.swift */,
 				964F3560297D756400925229 /* PageTransformer.swift */,
 			);
 			path = ValueTransformer;
@@ -831,6 +834,7 @@
 				96477D20291A041D00830EFB /* ViewController.swift in Sources */,
 				9653C5542974124A00331143 /* Notion.swift in Sources */,
 				964F354B297C06DB00925229 /* TextHeadSymbolView.swift in Sources */,
+				96CD923329851BC000DFFF0D /* BlockObjectTranfomer.swift in Sources */,
 				9601D0BA2950286B0069EF58 /* BottomStackItem.swift in Sources */,
 				96622850295AFA9400E39FC3 /* PlanGoalViewController.swift in Sources */,
 				9662286E2961F0BF00E39FC3 /* BlockEditCell.swift in Sources */,

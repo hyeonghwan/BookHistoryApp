@@ -201,14 +201,14 @@ class SecondViewController: UIViewController {
 
         
         // -> TextView Content Save trigger
-        self.navigationItem.rightBarButtonItem?.rx.tap
-            .observe(on: MainScheduler.instance)
-            .bind(onNext: { [weak self] _ in
-                guard let self = self else {return}
-                self.contentViewModel
-                    .onParagraphData
-                    .onNext(self.textView.attributedText)
-            }).disposed(by: disposeBag)
+//        self.navigationItem.rightBarButtonItem?.rx.tap
+//            .observe(on: MainScheduler.instance)
+//            .bind(onNext: { [weak self] _ in
+//                guard let self = self else {return}
+//                self.contentViewModel
+//                    .onParagraphData
+//                    .onNext(self.textView.attributedText)
+//            }).disposed(by: disposeBag)
         
         
         contentViewModel

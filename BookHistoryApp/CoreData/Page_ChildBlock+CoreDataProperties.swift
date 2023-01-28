@@ -22,12 +22,8 @@ extension Page_ChildBlock {
     @NSManaged public var parentPage: MyPage?
 }
 
-//    @NSManaged public var id: EntityIdentifier_C
-//    @NSManaged public var type: BlockType_C? // enum
-//    @NSManaged public var archived: Bool
-//    @NSManaged public var createdTime: Date?
-//    @NSManaged public var lastEditedTime: Date?
-//    @NSManaged public var hasChildren: Bool
-//    @NSManaged public var color: UIColor?
-//    @NSManaged public var createdBy: String?
-//    @NSManaged public var lastEditedBy: String?
+enum BlockKey: String{
+    case childrenBLocks
+    case object
+    case parentPage
+}

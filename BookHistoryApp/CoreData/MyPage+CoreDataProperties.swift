@@ -24,7 +24,7 @@ extension MyPage {
 
 
     @NSManaged public var archived: Bool
-    @NSManaged public var parent: PageParentType_C
+//    @NSManaged public var parent: PageParentType_C?
     @NSManaged public var cover: String?
     @NSManaged public var icon: String?
     @NSManaged public var lastEditedBy: String?
@@ -35,3 +35,15 @@ extension MyPage {
     @NSManaged public var childBlocks: [Page_ChildBlock]?
 }
 extension MyPage : Identifiable{ }
+enum PageKey: String{
+    case archived
+    case parent
+    case icon
+    case cover
+    case lastEditedBy
+    case createdBy
+    case lastEditedTime
+    case createdTime
+    case id
+    case childBlocks
+}

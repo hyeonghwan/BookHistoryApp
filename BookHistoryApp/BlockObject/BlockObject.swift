@@ -106,8 +106,6 @@ extension BlockInfo: Codable{
     }
 }
 
-
-
 public final class BlockObject: NSObject, BlockObjectType{
     var blockInfo: BlockInfo?
     var object: BlockTypeWrapping?
@@ -119,25 +117,51 @@ public final class BlockObject: NSObject, BlockObjectType{
     enum Key: String{
         case object
         case blockInfo
-        
     }
     
     public func encode(with coder: NSCoder) {
         if let blockType = blockType {
+            print("encode block type")
             coder.encode(blockType, forKey: Key.object.rawValue)
         }
+        
         if let blockInfo = blockInfo{
-            coder.encode(blockInfo, forKey: Key.blockInfo.rawValue)
+            print("encode block info")
+            let encoder = JSONEncoder()
+            do{
+                let encodedData = try encoder.encode(blockInfo)
+                
+                let nsData = NSData(data: encodedData)
+                
+                coder.encode(nsData, forKey: Key.blockInfo.rawValue)
+            }catch{
+                print(error)
+            }
+//            coder.encode(blockInfo, forKey: Key.blockInfo.rawValue)
         }
+        
         
     }
     
     public convenience init?(coder: NSCoder) {
-        guard let object = coder.decodeObject(forKey: Key.object.rawValue) as? BlockTypeWrapping else {return nil}
-        let blockInfo = coder.decodeObject(forKey: Key.blockInfo.rawValue) as? BlockInfo
-        let type: CustomBlockType = object.e
+        
+      
+        do {
+            guard let object = coder.decodeObject(forKey: Key.object.rawValue) as? BlockTypeWrapping else {return nil}
+            guard let nsData = coder.decodeObject(forKey: Key.blockInfo.rawValue) as? NSData else {return nil}
+            
+            let decoder = JSONDecoder()
+            
+            let blockInfo = try decoder.decode(BlockInfo.self, from: nsData as Data)
+            
+            let type: CustomBlockType = object.e
 
-        self.init(blockInfo: blockInfo, object: object, blockType:type )
+            self.init(blockInfo: blockInfo, object: object, blockType:type )
+        }catch{
+            return nil
+        }
+        
+        
     }
 
     
