@@ -19,11 +19,11 @@
         <attribute name="id" optional="YES" attributeType="Transformable" valueTransformerName="IdentifierTransformer"/>
         <attribute name="lastEditedBy" optional="YES" attributeType="String" valueTransformerName="PartialUserTransformer"/>
         <attribute name="lastEditedTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="childBlock" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Page_ChildBlock" inverseName="parentPage" inverseEntity="Page_ChildBlock"/>
+        <relationship name="childBlock" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Page_ChildBlock" inverseName="parentPage" inverseEntity="Page_ChildBlock"/>
     </entity>
     <entity name="Page_ChildBlock" representedClassName=".Page_ChildBlock" syncable="YES">
-        <attribute name="object" optional="YES" attributeType="Transformable" valueTransformerName="BlockObjectTransformer" allowsCloudEncryption="YES"/>
-        <relationship name="block_ChildBlock" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Page_ChildBlock" inverseName="block_ChildBlock" inverseEntity="Page_ChildBlock"/>
+        <attribute name="ownObject" optional="YES" attributeType="Transformable" valueTransformerName="BlockObjectTransformer" allowsCloudEncryption="YES"/>
+        <relationship name="block_ChildBlock" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Page_ChildBlock" inverseName="block_ChildBlock" inverseEntity="Page_ChildBlock"/>
         <relationship name="parentPage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MyPage" inverseName="childBlock" inverseEntity="MyPage"/>
     </entity>
 </model>

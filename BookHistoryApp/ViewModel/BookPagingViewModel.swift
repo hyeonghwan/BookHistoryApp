@@ -15,14 +15,14 @@ protocol PagingType: AnyObject {
     //input
     var onPaging: AnyObserver<Void> { get }
     
-    var pageData: AnyObserver<[BookMO]> { get }
+    var pageData: AnyObserver<[String]> { get }
     
     var movePage: AnyObserver<BookMO> { get }
     
     var deletePage: AnyObserver<Void> { get }
     
     //output
-    var showPage: Observable<[BookMO]> { get }
+    var showPage: Observable<[String]> { get }
 }
 
 enum Book{
@@ -33,11 +33,11 @@ class BookPagingViewModel: NSObject, PagingType{
     
     var onPaging: AnyObserver<Void>
     
-    var pageData: AnyObserver<[BookMO]>
+    var pageData: AnyObserver<[String]>
     
     var movePage: AnyObserver<BookMO>
     
-    var showPage: Observable<[BookMO]>
+    var showPage: Observable<[String]>
     
     var deletePage: AnyObserver<Void>
     
@@ -47,11 +47,11 @@ class BookPagingViewModel: NSObject, PagingType{
         
         let pagingPipe = PublishSubject<Void>()
         
-        let pageDataPipe = PublishSubject<[BookMO]>()
+        let pageDataPipe = PublishSubject<[String]>()
         
         let movePipe = PublishSubject<BookMO>()
         
-        let showPipe = BehaviorRelay<[BookMO]>(value: [])
+        let showPipe = BehaviorRelay<[String]>(value: [])
         
         let deletePipe = PublishSubject<Void>()
         
@@ -72,7 +72,9 @@ class BookPagingViewModel: NSObject, PagingType{
         
         pagingPipe
             .flatMap(serviece.rxGetPages)
-            .subscribe(onNext: pageDataPipe.onNext(_:))
+            .subscribe(onNext: { value in
+                pageDataPipe.onNext(value)
+            })
             .disposed(by: disposeBag)
         
         pageDataPipe

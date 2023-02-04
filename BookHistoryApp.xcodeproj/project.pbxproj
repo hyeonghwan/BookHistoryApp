@@ -65,7 +65,6 @@
 		964F354D297D4DF700925229 /* TextHeadSymbolListBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F354C297D4DF700925229 /* TextHeadSymbolListBlock.swift */; };
 		964F3552297D650B00925229 /* Page-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F3551297D650B00925229 /* Page-Ext.swift */; };
 		964F3554297D661700925229 /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F3553297D661700925229 /* Block.swift */; };
-		964F355E297D752000925229 /* MyPage+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F355D297D752000925229 /* MyPage+CoreDataProperties.swift */; };
 		964F3561297D756400925229 /* PageTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F3560297D756400925229 /* PageTransformer.swift */; };
 		96512BCB291B8CA00090F90B /* CustomLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96512BCA291B8CA00090F90B /* CustomLayoutManager.swift */; };
 		9653C53C296D5F4A00331143 /* ParagraphTextKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9653C53B296D5F4A00331143 /* ParagraphTextKit */; };
@@ -88,7 +87,6 @@
 		965AED97291E80A9005B616F /* CustomTextStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965AED96291E80A9005B616F /* CustomTextStorage.swift */; };
 		965BF35229805E81003A9644 /* Page_core.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965BF35129805E81003A9644 /* Page_core.swift */; };
 		965BF35429807551003A9644 /* PageParentType_c.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965BF35329807551003A9644 /* PageParentType_c.swift */; };
-		965BF36229808238003A9644 /* Page_ChildBlock+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965BF35F29808238003A9644 /* Page_ChildBlock+CoreDataProperties.swift */; };
 		96622850295AFA9400E39FC3 /* PlanGoalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662284F295AFA9300E39FC3 /* PlanGoalViewController.swift */; };
 		96622852295AFFFA00E39FC3 /* LineContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96622851295AFFFA00E39FC3 /* LineContainerView.swift */; };
 		96622854295B12C900E39FC3 /* DotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96622853295B12C900E39FC3 /* DotView.swift */; };
@@ -117,6 +115,11 @@
 		96CAFA2829669CE800E6D107 /* NSAttributedString.Key-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAFA2729669CE800E6D107 /* NSAttributedString.Key-Ext.swift */; };
 		96CAFA2B2966AA1800E6D107 /* LayoutManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CAFA2A2966AA1800E6D107 /* LayoutManagerDelegate.swift */; };
 		96CD923329851BC000DFFF0D /* BlockObjectTranfomer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CD923229851BC000DFFF0D /* BlockObjectTranfomer.swift */; };
+		96CD92402988C25000DFFF0D /* Page_ChildBlock+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CD923F2988C25000DFFF0D /* Page_ChildBlock+CoreDataProperties.swift */; };
+		96CD92422988C25000DFFF0D /* MyPage+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CD923E2988C25000DFFF0D /* MyPage+CoreDataProperties.swift */; };
+		96CD9246298A2A2500DFFF0D /* HangulMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CD9245298A2A2500DFFF0D /* HangulMaker.swift */; };
+		96CD9248298A3C2E00DFFF0D /* HanguleState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CD9247298A3C2E00DFFF0D /* HanguleState.swift */; };
+		96CD924B298B89B600DFFF0D /* Hangule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CD924A298B89B500DFFF0D /* Hangule.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -192,7 +195,6 @@
 		964F354C297D4DF700925229 /* TextHeadSymbolListBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextHeadSymbolListBlock.swift; sourceTree = "<group>"; };
 		964F3551297D650B00925229 /* Page-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Page-Ext.swift"; sourceTree = "<group>"; };
 		964F3553297D661700925229 /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
-		964F355D297D752000925229 /* MyPage+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MyPage+CoreDataProperties.swift"; path = "/Users/baghyeonghwan/IOSPROJECT/BookHistoryApp/BookHistoryApp/CoreData/MyPage+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		964F3560297D756400925229 /* PageTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageTransformer.swift; sourceTree = "<group>"; };
 		96512BCA291B8CA00090F90B /* CustomLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayoutManager.swift; sourceTree = "<group>"; };
 		9653C53A296D5F3B00331143 /* ParagraphTextKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ParagraphTextKit; path = ../../Desktop/ParagraphTextKit; sourceTree = "<group>"; };
@@ -216,7 +218,6 @@
 		965AED96291E80A9005B616F /* CustomTextStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextStorage.swift; sourceTree = "<group>"; };
 		965BF35129805E81003A9644 /* Page_core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page_core.swift; sourceTree = "<group>"; };
 		965BF35329807551003A9644 /* PageParentType_c.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageParentType_c.swift; sourceTree = "<group>"; };
-		965BF35F29808238003A9644 /* Page_ChildBlock+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Page_ChildBlock+CoreDataProperties.swift"; path = "/Users/baghyeonghwan/IOSPROJECT/BookHistoryApp/BookHistoryApp/CoreData/Page_ChildBlock+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		9662284F295AFA9300E39FC3 /* PlanGoalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanGoalViewController.swift; sourceTree = "<group>"; };
 		96622851295AFFFA00E39FC3 /* LineContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineContainerView.swift; sourceTree = "<group>"; };
 		96622853295B12C900E39FC3 /* DotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotView.swift; sourceTree = "<group>"; };
@@ -244,6 +245,11 @@
 		96CAFA2729669CE800E6D107 /* NSAttributedString.Key-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString.Key-Ext.swift"; sourceTree = "<group>"; };
 		96CAFA2A2966AA1800E6D107 /* LayoutManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutManagerDelegate.swift; sourceTree = "<group>"; };
 		96CD923229851BC000DFFF0D /* BlockObjectTranfomer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockObjectTranfomer.swift; sourceTree = "<group>"; };
+		96CD923E2988C25000DFFF0D /* MyPage+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MyPage+CoreDataProperties.swift"; path = "/Users/baghyeonghwan/IOSPROJECT/BookHistoryApp/BookHistoryApp/CoreData/MyPage+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
+		96CD923F2988C25000DFFF0D /* Page_ChildBlock+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Page_ChildBlock+CoreDataProperties.swift"; path = "/Users/baghyeonghwan/IOSPROJECT/BookHistoryApp/BookHistoryApp/CoreData/Page_ChildBlock+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
+		96CD9245298A2A2500DFFF0D /* HangulMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HangulMaker.swift; sourceTree = "<group>"; };
+		96CD9247298A3C2E00DFFF0D /* HanguleState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HanguleState.swift; sourceTree = "<group>"; };
+		96CD924A298B89B500DFFF0D /* Hangule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hangule.swift; sourceTree = "<group>"; };
 		A50DDEE5B459107E26A04E3E /* Pods_BookHistoryApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookHistoryApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -483,6 +489,7 @@
 		96477D1A291A041D00830EFB /* BookHistoryApp */ = {
 			isa = PBXGroup;
 			children = (
+				96CD9244298A29F500DFFF0D /* Hangul */,
 				9655FE2F2955FAC0008991F1 /* CoreData */,
 				9655FE332955FAED008991F1 /* Application */,
 				962AA0C829237A6C00C2620B /* CustomPopUpView */,
@@ -564,8 +571,8 @@
 		9655FE2F2955FAC0008991F1 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				965BF35F29808238003A9644 /* Page_ChildBlock+CoreDataProperties.swift */,
-				964F355D297D752000925229 /* MyPage+CoreDataProperties.swift */,
+				96CD923E2988C25000DFFF0D /* MyPage+CoreDataProperties.swift */,
+				96CD923F2988C25000DFFF0D /* Page_ChildBlock+CoreDataProperties.swift */,
 				9655FE352955FCB2008991F1 /* BookPageMO+CoreDataProperties.swift */,
 				9655FE372955FCB2008991F1 /* BookMO+CoreDataProperties.swift */,
 				964F355F297D754700925229 /* ValueTransformer */,
@@ -650,6 +657,16 @@
 				96CAFA2A2966AA1800E6D107 /* LayoutManagerDelegate.swift */,
 			);
 			path = LayoutManager;
+			sourceTree = "<group>";
+		};
+		96CD9244298A29F500DFFF0D /* Hangul */ = {
+			isa = PBXGroup;
+			children = (
+				96CD9245298A2A2500DFFF0D /* HangulMaker.swift */,
+				96CD9247298A3C2E00DFFF0D /* HanguleState.swift */,
+				96CD924A298B89B500DFFF0D /* Hangule.swift */,
+			);
+			path = Hangul;
 			sourceTree = "<group>";
 		};
 		9AC4BBCB9E2FB5B853773F41 /* Pods */ = {
@@ -826,6 +843,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9601D0C729530A6E0069EF58 /* TestViewController.swift in Sources */,
+				96CD92422988C25000DFFF0D /* MyPage+CoreDataProperties.swift in Sources */,
 				965BF35429807551003A9644 /* PageParentType_c.swift in Sources */,
 				966228652960270E00E39FC3 /* SubviewTextAttachment+Ext.swift in Sources */,
 				96CAFA2B2966AA1800E6D107 /* LayoutManagerDelegate.swift in Sources */,
@@ -884,7 +902,6 @@
 				966F7CB82975691B0037F2B3 /* BlockToggleButton.swift in Sources */,
 				962AA0CE29237E9C00C2620B /* KeyboardSecondVC-Ext.swift in Sources */,
 				965AED97291E80A9005B616F /* CustomTextStorage.swift in Sources */,
-				964F355E297D752000925229 /* MyPage+CoreDataProperties.swift in Sources */,
 				9653C55229740AAC00331143 /* BlockObject.swift in Sources */,
 				962AA0DD292B8A5A00C2620B /* InputViewModel.swift in Sources */,
 				964F3542297852B000925229 /* RichTextElement.swift in Sources */,
@@ -893,6 +910,7 @@
 				96477D1C291A041D00830EFB /* AppDelegate.swift in Sources */,
 				9601D0C52951B84C0069EF58 /* CollectionViewRecentPages.swift in Sources */,
 				9653C54D2972FD2900331143 /* BlockTitlePlaceHolder.swift in Sources */,
+				96CD9246298A2A2500DFFF0D /* HangulMaker.swift in Sources */,
 				96512BCB291B8CA00090F90B /* CustomLayoutManager.swift in Sources */,
 				9655FE392955FCB2008991F1 /* BookPageMO+CoreDataProperties.swift in Sources */,
 				96CAFA212965505D00E6D107 /* CommentTextView.swift in Sources */,
@@ -906,6 +924,7 @@
 				964D38A8296ACC9E00B826AB /* SecondViewController-Ext.swift in Sources */,
 				96477D33291A24EB00830EFB /* CustomTextView.swift in Sources */,
 				9601D0C22951A5530069EF58 /* CSTabBarController.swift in Sources */,
+				96CD924B298B89B600DFFF0D /* Hangule.swift in Sources */,
 				96622872296298CD00E39FC3 /* UIButton-Ext.swift in Sources */,
 				96CAFA1B2963FE8B00E6D107 /* MenuActionHandler.swift in Sources */,
 				962AA0DF292B97FC00C2620B /* ColorViewModel.swift in Sources */,
@@ -915,11 +934,12 @@
 				96284D552982FFEA00B05444 /* CustomBlockType.swift in Sources */,
 				96622859295B22B600E39FC3 /* PlanDataModel.swift in Sources */,
 				964F3546297854DE00925229 /* ParagraphUtility-(Block create Method) ext.swift in Sources */,
-				965BF36229808238003A9644 /* Page_ChildBlock+CoreDataProperties.swift in Sources */,
+				96CD92402988C25000DFFF0D /* Page_ChildBlock+CoreDataProperties.swift in Sources */,
 				962AA0BF292217AA00C2620B /* SecondTextView.swift in Sources */,
 				9662286A2961E26300E39FC3 /* BlockTaskCell.swift in Sources */,
 				96CAFA2829669CE800E6D107 /* NSAttributedString.Key-Ext.swift in Sources */,
 				962AA0A92920BF2D00C2620B /* Attribute-Ext.swift in Sources */,
+				96CD9248298A3C2E00DFFF0D /* HanguleState.swift in Sources */,
 				9655FE322955FADA008991F1 /* BookData.xcdatamodeld in Sources */,
 				9662286729602C3000E39FC3 /* BlockOfAttachmentSettingVC.swift in Sources */,
 				962AA0B52920E90400C2620B /* NSLayoutManagerDelegate.swift in Sources */,

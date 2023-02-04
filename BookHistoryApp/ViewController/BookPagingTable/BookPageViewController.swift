@@ -56,8 +56,26 @@ class BookPagingViewController: UIViewController {
     var bookPagingViewModel: PagingType = BookPagingViewModel()
     
     
+    var hangule: Hangule = Hangule()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        var string: String = "안녕하세요"
+        let index = string.index(string.startIndex, offsetBy: string.count - 1)
+        string = String(string[..<index])
+        print(string)
+        var cha: [Character?] = ["ㅇ","ㅏ","ㄴ","ㅕ","ㅇ"," ",nil,nil,nil]
+        cha.forEach{
+            hangule.inputLetter($0)
+            print(hangule.getTotalString())
+        }
+      
+        
+        
+        
         
         
         layoutConfigure()
@@ -101,18 +119,18 @@ class BookPagingViewController: UIViewController {
         
         //TableView select EVENT
         bookPagingTableView
-            .rx.modelSelected(BookMO.self)
+            .rx.modelSelected(String.self)
             .subscribe(onNext: { [weak self] element in
                 guard let self = self else {return}
                 
                 let vc = SecondViewController()
                 
-                let item = BookViewModelData(id: element.bookID,
-                                             bookTitle: element.bookTitle,
-                                             bookContent: element.bookContent,
-                                             bookPage: nil)
-                
-                vc.contentViewModel.onTextViewData.onNext(item)
+//                let item = BookViewModelData(id: element.bookID,
+//                                             bookTitle: element.bookTitle,
+//                                             bookContent: element.bookContent,
+//                                             bookPage: nil)
+//
+//                vc.contentViewModel.onTextViewData.onNext(item)
                 
                 self.navigationController?
                     .pushViewController(vc, animated: true)

@@ -39,11 +39,13 @@ class RichTextObject: NSObject, RichTextElement {
     func encode(with coder: NSCoder){
         coder.encode(text, forKey: Key.text.rawValue)
         coder.encode(type, forKey: Key.type.rawValue)
+        print("endcoddafljsf :")
     }
     
     required convenience init?(coder: NSCoder) {
-        guard let text = coder.decodeObject(forKey: Key.text.rawValue) as? RawTextElement else {return nil}
-        let type = coder.decodeObject(forKey: Key.type.rawValue) as? String
+        guard let text = coder.decodeObject(of: RawTextElement.self, forKey: Key.text.rawValue) else { return nil}
+        print("text; \(text)")
+        _ = coder.decodeObject(forKey: Key.type.rawValue) as? String
         self.init(text: text)
     }
     
@@ -72,11 +74,13 @@ class RawTextElement: NSObjCoding{
     }
     
     func encode(with coder: NSCoder) {
+        
         coder.encode(content, forKey: Key.content.rawValue)
         coder.encode(link, forKey: Key.link.rawValue)
     }
     
     required convenience init?(coder: NSCoder) {
+        print("decode RawTextElement")
         let content = coder.decodeObject(forKey: Key.content.rawValue) as? String
         let link = coder.decodeObject(forKey: Key.link.rawValue) as? String
         self.init(content: content, link: link)

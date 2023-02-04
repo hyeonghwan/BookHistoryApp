@@ -2,7 +2,7 @@
 //  MyPage+CoreDataClass.swift
 //  
 //
-//  Created by 박형환 on 2023/01/22.
+//  Created by 박형환 on 2023/01/31.
 //
 //
 

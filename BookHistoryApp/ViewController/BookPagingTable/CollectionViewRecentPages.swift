@@ -35,14 +35,14 @@ final class PageCell: UICollectionViewCell {
     }()
     
     
-    var onRecentPageData: AnyObserver<BookMO>
+    var onRecentPageData: AnyObserver<String>
     
     var cellDisposeBag = DisposeBag()
     var disposeBag = DisposeBag()
     
     
     override init(frame: CGRect) {
-        let pagePipe = PublishSubject<BookMO>()
+        let pagePipe = PublishSubject<String>()
         
         onRecentPageData = pagePipe.asObserver()
         
@@ -54,7 +54,7 @@ final class PageCell: UICollectionViewCell {
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: {[weak self] value in
                 guard let self = self else {return}
-                self.titleLabel.text = value.bookTitle
+                self.titleLabel.text = value
             }).disposed(by: cellDisposeBag)
         
     }

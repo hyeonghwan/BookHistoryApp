@@ -14,12 +14,21 @@ public class BlockObjectTransformer: ValueTransformer {
         return true
     }
     
+    public override class func transformedValueClass() -> AnyClass {
+        return NSData.self
+    }
+    
+    
     override public func transformedValue(_ value: Any?) -> Any? {
         guard let blockObject = value as? BlockObject else { return nil}
         
         do{
+            print("transformedValue : \(blockObject)")
+            
             let data = try NSKeyedArchiver.archivedData(withRootObject: blockObject,
-                                                        requiringSecureCoding: false)
+                                                        requiringSecureCoding: true)
+            print("transformedValue : \(data)")
+            print("transformedValue BLockObject")
             return data
         }catch{
             return nil
@@ -27,9 +36,12 @@ public class BlockObjectTransformer: ValueTransformer {
     }
     
     override public func reverseTransformedValue(_ value: Any?) -> Any? {
+        print("asfsdfa")
         guard let data = value as? Data else { return nil}
-        
+        print("data : \(data)")
         do{
+            print("try blockObject")
+            
             let blockObject = try NSKeyedUnarchiver.unarchivedObject(ofClass: BlockObject.self, from: data)
             
             return blockObject

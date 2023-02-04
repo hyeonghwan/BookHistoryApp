@@ -49,12 +49,19 @@ class IdentifierTransformer: ValueTransformer {
         return true
     }
     
+    
+    override class func transformedValueClass() -> AnyClass {
+            return NSData.self
+        }
+    
+    
     override func transformedValue(_ value: Any?) -> Any? {
         guard let identifier = value as? EntityIdentifier_C else { return nil }
         
         do{
             let data = try NSKeyedArchiver.archivedData(withRootObject: identifier,
                                                         requiringSecureCoding: true)
+            
             return data
         }catch{
             return nil
@@ -63,8 +70,10 @@ class IdentifierTransformer: ValueTransformer {
     
     override func reverseTransformedValue(_ value: Any?) -> Any? {
         guard let data = value as? Data else { return nil}
+        
         do{
             let id = try NSKeyedUnarchiver.unarchivedObject(ofClass: EntityIdentifier_C.self, from: data)
+            print("reverseTransformedValueididididi ; \(id)")
             return id
         }catch{
             print("id nil")

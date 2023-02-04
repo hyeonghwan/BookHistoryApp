@@ -17,10 +17,10 @@ protocol RxBookService {
     
     func rxAddParagraphData(_ textViewData: TextViewData) -> Observable<Result<Bool,Error>>
     
-    func rxGetPages() -> Observable<[BookMO]>
+    func rxGetPages() -> Observable<[String]>
     
     func rxDeletePage() -> Observable<Bool>
-
+    
 }
 
 typealias MetaDataDictionatyOnURL = [OpenGraphMetadata: String]
@@ -90,9 +90,9 @@ extension BookService: URLBookMarkMakable{
 
 extension BookService{
     func rxAddBlockObjectDatas(_ blocks: [BlockObject?]) -> Observable<Result<Bool,Error>>{
-        print("456")
+        
         return Observable.create{ [weak self] emit in
-            print("123")
+        
             guard let self = self else {return Disposables.create()}
 
             let result = self.addBlockObjects(blocks)
@@ -120,8 +120,9 @@ extension BookService{
         return Observable.create{ [weak self] emiter in
             
             guard let self = self else { return Disposables.create()}
-            
+            self.deleteTest()
             let data = self.deleteData()
+            let data2 = self.deleteDataPages()
             
             emiter.onNext(data)
             
@@ -129,7 +130,53 @@ extension BookService{
         }
     }
     
+    func deleteTest() -> Bool{
+        guard let container = self.container else {return false}
+        
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Page_ChildBlock")
+        
+        do{
+            
+            let result = try container.viewContext.fetch(fetchRequest)
+            
+            
+            result.forEach{ obj in
+                
+                container.viewContext.delete(obj)
+            }
+            
+            self.saveContext()
+            
+            return true
+            
+        }catch{
+            return false
+        }
+    }
     
+    func deleteDataPages() -> Bool{
+        guard let container = self.container else {return false}
+        
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "MyPage")
+        
+        do{
+            
+            let result = try container.viewContext.fetch(fetchRequest)
+            
+            
+            result.forEach{ obj in
+                
+                container.viewContext.delete(obj)
+            }
+            
+            self.saveContext()
+            
+            return true
+            
+        }catch{
+            return false
+        }
+    }
     
     //delete ALL Data in CoreData(entityName -> "BookData")
     func deleteData() -> Bool {
@@ -158,14 +205,14 @@ extension BookService{
     
     }
     
-    func rxGetPages() -> Observable<[BookMO]>{
+    func rxGetPages() -> Observable<[String]>{
 
         return Observable.create { [weak self] observer in
             
             guard let self = self else {return Disposables.create()}
-            guard let pageMO = self.getPageData() else {return Disposables.create()}
-            
-            observer.onNext(pageMO)
+//            guard let pageMO = self.getPageData() else {return Disposables.create()}
+            guard let titleArray = self.serachPageData() else {return Disposables.create()}
+            observer.onNext(titleArray)
             
             return Disposables.create()
         }
@@ -186,6 +233,29 @@ extension BookService{
             return nil
         }
     }
+    
+    func serachPageData() -> [String]? {
+        guard let container = self.container else {return []}
+        
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "MyPage")
+    
+        do{
+            guard let result = try container.viewContext.fetch(fetchRequest) as? [MyPage] else {return nil}
+            
+            // Block Child의 first BLockObject의 Text 를 가져온다
+            let titleArray =  result.compactMap{ (page) -> String? in
+                if let block = page.childBlock?.firstObject as? Page_ChildBlock{
+                    let title = block.ownObject?.object?.e.getSelfValue() as! TextAndChildrenBlockValueObject
+                    return title.richText.first?.text.content
+                }
+                return nil
+            }
+            return titleArray
+        }catch{
+            print("viewContext.fetch(fetchRequest) failed")
+            return nil
+        }
+    }
 }
 
 extension BookService{
@@ -197,7 +267,6 @@ extension BookService{
         else { return .failure(CoreDataError.entityNameError) }
         
         do{
-            
             switch addRootPage(){
             case .success(let pageObject):
                 guard let pageMO = pageObject else {return .failure(CoreDataError.objectCastingError)}
@@ -207,8 +276,9 @@ extension BookService{
                     
                     let data = NSManagedObject(entity: entity, insertInto: container.viewContext)
                     
-                    data.setValue(object, forKey: BlockKey.object.rawValue)
+                    data.setValue(object, forKey: BlockKey.ownObject.rawValue)
                     data.setValue(pageMO, forKey: BlockKey.parentPage.rawValue)
+                    
                  }
                 return saveContext()
             case .failure(let error):
@@ -219,6 +289,7 @@ extension BookService{
         }
     }
     
+ 
     private func addRootPage() -> Result<NSManagedObject?,Error>{
         
         guard let container = container else {return .failure(CoreDataError.fetchContainerError)}

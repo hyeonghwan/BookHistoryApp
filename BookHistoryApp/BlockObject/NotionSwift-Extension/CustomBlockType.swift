@@ -111,7 +111,7 @@ extension CustomBlockType{
     
 }
 
-class BlockTypeWrapping: NSObjCoding{
+final class BlockTypeWrapping: NSObjCoding{
     
     var e: CustomBlockType
     
@@ -128,9 +128,11 @@ class BlockTypeWrapping: NSObjCoding{
         true
     }
     
-    required convenience init?(coder decoder: NSCoder) {
-        guard let rawBase =  decoder.decodeObject(forKey: Key.base.rawValue) as? String ,
-        let base =  CustomBlockType.Base(rawValue: rawBase) else {return nil}
+    convenience init?(coder decoder: NSCoder) {
+        print("rawBase 123")
+        guard let rawBase =  decoder.decodeObject(forKey: Key.base.rawValue) as? String else {return nil}
+        print("rawBase : \(rawBase)")
+        guard let base =  CustomBlockType.Base(rawValue: rawBase) else {return nil}
         
         let e: CustomBlockType
         
@@ -138,7 +140,8 @@ class BlockTypeWrapping: NSObjCoding{
         case .none:
             e = .none
         case .paragraph:
-            guard let value = decoder.decodeObject(forKey: Key.value.rawValue) as? TextAndChildrenBlockValueObject else { return nil }
+            
+            guard let value = decoder.decodeObject(of: TextAndChildrenBlockValueObject.self, forKey: Key.value.rawValue) else { return nil }
             e = .paragraph(value)
             
         case .page:
@@ -165,15 +168,15 @@ class BlockTypeWrapping: NSObjCoding{
             e = .graph
             
         case .textHeadSymbolList:
-            guard let value = decoder.decodeObject(forKey: Key.value.rawValue) as? TextAndChildrenBlockValueObject else { return nil }
+            guard let value = decoder.decodeObject(of: TextAndChildrenBlockValueObject.self, forKey: Key.value.rawValue) else { return nil }
             e = .textHeadSymbolList(value)
             
         case .numberList:
-            guard let value = decoder.decodeObject(forKey: Key.value.rawValue) as? TextAndChildrenBlockValueObject else { return nil }
+            guard let value = decoder.decodeObject(of: TextAndChildrenBlockValueObject.self, forKey: Key.value.rawValue) else { return nil }
             e = .numberList(value)
             
         case .toggleList:
-            guard let value = decoder.decodeObject(forKey: Key.value.rawValue) as? TextAndChildrenBlockValueObject else { return nil }
+            guard let value = decoder.decodeObject(of: TextAndChildrenBlockValueObject.self, forKey: Key.value.rawValue) else { return nil }
             e = .toggleList(value)
             
         case .quotation:
@@ -206,6 +209,7 @@ class BlockTypeWrapping: NSObjCoding{
             
         case .paragraph(let blockObject):
             coder.encode(blockObject, forKey: Key.value.rawValue)
+            
         case .page(let value):
             coder.encode(value, forKey: Key.value.rawValue)
             

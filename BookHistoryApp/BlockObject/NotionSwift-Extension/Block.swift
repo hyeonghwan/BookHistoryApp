@@ -79,11 +79,17 @@ class TextAndChildrenBlockValueObject: NSObject,NSSecureCoding {
         if let color = color{
             coder.encode(color, forKey: Key.color.rawValue)
         }
+        print("texstsefasdfadf")
     }
     
     required convenience init?(coder: NSCoder) {
-        guard let richText = coder.decodeObject(forKey: Key.richText.rawValue) as? [RichTextObject] else {return nil}
-        let children = coder.decodeObject(forKey: Key.children.rawValue) as? [BlockObject]
+        print("decdoe richText")
+        guard let richText = coder.decodeArrayOfObjects(ofClass: RichTextObject.self, forKey: Key.richText.rawValue) else {return nil}
+        
+        
+        let children = coder.decodeArrayOfObjects(ofClass: BlockObject.self, forKey: Key.children.rawValue)
+        print("richText children : \(children)")
+        
         let color = coder.decodeObject(forKey: Key.color.rawValue) as? UIColor
         
         self.init(

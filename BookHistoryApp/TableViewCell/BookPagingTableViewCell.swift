@@ -44,7 +44,7 @@ final class BookPagingTableViewCell: UITableViewCell{
     }()
     
     
-    var onPageData: AnyObserver<BookMO>
+    var onPageData: AnyObserver<String>
     
     var cellDisposeBag = DisposeBag()
     
@@ -52,7 +52,7 @@ final class BookPagingTableViewCell: UITableViewCell{
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         
-        let pagePipe = PublishSubject<BookMO>()
+        let pagePipe = PublishSubject<String>()
         
         onPageData = pagePipe.asObserver()
         
@@ -62,10 +62,10 @@ final class BookPagingTableViewCell: UITableViewCell{
         
         pagePipe
             .observe(on: MainScheduler.instance)
-            .bind(onNext: { [weak self] book in
+            .bind(onNext: { [weak self] value in
                 guard let self = self else {return}
             
-                self.titleLable.text = book.bookTitle
+                self.titleLable.text = value
                 
             }).disposed(by: cellDisposeBag)
         

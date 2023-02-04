@@ -14,25 +14,29 @@ public final class EntityIdentifier_C: NSObjCoding{
         true
     }
     
-    public var rawValue: String
+    public var identity: String
+    
+    enum Key: String{
+        case entityID
+    }
     
     public func encode(with coder: NSCoder) {
-        coder.encode(rawValue, forKey: "rawValue")
+        coder.encode(identity as NSString, forKey: Key.entityID.rawValue)
     }
     
     public init?(coder: NSCoder) {
-        guard let raw = coder.decodeObject(forKey: "rawValue") as? String else {return nil}
-        self.rawValue = raw
+        guard let raw = coder.decodeObject(forKey: Key.entityID.rawValue) as? NSString else {return nil}
+        self.identity = raw as String
     }
     
     
 
-    public init(_ rawValue: String) {
-        self.rawValue = rawValue
+    public init(_ identity: String) {
+        self.identity = identity
     }
 
     public override var description: String {
-        "ID:\(rawValue)"
+        "ID:\(identity)"
     }
 }
 extension EntityIdentifier_C: Codable{}

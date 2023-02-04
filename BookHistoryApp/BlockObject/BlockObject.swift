@@ -8,10 +8,6 @@
 import Foundation
 
 
-protocol BlockObjectType: NSObjCoding{
-    var object: BlockTypeWrapping? { get }
-//    var object: BlockElement? { get }
-}
 
 
 
@@ -104,9 +100,15 @@ extension BlockInfo: Codable{
         createdBy = try container.decode(String.self, forKey: .createdBy)
         lastEditedBy = try container.decode(String.self, forKey: .lastEditedBy)
     }
+    
 }
 
-public final class BlockObject: NSObject, BlockObjectType{
+protocol BlockObjectType: NSObjCoding{
+    var object: BlockTypeWrapping? { get }
+}
+
+
+public final class BlockObject: NSObjCoding{
     var blockInfo: BlockInfo?
     var object: BlockTypeWrapping?
     var blockType: CustomBlockType?
@@ -120,10 +122,13 @@ public final class BlockObject: NSObject, BlockObjectType{
     }
     
     public func encode(with coder: NSCoder) {
-        if let blockType = blockType {
-            print("encode block type")
-            coder.encode(blockType, forKey: Key.object.rawValue)
+        if let object = object {
+            print("encode block object : \(object)")
+            print("encode block custom Type : \(object.e)")
+            coder.encode(object, forKey: Key.object.rawValue)
+            print("blockObject encode end")
         }
+        print("asdfsfdasfasdf")
         
         if let blockInfo = blockInfo{
             print("encode block info")
@@ -144,20 +149,25 @@ public final class BlockObject: NSObject, BlockObjectType{
     }
     
     public convenience init?(coder: NSCoder) {
-        
-      
+
         do {
-            guard let object = coder.decodeObject(forKey: Key.object.rawValue) as? BlockTypeWrapping else {return nil}
+            let object = coder.decodeObject(of: BlockTypeWrapping.self, forKey: Key.object.rawValue)
+            print("decoder2: \(object)")
+            
             guard let nsData = coder.decodeObject(forKey: Key.blockInfo.rawValue) as? NSData else {return nil}
+            print("nsData : \(nsData)")
+            
+            print("decoder d;d;d")
             
             let decoder = JSONDecoder()
             
             let blockInfo = try decoder.decode(BlockInfo.self, from: nsData as Data)
             
-            let type: CustomBlockType = object.e
+            let type: CustomBlockType? = object?.e
 
             self.init(blockInfo: blockInfo, object: object, blockType:type )
         }catch{
+            
             return nil
         }
         

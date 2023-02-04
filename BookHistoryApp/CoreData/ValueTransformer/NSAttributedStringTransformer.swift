@@ -20,7 +20,7 @@ public class NSAttributedStringTransformer: ValueTransformer {
         
         do{
             let data = try NSKeyedArchiver.archivedData(withRootObject: attributedString,
-                                                        requiringSecureCoding: false)
+                                                        requiringSecureCoding: true)
             return data
         }catch{
             return nil
@@ -54,7 +54,7 @@ public class UIColorTransformer: ValueTransformer {
         
         do{
             let data = try NSKeyedArchiver.archivedData(withRootObject: color,
-                                                        requiringSecureCoding: false)
+                                                        requiringSecureCoding: true)
             return data
         }catch{
             return nil
@@ -65,7 +65,7 @@ public class UIColorTransformer: ValueTransformer {
         guard let data = value as? Data else { return nil}
         
         do{
-            let color = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSAttributedString.self, from: data)
+            let color = try NSKeyedUnarchiver.unarchivedObject(ofClass: UIColor.self, from: data)
             
             return color
         }catch{
