@@ -124,8 +124,6 @@ extension ParagraphTrackingUtility{
             
             let caretPositionRange = self.ranges[moveDownBlockIndex]
             self.subAttachMentBehavior?.textView?.selectedRange = NSRange(location: caretPositionRange.max - 1, length: 0)
-            
-            print("self.paragraph: \(self.paragraphs)")
 
         }else {
             return

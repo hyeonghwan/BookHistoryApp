@@ -22,13 +22,17 @@ protocol BlockTrackingToCoreDataConvertible{
 
 final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     
-    var paragraphs: [String] = []
+    var paragraphs: [String] = ["안녕하세요", "여러분\n", "시발"]
     
-    var blocks: [CustomBlockType.Base] = []
+    var blocks: [CustomBlockType.Base] = [.paragraph,.paragraph,.paragraph]
     
-    var blockObject: [BlockObject?] = []
+    var blockObject: [BlockObject?] = [BlockObject(blockInfo: nil, object: nil, blockType: nil),
+                                       BlockObject(blockInfo: nil, object: nil, blockType: nil),
+                                       BlockObject(blockInfo: nil, object: nil, blockType: nil)]
     
-    var attributes: [[NSAttributedString.Key: Any]] = []
+    var attributes: [[NSAttributedString.Key: Any]] = [NSAttributedString.Key.defaultAttribute,
+                                                       NSAttributedString.Key.defaultAttribute,
+                                                       NSAttributedString.Key.defaultAttribute]
     
     var editObserver: AnyObserver<Int>?
     
