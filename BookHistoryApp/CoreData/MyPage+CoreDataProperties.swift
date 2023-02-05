@@ -35,7 +35,7 @@ extension MyPage {
     @NSManaged public var createdBy: String?
     @NSManaged public var createdTime: Date?
     @NSManaged public var icon: String?
-    @NSManaged public var id: EntityIdentifier_C?
+    @NSManaged public var id: String?
     @NSManaged public var lastEditedBy: String?
     @NSManaged public var lastEditedTime: Date?
     @NSManaged public var childBlock: NSOrderedSet?

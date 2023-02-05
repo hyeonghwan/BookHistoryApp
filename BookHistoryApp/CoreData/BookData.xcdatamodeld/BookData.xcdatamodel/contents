@@ -16,7 +16,7 @@
         <attribute name="createdBy" optional="YES" attributeType="String" valueTransformerName="PartialUserTransformer"/>
         <attribute name="createdTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="icon" optional="YES" attributeType="String" valueTransformerName="IconFileTransformer"/>
-        <attribute name="id" optional="YES" attributeType="Transformable" valueTransformerName="IdentifierTransformer"/>
+        <attribute name="id" optional="YES" attributeType="String" valueTransformerName="IdentifierTransformer"/>
         <attribute name="lastEditedBy" optional="YES" attributeType="String" valueTransformerName="PartialUserTransformer"/>
         <attribute name="lastEditedTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="childBlock" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Page_ChildBlock" inverseName="parentPage" inverseEntity="Page_ChildBlock"/>

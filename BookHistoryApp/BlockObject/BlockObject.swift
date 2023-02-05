@@ -17,17 +17,8 @@ protocol BlockElement{
     var children: [BlockObject]? { get set }
     var decription: String { get }
 }
-//@NSManaged public var id: EntityIdentifier_C
-//@NSManaged public var type: BlockType_C? // enum // not
-//@NSManaged public var archived: Bool // yet
-//@NSManaged public var createdTime: Date?
-//@NSManaged public var lastEditedTime: Date?
-//@NSManaged public var hasChildren: Bool
-//@NSManaged public var color: UIColor?
-//@NSManaged public var object: BlockObject? // blockObject
-//@NSManaged public var createdBy: String?
-//@NSManaged public var lastEditedBy: String?
-//@NSManaged public var parentPage: MyPage
+
+
 enum BlockObjectKeys: String{
     
     case blockInfos
@@ -152,12 +143,8 @@ public final class BlockObject: NSObjCoding{
 
         do {
             let object = coder.decodeObject(of: BlockTypeWrapping.self, forKey: Key.object.rawValue)
-            print("decoder2: \(object)")
             
             guard let nsData = coder.decodeObject(forKey: Key.blockInfo.rawValue) as? NSData else {return nil}
-            print("nsData : \(nsData)")
-            
-            print("decoder d;d;d")
             
             let decoder = JSONDecoder()
             

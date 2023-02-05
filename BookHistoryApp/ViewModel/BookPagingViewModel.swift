@@ -7,6 +7,7 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 import CoreData
 import RxRelay
 
@@ -15,14 +16,18 @@ protocol PagingType: AnyObject {
     //input
     var onPaging: AnyObserver<Void> { get }
     
-    var pageData: AnyObserver<[String]> { get }
+    var pageData: AnyObserver<[PageModel]> { get }
     
     var movePage: AnyObserver<BookMO> { get }
     
     var deletePage: AnyObserver<Void> { get }
     
+    
+    
     //output
-    var showPage: Observable<[String]> { get }
+    var showPage: Observable<[PageModel]> { get }
+    
+    func getChildBlocksOFPage(_ id: PageModel) -> Observable<[Page_ChildBlock]>
 }
 
 enum Book{
@@ -31,27 +36,31 @@ enum Book{
 
 class BookPagingViewModel: NSObject, PagingType{
     
+    private let service: RxBookService
+    
     var onPaging: AnyObserver<Void>
     
-    var pageData: AnyObserver<[String]>
+    var pageData: AnyObserver<[PageModel]>
     
     var movePage: AnyObserver<BookMO>
     
-    var showPage: Observable<[String]>
+    var showPage: Observable<[PageModel]>
     
     var deletePage: AnyObserver<Void>
     
     var disposeBag = DisposeBag()
     
-    init(_ serviece: RxBookService = BookService() ) {
+    init(_ service: RxBookService = BookService() ) {
+        
+        self.service = service
         
         let pagingPipe = PublishSubject<Void>()
         
-        let pageDataPipe = PublishSubject<[String]>()
+        let pageDataPipe = PublishSubject<[PageModel]>()
         
         let movePipe = PublishSubject<BookMO>()
         
-        let showPipe = BehaviorRelay<[String]>(value: [])
+        let showPipe = BehaviorRelay<[PageModel]>(value: [])
         
         let deletePipe = PublishSubject<Void>()
         
@@ -71,7 +80,13 @@ class BookPagingViewModel: NSObject, PagingType{
         super.init()
         
         pagingPipe
-            .flatMap(serviece.rxGetPages)
+            .flatMap(service.rxGetPages)
+            .map{ pages -> [PageModel] in
+                pages.compactMap{ [weak self] in
+                    guard let self = self else {return nil}
+                    return self.convertingPageModel($0)
+                }
+            }
             .subscribe(onNext: { value in
                 pageDataPipe.onNext(value)
             })
@@ -82,10 +97,50 @@ class BookPagingViewModel: NSObject, PagingType{
             .disposed(by: disposeBag)
         
         deletePipe
-            .flatMap(serviece.rxDeletePage)
+            .flatMap(service.rxDeletePage)
             .subscribe(onNext: { flag in
                 
             })
             .disposed(by: disposeBag)
     }
+    
+    
+    func getChildBlocksOFPage(_ id: PageModel) -> Observable<[Page_ChildBlock]>{
+        return service
+            .rxGetPage(id.pageID)
+            .withUnretained(self)
+            .compactMap{ own,page in own.makeChildrenBlockObject(page) }
+    }
+}
+private extension BookPagingViewModel{
+    
+    func convertingPageModel(_ page: MyPage) -> PageModel?{
+        guard let id = page.id else {return nil}
+        
+        guard let block = page.childBlock?.firstObject as? Page_ChildBlock,
+              let text = block.ownObject?.object?.e.getSelfValue() as? TextAndChildrenBlockValueObject ,
+              let title = text.richText.first?.text.content
+        else{
+            return PageModel(pageID: id, title: "제목 없음")
+        }
+        
+        return PageModel(pageID: id, title: title)
+    }
+    
+    func makeChildrenBlockObject(_ page: MyPage) -> [Page_ChildBlock]? {
+        do {
+            let childBlocks = try page.childBlock?.map({ element -> Page_ChildBlock in
+                if let childBlock = element as? Page_ChildBlock{
+                    return childBlock
+                }else{
+                    throw CoreDataError.objectCastingError
+                }
+            })
+            return childBlocks
+        }catch{
+            print(error)
+            return nil
+        }
+    }
+    
 }

@@ -17,7 +17,9 @@ protocol RxBookService {
     
     func rxAddParagraphData(_ textViewData: TextViewData) -> Observable<Result<Bool,Error>>
     
-    func rxGetPages() -> Observable<[String]>
+    func rxGetPages() -> Observable<[MyPage]>
+    
+    func rxGetPage(_ id: String) -> Observable<MyPage>
     
     func rxDeletePage() -> Observable<Bool>
     
@@ -205,14 +207,23 @@ extension BookService{
     
     }
     
-    func rxGetPages() -> Observable<[String]>{
+    func rxGetPage(_ id: String) -> Observable<MyPage>{
+        return Observable.create{ [weak self] emit in
+            guard let self = self else {return Disposables.create()}
+            guard let searchedWorkSpacePage = self.searchPage(id) else {return Disposables.create()}
+            emit.onNext(searchedWorkSpacePage)
+            return Disposables.create()
+        }
+    }
+    
+    func rxGetPages() -> Observable<[MyPage]>{
 
         return Observable.create { [weak self] observer in
             
             guard let self = self else {return Disposables.create()}
 //            guard let pageMO = self.getPageData() else {return Disposables.create()}
-            guard let titleArray = self.serachPageData() else {return Disposables.create()}
-            observer.onNext(titleArray)
+            guard let pages = self.serachPageData() else {return Disposables.create()}
+            observer.onNext(pages)
             
             return Disposables.create()
         }
@@ -234,7 +245,25 @@ extension BookService{
         }
     }
     
-    func serachPageData() -> [String]? {
+    func searchPage(_ id: String) -> MyPage?{
+        guard let container = self.container else {return nil}
+        
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "MyPage")
+        
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id)
+        
+        do{
+            guard let result = try container.viewContext.fetch(fetchRequest) as? [MyPage] else {return nil}
+            
+            // temporaily declare
+            return result.first
+        }catch{
+            print("viewContext.fetch(fetchRequest) failed")
+            return nil
+        }
+    }
+    
+    func serachPageData() -> [MyPage]? {
         guard let container = self.container else {return []}
         
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "MyPage")
@@ -242,15 +271,7 @@ extension BookService{
         do{
             guard let result = try container.viewContext.fetch(fetchRequest) as? [MyPage] else {return nil}
             
-            // Block Child의 first BLockObject의 Text 를 가져온다
-            let titleArray =  result.compactMap{ (page) -> String? in
-                if let block = page.childBlock?.firstObject as? Page_ChildBlock{
-                    let title = block.ownObject?.object?.e.getSelfValue() as! TextAndChildrenBlockValueObject
-                    return title.richText.first?.text.content
-                }
-                return nil
-            }
-            return titleArray
+            return result
         }catch{
             print("viewContext.fetch(fetchRequest) failed")
             return nil
@@ -298,7 +319,7 @@ extension BookService{
         
         let myPage = NSManagedObject(entity: entity, insertInto: container.viewContext)
 //        myPage.setValue(childBlocks, forKey: PageKey.childBlocks.rawValue)
-        myPage.setValue(EntityIdentifier_C(UUID().uuidString), forKey: PageKey.id.rawValue)
+        myPage.setValue(UUID().uuidString, forKey: PageKey.id.rawValue)
         myPage.setValue(true, forKey: PageKey.archived.rawValue)
         myPage.setValue("hwan", forKey: PageKey.createdBy.rawValue)
         myPage.setValue("hwan", forKey: PageKey.lastEditedBy.rawValue)

@@ -73,11 +73,12 @@ class SecondViewController: UIViewController {
    
     
     //TextViewDependency
-    lazy var dependency: DependencyOfTextView? = DependencyOfTextView(colorViewModel: self.colorViewModel,
-                                                                     contentViewModel: self.contentViewModel,
-                                                                     accessoryViewModel: self.accessoryViewModel,
-                                                                     photoAndFileDelegate: self,
-                                                                     inputViewModel: self.inputViewModel)
+    lazy var dependency: DependencyOfTextView? =
+    DependencyOfTextView(colorViewModel: self.colorViewModel,
+                         contentViewModel: self.contentViewModel,
+                         accessoryViewModel: self.accessoryViewModel,
+                         photoAndFileDelegate: self,
+                         inputViewModel: self.inputViewModel)
     
     
     weak var bookPagingViewModel: PagingType?

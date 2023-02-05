@@ -73,11 +73,6 @@ class BookPagingViewController: UIViewController {
             print(hangule.getTotalString())
         }
       
-        
-        
-        
-        
-        
         layoutConfigure()
         
         settingNavi()
@@ -119,18 +114,16 @@ class BookPagingViewController: UIViewController {
         
         //TableView select EVENT
         bookPagingTableView
-            .rx.modelSelected(String.self)
+            .rx.modelSelected(PageModel.self)
+            .withUnretained(self)
+            .flatMap{ own,value in own.bookPagingViewModel.getChildBlocksOFPage(value)}
             .subscribe(onNext: { [weak self] element in
                 guard let self = self else {return}
                 
                 let vc = SecondViewController()
-                
-//                let item = BookViewModelData(id: element.bookID,
-//                                             bookTitle: element.bookTitle,
-//                                             bookContent: element.bookContent,
-//                                             bookPage: nil)
-//
-//                vc.contentViewModel.onTextViewData.onNext(item)
+                print("elementelement : \(element)")
+                print("(element.first?.ownObject?.object?.e.getSelfValue() as! TextAndChildrenBlockValueObject).richText : \((element.first?.ownObject?.object?.e.getSelfValue() as! TextAndChildrenBlockValueObject).richText)")
+                print("(element.first?.ownObject?.object?.e.getSelfValue() as! TextAndChildrenBlockValueObject).richText : \((element.last?.ownObject?.object?.e.getSelfValue() as! TextAndChildrenBlockValueObject).richText)")
                 
                 self.navigationController?
                     .pushViewController(vc, animated: true)
