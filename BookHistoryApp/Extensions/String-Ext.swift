@@ -8,6 +8,10 @@
 import Foundation
 
 extension String {
+    
+    static func emptyStr() -> String{
+        return ""
+    }
 
     func removingAllWhitespaces() -> String {
         return removingCharacters(from: .whitespaces)

@@ -12,6 +12,47 @@ import RxRelay
 import RxSwift
 import SubviewAttachingTextView
 
+
+protocol Add_Init_ToggleActionType{
+    func addToggleWhenFirstInit(_ insertIndex: Int,
+                                _ count: Int,
+                                _ attributesString: NSAttributedString) -> NSAttributedString
+}
+protocol Add_Init_TextHeadSymbolType{
+    func addTextHeadSymbolWhenFirstInit(_ insertIndex: Int,
+                                        _ count: Int,
+                                        _ attributesString: NSAttributedString) -> NSAttributedString
+}
+
+//MARK: - Add_Init_ToggleActionType
+extension ParagraphTrackingUtility: Add_Init_ToggleActionType{
+    public func addToggleWhenFirstInit(_ insertIndex: Int,
+                                       _ count: Int,
+                                       _ attributesString: NSAttributedString) -> NSAttributedString{
+       
+        let plusIndex =  (insertIndex < (count - 1)) ? 1 : 2
+       
+       return insertingToggleAttachment(attString: attributesString,
+                                        attributes: NSAttributedString.Key.toggleAttributes,
+                                        position: plusIndex - 1,
+                                        index: insertIndex)
+    }
+}
+
+//MARK: - Add_Init_TextHeadSymbolType
+extension ParagraphTrackingUtility: Add_Init_TextHeadSymbolType{
+    public func addTextHeadSymbolWhenFirstInit(_ insertIndex: Int,
+                                               _ count: Int,
+                                               _ attributesString: NSAttributedString) -> NSAttributedString{
+        let plusIndex =  (insertIndex < (count - 1)) ? 1 : 2
+        
+        return insertingTextHeadSymbolListAttachment(attributesString,
+                                                     attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes,
+                                                     plusIndex - 1,
+                                                     insertIndex)
+    }
+}
+
 extension ParagraphTrackingUtility{
     
     func addBlockActionPropertyToTextStorage(_ block: CustomBlockType.Base,_ current: NSRange,_ text: String? = nil){
@@ -99,7 +140,9 @@ extension ParagraphTrackingUtility{
         createTextHeadSymbolListAttributedString(nil,currentIndex, insertedRange)
         
     }
-    private func createTextHeadSymbolListAttributedString(_ text: String? = nil, _ index: Int, _ range: NSRange) {
+    private func createTextHeadSymbolListAttributedString(_ text: String? = nil,
+                                                          _ index: Int,
+                                                          _ range: NSRange) {
         
         let plusIndex =  (index < (self.ranges.count - 1)) ? 1 : 2
         let insertedRange = range
@@ -116,7 +159,10 @@ extension ParagraphTrackingUtility{
             }else{
                 togglString = NSAttributedString(string: "\n리스트", attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes)
             }
-            resultString = insertingTextHeadSymbolListAttachment(togglString, attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes, plusIndex - 1,index)
+            resultString = insertingTextHeadSymbolListAttachment(togglString,
+                                                                 attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes,
+                                                                 plusIndex - 1,
+                                                                 index)
         }
         
         self.paragraphStorage?.beginEditing()
@@ -135,69 +181,6 @@ extension ParagraphTrackingUtility{
         let textHeadSymbolView = TextHeadSymbolView(frame: .zero)
         
         let attachment = SubviewTextAttachment(view: textHeadSymbolView,
-                                               size: CGSize(width: 35, height: 13))
-        
-        
-        var result = attString.insertingAttachment(attachment, at: position)
-        
-        result = result.addingAttributes(attributes)
-        return result
-    }
-    
-    func addToggle(_ range: NSRange,_ text: String? = nil){
-        
-        guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
-       
-        let insertedRange = ranges[currentIndex]
-        
-        if let restText = text{
-            createToggleAttributedString(restText, currentIndex, insertedRange)
-            return
-        }
-        
-        createToggleAttributedString(nil,currentIndex, insertedRange)
-        
-    }
-    
-    private func createToggleAttributedString(_ text: String? = nil, _ index: Int, _ range: NSRange) {
-        
-        let plusIndex =  (index < (self.ranges.count - 1)) ? 1 : 2
-        let insertedRange = range
-        
-        var togglString: NSAttributedString
-        var resultString: NSAttributedString
-        
-        if let text = text{
-            togglString = NSAttributedString(string: "\(text)", attributes: NSAttributedString.Key.toggleAttributes)
-            resultString = insertingToggleAttachment(togglString, attributes: NSAttributedString.Key.toggleAttributes, plusIndex - 1,index)
-        }else{
-            if plusIndex == 1{
-                togglString = NSAttributedString(string: "토글\n", attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
-            }else{
-                togglString = NSAttributedString(string: "\n토글", attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
-            }
-            resultString = insertingToggleAttachment(togglString, attributes: NSAttributedString.Key.togglePlaceHolderAttributes, plusIndex - 1,index)
-        }
-        
-        self.paragraphStorage?.beginEditing()
-        self.paragraphStorage?.insert(resultString, at: insertedRange.max)
-        self.paragraphStorage?.endEditing()
-        
-        self.paragrphTextView?.selectedRange = NSRange(location: insertedRange.max + plusIndex, length: 0)
-        
-    }
-    private func insertingToggleAttachment(_ attString: NSAttributedString ,
-                                           attributes: [NSAttributedString.Key : Any],
-                                           _ position: Int,
-                                           _ index : Int) -> NSAttributedString{
-        let blockObjectIndex = index + 1
-        
-        let dependency = BlockToggleDependency(toggleAction: self, firstInitIndex: blockObjectIndex)
-        
-        let button = BlockToggleButton(frame: .zero,
-                                       dependency: dependency)
-        
-        let attachment = SubviewTextAttachment(view: button,
                                                size: CGSize(width: 35, height: 13))
         
         
@@ -230,4 +213,80 @@ extension ParagraphTrackingUtility{
         
     }
     
+}
+
+//MARK: - add Toggle Logic
+extension ParagraphTrackingUtility {
+    
+    private func addToggle(_ range: NSRange,_ text: String? = nil){
+        
+        guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
+       
+        let insertedRange = ranges[currentIndex]
+        
+        if let restText = text{
+            createToggleAttributedString(restText, currentIndex, insertedRange)
+            return
+        }
+        
+        createToggleAttributedString(nil,currentIndex, insertedRange)
+        
+    }
+    
+    private func createToggleAttributedString(_ text: String? = nil,
+                                              _ index: Int,
+                                              _ range: NSRange) {
+        
+        let plusIndex =  (index < (self.ranges.count - 1)) ? 1 : 2
+        let insertedRange = range
+        
+        var togglString: NSAttributedString
+        var resultString: NSAttributedString
+        
+        if let text = text{
+            togglString = NSAttributedString(string: "\(text)", attributes: NSAttributedString.Key.toggleAttributes)
+            resultString = insertingToggleAttachment(attString: togglString,
+                                                     attributes: NSAttributedString.Key.toggleAttributes,
+                                                     position: plusIndex - 1,
+                                                     index: index)
+        }else{
+            if plusIndex == 1{
+                togglString = NSAttributedString(string: "토글\n", attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
+            }else{
+                togglString = NSAttributedString(string: "\n토글", attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
+            }
+            
+            resultString = insertingToggleAttachment(attString: togglString,
+                                                     attributes: NSAttributedString.Key.togglePlaceHolderAttributes,
+                                                     position: plusIndex - 1,
+                                                     index: index)
+        }
+        
+        self.paragraphStorage?.beginEditing()
+        self.paragraphStorage?.insert(resultString, at: insertedRange.max)
+        self.paragraphStorage?.endEditing()
+        
+        self.paragrphTextView?.selectedRange = NSRange(location: insertedRange.max + plusIndex, length: 0)
+        
+    }
+    private func insertingToggleAttachment(attString: NSAttributedString ,
+                                           attributes: [NSAttributedString.Key : Any],
+                                           position: Int,
+                                           index : Int) -> NSAttributedString{
+        let blockObjectIndex = index + 1
+        
+        let dependency = BlockToggleDependency(toggleAction: self, firstInitIndex: blockObjectIndex)
+        
+        let button = BlockToggleButton(frame: .zero,
+                                       dependency: dependency)
+        
+        let attachment = SubviewTextAttachment(view: button,
+                                               size: CGSize(width: 35, height: 13))
+        
+        
+        var result = attString.insertingAttachment(attachment, at: position)
+        
+        result = result.addingAttributes(attributes)
+        return result
+    }
 }

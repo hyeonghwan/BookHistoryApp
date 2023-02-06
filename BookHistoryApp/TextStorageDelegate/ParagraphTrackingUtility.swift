@@ -22,17 +22,13 @@ protocol BlockTrackingToCoreDataConvertible{
 
 final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     
-    var paragraphs: [String] = ["안녕하세요", "여러분\n", "시발"]
+    var paragraphs: [String] = []
     
-    var blocks: [CustomBlockType.Base] = [.paragraph,.paragraph,.paragraph]
+    var blockTypes: [CustomBlockType.Base] = []
     
-    var blockObject: [BlockObject?] = [BlockObject(blockInfo: nil, object: nil, blockType: nil),
-                                       BlockObject(blockInfo: nil, object: nil, blockType: nil),
-                                       BlockObject(blockInfo: nil, object: nil, blockType: nil)]
+    var blockObjects: [BlockObject?] = []
     
-    var attributes: [[NSAttributedString.Key: Any]] = [NSAttributedString.Key.defaultAttribute,
-                                                       NSAttributedString.Key.defaultAttribute,
-                                                       NSAttributedString.Key.defaultAttribute]
+    var attributes: [[NSAttributedString.Key: Any]] = []
     
     var editObserver: AnyObserver<Int>?
     
@@ -70,8 +66,6 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     weak var subAttachMentBehavior: SubviewAttachingTextViewBehavior?
     
     
-    
-    
     private var firstInit = true
     
     var ranges: [NSRange] {
@@ -85,7 +79,28 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     }
     
     var presentedParagraphs: [NSAttributedString] {
-        paragraphs.map{ $0.attributedPresentation }
+        return paragraphs
+            .enumerated()
+            .map{ index, paragraph in
+                let attribute = attributes[index]
+                switch attribute.getBlockBaseType(){
+                case .paragraph:
+                    return NSAttributedString(string: paragraph, attributes: attribute)
+                case .toggleList:
+                    return addToggleWhenFirstInit(index,
+                                                  self.paragraphs.count,
+                                                  NSAttributedString(string: paragraph,
+                                                                     attributes: attribute))
+                case .textHeadSymbolList:
+                    return addTextHeadSymbolWhenFirstInit(index,
+                                                          self.paragraphs.count,
+                                                          NSAttributedString(string: paragraph,
+                                                                             attributes: attribute))
+                default:
+                    break
+                }
+                return NSAttributedString(string: paragraph, attributes: attributes[index])
+            }
     }
     
     
@@ -106,21 +121,21 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 attributes.insert(allAttributes, at: index)
                 
                 if let blockType = allAttributes[.blockType] as? CustomBlockType.Base {
-                    blocks.insert(blockType, at: index)
+                    blockTypes.insert(blockType, at: index)
                     guard let blockObj = BlockCreateHelper.shared.createBlock(blockType, paragraphDescriptor.text) else {return}
                     
-                    blockObject.insert(blockObj, at: index)
+                    blockObjects.insert(blockObj, at: index)
                     
                 }else{
-                    blocks.insert(.paragraph, at: index)
+                    blockTypes.insert(.paragraph, at: index)
                     guard let blockObj = BlockCreateHelper.shared.createBlock(.paragraph,  paragraphDescriptor.text) else {return}
-                    blockObject.insert(blockObj, at: index)
+                    blockObjects.insert(blockObj, at: index)
                 }
                 
             case .removedParagraph(index: let index):
                 paragraphs.remove(at: index)
-                blocks.remove(at: index)
-                blockObject.remove(at: index)
+                blockTypes.remove(at: index)
+                blockObjects.remove(at: index)
                 attributes.remove(at: index)
                 removals.append(index)
                 
@@ -136,34 +151,36 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 
                 if let blockType = allAttributes[.blockType] as? CustomBlockType.Base {
         
-                    blocks[index] = blockType
+                    blockTypes[index] = blockType
                     
-                    guard let originalType = blockObject[index]?.blockType?.base else {return}
+                    guard let originalType = blockObjects[index]?.blockType?.base else {return}
         
                     if originalType == blockType{
-                        let value = blockObject[index]?.object?.e.getSelfValue() as? TextAndChildrenBlockValueObject
-                        blockObject[index]?.object?.e.editRawText(paragraphDescriptor.text)
+                        let value = try? blockObjects[index]?.object?.e.getBlockValueType() as? TextAndChildrenBlockValueObject
+                        blockObjects[index]?.object?.e.editRawText(paragraphDescriptor.text)
                     }else{
-                        blockObject[index] = BlockCreateHelper.shared.createBlock(blockType, paragraphDescriptor.text)
-                        blocks[index] = blockType
+                        blockObjects[index] = BlockCreateHelper.shared.createBlock(blockType, paragraphDescriptor.text)
+                        blockTypes[index] = blockType
                     }
                 }else{
-                    blocks[index] = .paragraph
+                    blockTypes[index] = .paragraph
                     
                     
-                    guard let originalType = blockObject[index]?.blockType else {return}
+                    guard let originalType = blockObjects[index]?.blockType else {return}
                     
                     if originalType.base == .paragraph{
-                        blockObject[index]?.object?.e.editRawText(paragraphDescriptor.text)
+                        blockObjects[index]?.object?.e.editRawText(paragraphDescriptor.text)
                         print("is editRawText")
                     }else{
-                        blockObject[index] = BlockCreateHelper.shared.createBlock(.paragraph, paragraphDescriptor.text)
+                        blockObjects[index] = BlockCreateHelper.shared.createBlock(.paragraph, paragraphDescriptor.text)
                         print("is editRawText not")
                     }
                 }
                 
             }
         }
+        
+        
         
         changeFinishObserver?.onNext(())
     }
@@ -193,11 +210,18 @@ extension ParagraphTrackingUtility{
     func getBlockObjectObservable() -> Observable<[BlockObject?]>{
         return Observable.create{ [weak self] emit in
             guard let self = self else {return Disposables.create()}
-            emit.onNext(self.blockObject)
+            emit.onNext(self.blockObjects)
             return Disposables.create()
         }
     }
     func getBlockObject() -> [BlockObject?]{
-        return self.blockObject
+        return self.blockObjects
+    }
+}
+
+extension ParagraphTrackingUtility{
+    
+    func makeAttributes(){
+        
     }
 }

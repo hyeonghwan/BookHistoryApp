@@ -13,7 +13,9 @@ import SnapKit
 enum SubViewAttachmentContiner {
     case defaultContainer
     
-    fileprivate static func buttonConfiguration(_ button: UIButton, _ target: NSAttachmentSettingProtocol, _ containerView: UIView) {
+    fileprivate static func buttonConfiguration(_ button: UIButton,
+                                                _ target: NSAttachmentSettingProtocol,
+                                                _ containerView: UIView) {
         button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
         button.addTarget(target, action: #selector(target.blockSubViewAttachmentHandler(_:)), for: .touchUpInside)
         button.tintColor = .systemPink

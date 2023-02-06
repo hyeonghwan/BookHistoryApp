@@ -67,7 +67,7 @@ class SecondViewController: UIViewController {
     var colorViewModel: ColorViewModelProtocol = ColorViewModel()
     
     // TextView Save Content State ViewModel
-    var contentViewModel: ContentViewModelProtocol = BookContentViewModel()
+    var contentViewModel: ContentViewModelProtocol
     
     var accessoryViewModel: AccessoryCompositionProtocol = AccessoryViewModel()
    
@@ -132,6 +132,20 @@ class SecondViewController: UIViewController {
         return textView
     }()
     
+    //MARK: - initializer
+    init(){
+        self.contentViewModel = BookContentViewModel()
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    convenience init(_ object: [BlockObject]){
+        self.init()
+        self.contentViewModel.bindingBlocksToParagraphUtil(object)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     deinit{
 //        self.disposeBag = DisposeBag()
@@ -139,6 +153,8 @@ class SecondViewController: UIViewController {
         print("secondViewController deinit")
     }
     
+    
+    //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
        
@@ -180,20 +196,8 @@ class SecondViewController: UIViewController {
     }
     
 
-    private func settingNavigation(){
-        
-        self.navigationController?.navigationBar.isTranslucent = true
-        
-        self.navigationController?.navigationBar.tintColor = .label
-        
-        //For back button in navigation bar
-        let backButton = UIBarButtonItem()
-        
-        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: nil)
-    }
     
+    //MARK: - Binding func
     private func settupBinding(){
         
         if let saveButton = self.navigationItem.rightBarButtonItem{
@@ -238,6 +242,21 @@ class SecondViewController: UIViewController {
     }
 
     
+    //MARK: - ViewController settup
+    private func settingNavigation(){
+        
+        self.navigationController?.navigationBar.isTranslucent = true
+        
+        self.navigationController?.navigationBar.tintColor = .label
+        
+        //For back button in navigation bar
+        let backButton = UIBarButtonItem()
+        
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: nil)
+    }
+    
     private func addAutoLayout() {
         textView.snp.makeConstraints{
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(12)
@@ -278,6 +297,8 @@ class SecondViewController: UIViewController {
     }
         
 }
+
+//MARK: - EXtension VC
 private extension SecondViewController{
     
     

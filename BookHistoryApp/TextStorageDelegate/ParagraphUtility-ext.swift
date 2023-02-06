@@ -39,7 +39,7 @@ extension ParagraphTrackingUtility: BlockToggleAction{
             .subscribe(onNext: { [weak self] in
                 guard let self = self else {return}
                 guard let firstInitIndex = button.firstInitIndex else {return}
-                button.object = self.blockObject[firstInitIndex]
+                button.object = self.blockObjects[firstInitIndex]
                 
                 toggleDisposeBag = DisposeBag()
                 
@@ -61,7 +61,7 @@ extension ParagraphTrackingUtility: BlockToggleAction{
                 let toggleTitleRange = textView.getParagraphRange(buttonRange)
                 
                 guard let toggleIndex = self.ranges.firstIndex(where: { $0 == toggleTitleRange }) else {return}
-                guard let toggleValue = toggleBlock.getSelfValue() as? TextAndChildrenBlockValueObject else {return}
+                guard let toggleValue = try? toggleBlock.getBlockValueType() as? TextAndChildrenBlockValueObject else {return}
                 
                 //if flag is true, toggle must show childern element
                 if flag {
@@ -84,9 +84,9 @@ extension ParagraphTrackingUtility: BlockToggleAction{
                         
                         var currentChildIndex = toggleIndex
 
-                        toggleValue.children?.forEach{ blockObject in
+                        toggleValue.children?.forEach{ blockObjects in
                             
-                            if let paragraphBlock = blockObject.object?.e.getSelfValue() as? TextAndChildrenBlockValueObject {
+                            if let paragraphBlock = try? blockObjects.object?.e.getBlockValueType() as? TextAndChildrenBlockValueObject {
                                 let text = paragraphBlock.richText.first?.text.content ?? "\n"
                                 
                                 var attributes = NSAttributedString.Key.paragrphStyleInTogle

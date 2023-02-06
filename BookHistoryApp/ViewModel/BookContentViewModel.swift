@@ -18,14 +18,21 @@ protocol ContentViewModelType: AnyObject {
     var onTextViewData: AnyObserver<BookViewModelData> { get }
     var onParagraphData: AnyObserver<NSAttributedString> {get}
     
-    func createBlockAttributeInput(_ blockType: CustomBlockType.Base,_ current: NSRange)
+    func createBlockAttributeInput(_ blockType: CustomBlockType.Base,
+                                   _ current: NSRange)
 
-    func removePlaceHolderAttribute(_ attributes: [NSAttributedString.Key : Any], _ range: Int)
+    func removePlaceHolderAttribute(_ attributes: [NSAttributedString.Key : Any],
+                                    _ range: Int)
     
-    func replaceBlockAttribute(_ text: String,_ paragraphRange: NSRange,_ blockType: CustomBlockType.Base) -> Bool
+    func replaceBlockAttribute(_ text: String,
+                               _ paragraphRange: NSRange,
+                               _ blockType: CustomBlockType.Base) -> Bool
     
     //input to store blockData on COreData
     func storeBlockValues(_ tap: Signal<Void>)
+    
+    // input
+    func bindingBlocksToParagraphUtil(_ blocks: [BlockObject])
     
     
     //OUtPut
@@ -195,6 +202,15 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
             .disposed(by: disposeBag)
     }
     
+}
+
+//MARK: - extension VM func to binding
+extension BookContentViewModel{
+    
+    func bindingBlocksToParagraphUtil(_ blocks: [BlockObject]){
+        self.paragraphTrackingUtility.rx.blockObjects.onNext(blocks)
+    }
+    
     func storeBlockValues(_ tap: Signal<Void>){
         
         let pipe = BehaviorSubject<[BlockObject?]>(value: [nil])
@@ -233,7 +249,8 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
             .asDriver(onErrorJustReturn: (self ,(.none, NSRange())))
             .drive(onNext: { owned,tuple in
                 let (blockType, currentRange) = tuple
-                owned.paragraphTrackingUtility.addBlockActionPropertyToTextStorage(blockType, currentRange)
+                owned.paragraphTrackingUtility
+                    .addBlockActionPropertyToTextStorage(blockType, currentRange)
             })
             .disposed(by: disposeBag)
     }

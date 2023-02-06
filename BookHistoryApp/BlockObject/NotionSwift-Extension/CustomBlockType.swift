@@ -39,7 +39,8 @@ enum CustomBlockType{
             break
         }
     }
-    func getSelfValue() -> AnyObject?{
+
+    func getBlockValueType() throws -> BlockValueType?{
         switch self{
         case .paragraph(let value):
             return value
@@ -48,13 +49,26 @@ enum CustomBlockType{
         case .toggleList(let value):
             return value
         default:
-            return nil
+            throw BlockError.blockValueNilError
         }
     }
     
+    func getAttribute() -> [NSAttributedString.Key : Any]{
+        switch self{
+        case .paragraph:
+            return NSAttributedString.Key.defaultParagraphAttribute
+        case .textHeadSymbolList:
+            return NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes
+        case .toggleList:
+            return NSAttributedString.Key.togglePlaceHolderAttributes
+        default:
+            return NSAttributedString.Key.defaultAttribute
+        }
+    }
+    
+    
 }
 extension CustomBlockType{
-    
     
     enum Base: String{
         case paragraph = "텍스트"
@@ -108,6 +122,7 @@ extension CustomBlockType{
         }
     }
     
+  
     
 }
 

@@ -116,14 +116,16 @@ class BookPagingViewController: UIViewController {
         bookPagingTableView
             .rx.modelSelected(PageModel.self)
             .withUnretained(self)
-            .flatMap{ own,value in own.bookPagingViewModel.getChildBlocksOFPage(value)}
+            .flatMap{ own,pageValue in own.bookPagingViewModel.getChildBlocksOFPage(pageValue)}
+            .map{  $0.compactMap{ page_block in page_block.ownObject } }
             .subscribe(onNext: { [weak self] element in
                 guard let self = self else {return}
                 
-                let vc = SecondViewController()
-                print("elementelement : \(element)")
-                print("(element.first?.ownObject?.object?.e.getSelfValue() as! TextAndChildrenBlockValueObject).richText : \((element.first?.ownObject?.object?.e.getSelfValue() as! TextAndChildrenBlockValueObject).richText)")
-                print("(element.first?.ownObject?.object?.e.getSelfValue() as! TextAndChildrenBlockValueObject).richText : \((element.last?.ownObject?.object?.e.getSelfValue() as! TextAndChildrenBlockValueObject).richText)")
+                let vc = SecondViewController(element)
+                
+                
+                
+            
                 
                 self.navigationController?
                     .pushViewController(vc, animated: true)

@@ -34,14 +34,6 @@ protocol URLBookMarkMakable{
 
 typealias BookServiceAble = RxBookService & URLBookMarkMakable
 
-enum CoreDataError: Error{
-    case fetchContainerError
-    case entityNameError
-    case saveContextError
-    case objectCastingError
-    case fetchRequestError
-    case unknown(String)
-}
 
 
 class BookService: NSObject, RxBookService{

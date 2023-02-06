@@ -24,6 +24,14 @@ extension NSAttributedString.Key {
                           NSAttributedString.Key.foregroundColor : UIColor.label,
                                    .paragraphStyle : NSParagraphStyle.defaultParagraphStyle()]
     
+    static let defaultParagraphAttribute: [NSAttributedString.Key : Any] =
+    [NSAttributedString.Key.blockType : CustomBlockType.Base.paragraph,
+     NSAttributedString.Key.backgroundColor : UIColor.clear,
+     NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+     NSAttributedString.Key.foregroundColor : UIColor.label,
+     .paragraphStyle : NSParagraphStyle.defaultParagraphStyle()]
+    
+    
     static let placeHolderColorAttributeDic: [NSAttributedString.Key : Any] = [ .foregroundColor : UIColor.placeHolderColor ]
     
     static let placeHolderColorAttribute: (NSAttributedString.Key,UIColor) =  (.foregroundColor, UIColor.placeHolderColor)
