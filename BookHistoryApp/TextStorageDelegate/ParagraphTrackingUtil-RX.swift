@@ -43,10 +43,12 @@ extension Reactive where Base: ParagraphTrackingUtility{
     private func onAttributes(_ blocks: [BlockObject]){
         let attributeArray =
         blocks.compactMap{ block in
-            block.object?.e.getAttribute()
+            block.getObjectAttributes()
         }
         
-        attributes.onNext(attributeArray)
+        print("block:: \(attributeArray)")
+        
+        self.newAttributes.onNext(attributeArray)
     }
     
     private func onBlockType(_ blocks: [BlockObject]){
@@ -54,14 +56,17 @@ extension Reactive where Base: ParagraphTrackingUtility{
         blockTypes.onNext(types)
     }
     
-    private func onParagraph(_ blocks: [BlockObject]){print("\(#function) , \(#line)")
+    
+    private func onParagraph(_ blocks: [BlockObject]){
+        print("\(#function) , \(#line)")
         do{
             let paragraphsFromBlock
             =
             try blocks
                 .map{ block in  try block.object?.e.getBlockValueType()}
-                .compactMap{ blockType in blockType?.getParagraphValue() }
-            paragraphs.onNext(paragraphsFromBlock)
+                .compactMap{ blockType in blockType?.getParagraphsValues() }
+        
+            self.newParagraphs.onNext(paragraphsFromBlock)
         }catch{
             print("\(#function) , \(#line)")
             print("error: \(error)")

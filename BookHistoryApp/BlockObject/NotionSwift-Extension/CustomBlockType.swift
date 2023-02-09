@@ -24,17 +24,131 @@ enum CustomBlockType{
     case callOut(CalloutBlockValueObject)
     case none
     
+    
+    
+    func editAttributes(_ attributes: [[NSAttributedString.Key : Any]]){
+        switch self {
+        case .paragraph(let textAndChildrenBlockValueObject):
+            changeObjectAnnotaionValue(attributes, textAndChildrenBlockValueObject)
+      
+        case .textHeadSymbolList(let textAndChildrenBlockValueObject):
+            changeObjectAnnotaionValue(attributes, textAndChildrenBlockValueObject)
+     
+        case .toggleList(let textAndChildrenBlockValueObject):
+            changeObjectAnnotaionValue(attributes, textAndChildrenBlockValueObject)
+            
+        default:
+            break
+        }
+    }
+    func editElement(_ str: [String], _ attributes: [[NSAttributedString.Key : Any]]){
+        
+        switch self {
+        case .paragraph(let textAndChildrenBlockValueObject):
+            changeTextElementValue(str, attributes ,textAndChildrenBlockValueObject)
+      
+        case .textHeadSymbolList(let textAndChildrenBlockValueObject):
+            changeTextElementValue(str, attributes ,textAndChildrenBlockValueObject)
+     
+        case .toggleList(let textAndChildrenBlockValueObject):
+            changeTextElementValue(str, attributes ,textAndChildrenBlockValueObject)
+            
+        default:
+            break
+        }
+    }
+    
+    private func changeTextElementValue(_ str: [String],
+                                        _ attributes: [[NSAttributedString.Key : Any]],
+                                        _ object: TextAndChildrenBlockValueObject){
+        
+        if object.richText.count == str.count{
+            object.richText
+            =
+            object
+                .richText
+                .enumerated()
+                .map{ index , value in
+                    if str[index] == value.plain_text{
+                        return value
+                    }else{
+                        value.text.content = str[index]
+                        value.plain_text = str[index]
+                        return value
+                    }
+                }
+        }else{
+            let anotations = getAnnotations(attributes)
+            object.richText
+            =
+            str
+                .enumerated()
+                .map{ index,string in
+                    let raw = RawTextElement(content: string, link: nil)
+                    return RichTextObject(text: raw, string, annotations: anotations[index])
+                }
+        }
+    }
+    
+    private func changeObjectAnnotaionValue(_ attributes: [[NSAttributedString.Key : Any]],
+                                   _ object: TextAndChildrenBlockValueObject){
+        let annotations = getAnnotations(attributes)
+        
+        object.richText
+        =
+        object
+            .richText
+            .enumerated()
+            .map{ index , value in
+                if annotations[index] == value.annotations{
+                    return value
+                }else{
+                    value.annotations = annotations[index]
+                    return value
+                }
+            }
+    }
+    
+    private func getAnnotations(_ attributes: [[NSAttributedString.Key : Any]]) -> [Anotations] {
+        let annotations = attributes.map{ value in
+            var bold: Bool = false
+            var italic: Bool = false
+            if let font = value[.font] as? UIFont{
+                let traits = font.fontDescriptor.symbolicTraits
+                if traits.contains(.traitBold) {
+                    bold = true
+                }
+                if traits.contains(.traitItalic){
+                    italic = true
+                }
+            }
+            let color = value[.foregroundColor] as? UIColor
+            let strike = value[.strikethroughStyle] as? NSUnderlineStyle
+            let underline = value[.underlineStyle] as? NSUnderlineStyle
+            
+            let annotation = Anotations(bold: bold,
+                                        italic: italic,
+                                        strikethrough: strike,
+                                        underline: underline,
+                                        code: nil,
+                                        color: "label")
+            return annotation
+        }
+        return annotations
+    }
+    
+  
     func editRawText(_ text: String){
         switch self {
         case .paragraph(let textAndChildrenBlockValueObject):
-            textAndChildrenBlockValueObject.richText = [RichTextObject(text: RawTextElement(content: text, link: nil))]
-      
+//            textAndChildrenBlockValueObject.richText = [RichTextObject(text: RawTextElement(content: text, link: nil))]
+            break
         case .textHeadSymbolList(let textAndChildrenBlockValueObject):
-            textAndChildrenBlockValueObject.richText = [RichTextObject(text: RawTextElement(content: text, link: nil))]
-     
+//            textAndChildrenBlockValueObject.richText = [RichTextObject(text: RawTextElement(content: text, link: nil))]
+            break
         case .toggleList(let textAndChildrenBlockValueObject):
-            textAndChildrenBlockValueObject.richText = [RichTextObject(text: RawTextElement(content: text, link: nil))]
-            
+//            textAndChildrenBlockValueObject.richText = [RichTextObject(text: RawTextElement(content: text, link: nil))]
+            break
         default:
             break
         }
@@ -58,14 +172,92 @@ enum CustomBlockType{
         case .paragraph:
             return NSAttributedString.Key.defaultParagraphAttribute
         case .textHeadSymbolList:
-            return NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes
+            return NSAttributedString.Key.textHeadSymbolListAttributes
         case .toggleList:
-            return NSAttributedString.Key.togglePlaceHolderAttributes
+            return NSAttributedString.Key.toggleAttributes
         default:
             return NSAttributedString.Key.defaultAttribute
         }
     }
     
+    func getAttributes(_ object: TextAndChildrenBlockValueObject) -> [[NSAttributedString.Key : Any]]{
+        var attributes: [[NSAttributedString.Key : Any]] = []
+        
+        switch self{
+        case .paragraph:
+
+            var defalutAttributes = NSAttributedString.Key.defaultParagraphAttribute
+            return getBlockChildAttributes(defalutAttributes,object)
+            
+        case .textHeadSymbolList:
+
+            var defalutAttributes = NSAttributedString.Key.textHeadSymbolListAttributes
+            return getBlockChildAttributes(defalutAttributes,object)
+            
+        case .toggleList:
+
+            var defalutAttributes = NSAttributedString.Key.toggleAttributes
+            return getBlockChildAttributes(defalutAttributes,object)
+            
+        default:
+            break
+        }
+      
+        
+        return attributes
+    }
+    
+    private func getBlockChildAttributes(_ defaultAtt : [NSAttributedString.Key : Any],
+                                         _ object: TextAndChildrenBlockValueObject) -> [[NSAttributedString.Key : Any]] {
+        
+        var attributes: [[NSAttributedString.Key : Any]] = []
+        
+        object.richText.forEach{ value in
+            
+            var attribute: [NSAttributedString.Key : Any]  = defaultAtt
+            
+            let annotations = value.annotations
+            let color = "label" //annotations.color.create
+            
+            
+            var font : UIFont = UIFont.appleSDGothicNeo.regular.font(size: 16)
+            
+            
+            if annotations.underline == true{
+                //append
+            }
+            if annotations.strikethrough == true{
+                //append
+            }
+            
+            
+            if annotations.italic == true && annotations.bold == true {
+                font = font.setBoldItalic()
+            }else{
+                if annotations.italic == true{
+                    font = font.setItalic()
+                }else{
+                    font = font.setBold()
+                }
+            }
+            
+            
+            attribute[.font] = font
+            
+            if annotations.color == "label"{
+                // foreGround
+                attribute[.foregroundColor] =  UIColor.label // annotations.color.create
+            }else{
+                // backGraound
+                attribute[.backgroundColor] =  UIColor.label // annotations.color.create
+            }
+            
+            attributes.append(attribute)
+        }
+        
+        return attributes
+        
+    }
     
 }
 extension CustomBlockType{
@@ -129,6 +321,7 @@ extension CustomBlockType{
 final class BlockTypeWrapping: NSObjCoding{
     
     var e: CustomBlockType
+    
     
     init(_ e: CustomBlockType) {
         self.e = e

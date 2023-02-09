@@ -84,3 +84,4 @@ enum Color: String {
         }
     }
 }
+extension Color: Codable{}

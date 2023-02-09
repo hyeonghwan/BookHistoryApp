@@ -63,6 +63,15 @@ class BookPagingViewController: UIViewController {
         super.viewDidLoad()
         
         
+//        var font = UIFont.appleSDGothicNeo.regular.font(size: 16)
+//        print("font: \(font)")
+//        font = font.setBold()
+//        print("font: \(font)")
+//        font = font.setItalic()
+//        print("font: \(font)")
+//        font = font.setBoldItalic()
+//        print("font: \(font)")
+//        
         var string: String = "안녕하세요"
         let index = string.index(string.startIndex, offsetBy: string.count - 1)
         string = String(string[..<index])

@@ -8,6 +8,9 @@
 import Foundation
 
 extension String {
+    static func newLineString() -> String{
+        return "\n"
+    }
     
     static func emptyStr() -> String{
         return ""

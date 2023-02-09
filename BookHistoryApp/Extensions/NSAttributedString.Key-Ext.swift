@@ -43,12 +43,14 @@ extension NSAttributedString.Key {
      NSAttributedString.Key.foregroundColor : UIColor.placeHolderColor,
      .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
     
+    
     static let togglePlaceHolderAttributes: [NSAttributedString.Key : Any] =
     [NSAttributedString.Key.blockType : CustomBlockType.Base.toggleList,
      NSAttributedString.Key.backgroundColor : UIColor.clear,
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.placeHolderColor,
      .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
+    
     
     static let togglePlaceHolderChildAttributes: [NSAttributedString.Key : Any] =
     [NSAttributedString.Key.blockType : CustomBlockType.Base.paragraph,
@@ -58,8 +60,16 @@ extension NSAttributedString.Key {
      .paragraphStyle : NSParagraphStyle.toggleChildIndentParagraphStyle()]
    
     
+    
     static let toggleAttributes: [NSAttributedString.Key : Any] =
     [NSAttributedString.Key.blockType : CustomBlockType.Base.toggleList,
+     NSAttributedString.Key.backgroundColor : UIColor.clear,
+     NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+     NSAttributedString.Key.foregroundColor : UIColor.label,
+     .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
+    
+    static let textHeadSymbolListAttributes: [NSAttributedString.Key : Any] =
+    [NSAttributedString.Key.blockType : CustomBlockType.Base.textHeadSymbolList,
      NSAttributedString.Key.backgroundColor : UIColor.clear,
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.label,
@@ -73,8 +83,11 @@ extension NSAttributedString.Key {
      .paragraphStyle : NSParagraphStyle.toggleChildIndentParagraphStyle()]
     
     
+    
+    
     static func getPlaceTitleAttribues(_ fontStyle: UIFont.TextStyle) -> [NSAttributedString.Key : Any]{
-        var font = UIFont.preferredFont(forTextStyle: fontStyle, familyName: UIFont.appleFontFamiliyName)
+    
+        let font = UIFont.preferredFont(forTextStyle: fontStyle, familyName: UIFont.appleFontFamiliyName)
         
         var result : [NSAttributedString.Key : Any] = [.font : font,
                        .foregroundColor : UIColor.placeHolderColor,

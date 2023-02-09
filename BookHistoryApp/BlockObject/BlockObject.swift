@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 
 
@@ -157,8 +158,6 @@ public final class BlockObject: NSObjCoding{
             
             return nil
         }
-        
-        
     }
 
     
@@ -168,6 +167,32 @@ public final class BlockObject: NSObjCoding{
         self.blockInfo = blockInfo
         self.object = object
         self.blockType = blockType
+    }
+}
+
+extension BlockObject{
+    
+    func getObjectAttributes() -> [[NSAttributedString.Key : Any]] {
+        guard let wrappingObject = self.object else { return []}
+        do {
+            guard let object = try wrappingObject.e.getBlockValueType() as? TextAndChildrenBlockValueObject else {return []}
+            let attributes = wrappingObject.e.getAttributes(object)
+            
+            return attributes
+            
+        }catch{
+            fatalError("fattal error occur")
+        }
+    }
+    
+    func editAttributes(_ attributes: [[NSAttributedString.Key : Any]]){
+        guard let wrappingObject = self.object else { return }
+        wrappingObject.e.editAttributes(attributes)
+    }
+    
+    func editTextElement(_ str: [String],_ attributes: [[NSAttributedString.Key : Any]]){
+        guard let wrappingObject = self.object else { return }
+        wrappingObject.e.editElement(str, attributes)
     }
 }
 

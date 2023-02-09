@@ -8,6 +8,8 @@
 import UIKit
 
 
+typealias SeparatedNSAttributes_Strings = ([[NSAttributedString.Key : Any]], [String])
+
 class BlockCreateHelper{
     
     static let shared = BlockCreateHelper()
@@ -16,11 +18,17 @@ class BlockCreateHelper{
         
     }
     
-    func createBlock(_ type: CustomBlockType.Base,_ rawText: String?) -> BlockObject?{
-        guard let rawText = rawText else {return nil}
+    func createBlock_to_array(_ separted: SeparatedNSAttributedString) -> BlockObject?{
+//        guard let rawText = rawText else {return nil}
+        let att = separted.0
+        let rawTexts = separted.1
+        let type = separted.2
+        
+        let separated: SeparatedNSAttributes_Strings = (att, rawTexts)
+        print("separated : \(separated)")
         switch type {
         case .paragraph:
-            return makeTextAndChildrenBlockValueObject(type,rawText)!
+            return makeTextAndChildrenBlockValueObject(type,separated)!
             
         case .page:
             break
@@ -35,12 +43,12 @@ class BlockCreateHelper{
         case .graph:
             break
         case .textHeadSymbolList:
-            return makeTextAndChildrenBlockValueObject(type,rawText)!
+            return makeTextAndChildrenBlockValueObject(type,separated)!
             
         case .numberList:
             break
         case .toggleList:
-            return makeTextAndChildrenBlockValueObject(type,rawText)!
+            return makeTextAndChildrenBlockValueObject(type,separated)!
             
         case .quotation:
             break
@@ -57,10 +65,65 @@ class BlockCreateHelper{
         return nil
     }
     
-    private func makeTextAndChildrenBlockValueObject(_ type: CustomBlockType.Base,_ text: String) -> BlockObject?{
-        let raw = RawTextElement(content: text, link: nil)
-        let richText = [RichTextObject(text: raw)]
-        let value = TextAndChildrenBlockValueObject(richText: richText, children: nil, color: nil)
+    func makeAnnotations(_ att: [NSAttributedString.Key : Any]) -> Anotations {
+        
+        var underline: Bool = false
+        var strike: Bool = false
+        var bold: Bool = false
+        var italic: Bool = false
+        var code: Bool = false
+        var color: Color = .label
+        
+        if let uiColor = att[.foregroundColor] as? UIColor{
+            color = Color.getColor(uiColor)
+        }
+        
+        if let _ = att[.underlineStyle] as? NSUnderlineStyle{
+            underline = true
+        }
+        if let _ = att[.strikethroughStyle] as? NSUnderlineStyle{
+            strike = true
+        }
+        
+        let font = att[.font] as? UIFont
+        if let fontTraits = font?.fontDescriptor.symbolicTraits{
+            
+            if fontTraits.contains(.traitItalic){
+                bold = true
+            }
+            if fontTraits.contains(.traitBold){
+                italic = true
+            }
+        }
+        
+        return Anotations(bold: bold,
+                          italic: italic,
+                          strikethrough: strike,
+                          underline: underline,
+                          code: code,
+                          color: color.rawValue)
+    }
+    
+
+    private func makeTextAndChildrenBlockValueObject(_ type: CustomBlockType.Base,
+                                                     _ sepatedTuple: SeparatedNSAttributes_Strings) -> BlockObject?{
+        
+        let att_s = sepatedTuple.0
+        let str_s = sepatedTuple.1
+        
+        let richTextObjects
+        =
+        str_s
+            .map{ value in RawTextElement(content: value , link: nil)}
+            .enumerated()
+            .map{ index, element in
+                let att = att_s[index]
+                let anotations = makeAnnotations(att)
+                return RichTextObject(text: element, element.content!, annotations: anotations)
+            }
+        
+        let value = TextAndChildrenBlockValueObject(richText: richTextObjects, children: nil, color: nil)
+        
         let blockType: CustomBlockType
         
         switch type {

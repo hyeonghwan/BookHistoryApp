@@ -96,6 +96,7 @@ extension BookService{
             
         }
     }
+    
     func rxAddParagraphData(_ textViewData: TextViewData) -> Observable<Result<Bool,Error>> {
         
         
@@ -215,6 +216,7 @@ extension BookService{
             guard let self = self else {return Disposables.create()}
 //            guard let pageMO = self.getPageData() else {return Disposables.create()}
             guard let pages = self.serachPageData() else {return Disposables.create()}
+            
             observer.onNext(pages)
             
             return Disposables.create()
@@ -274,6 +276,18 @@ extension BookService{
 extension BookService{
     
     private func addBlockObjects(_ objects: [BlockObject?]) -> Result<Bool,Error>{
+        
+        objects.forEach{ value in
+            do {
+                guard let k = try value?.object?.e.getBlockValueType() as? TextAndChildrenBlockValueObject else {return}
+                
+            }catch{
+                
+            }
+            
+            
+            
+        }
         guard let container = container else {return .failure(CoreDataError.fetchContainerError)}
         
         guard let entity = NSEntityDescription.entity(forEntityName: "Page_ChildBlock", in: container.viewContext )

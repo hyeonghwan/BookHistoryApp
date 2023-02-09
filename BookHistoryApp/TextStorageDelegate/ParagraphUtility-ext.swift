@@ -113,22 +113,33 @@ extension ParagraphTrackingUtility: BlockToggleAction{
                         defer{
                             searchIndex += 1
                         }
+          
+                        
                         guard let attributes = self.paragraphStorage?.attributes(at: self.ranges[index].location, effectiveRange: nil) else {return}
                         
                         guard let childStyle = attributes[.paragraphStyle] as? NSParagraphStyle else {return}
                         
-                        var blockType: CustomBlockType.Base
-                        
-                        if let type = attributes[.blockType] as? CustomBlockType.Base{
-                            blockType = type
-                        }else{
-                            blockType = .paragraph
-                        }
-                        
+//                        
+//                        if let type = attributes[.blockType] as? CustomBlockType.Base{
+//                            blockType = type
+//                        }else{
+//                            blockType = .paragraph
+//                        }
+//                        
                         
                         if self.isValidParagraphStyle(childStyle){
-                            guard let block: BlockObject = BlockCreateHelper.shared.createBlock(blockType, self.paragraphs[index]) else { return }
-                        
+                           
+                            guard let attributedString: NSAttributedString
+                                    = self.paragraphStorage?.attributedSubstring(from: self.ranges[index]) else {return}
+                            
+                            var value: SeparatedNSAttributedString = ([],[],CustomBlockType.Base.none)
+                            value =
+                            self.attributesArray(from: ParagraphTextStorage.ParagraphDescriptor(attributedString: attributedString,
+                                                                                           storageRange: self.ranges[index]))
+                            
+                            guard let block = BlockCreateHelper.shared.createBlock_to_array(value) else {return}
+
+                            
                             if toggleValue.children == nil{
                                 toggleValue.children = []
                                 toggleValue.children?.append(block)

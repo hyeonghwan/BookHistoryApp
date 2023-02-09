@@ -19,4 +19,25 @@ extension ParagraphTrackingUtility {
 //        
 //        return object
 //    }
+//    
+//    func createSeparatedNSAttributedString(_ attributedString: NSAttributedString,
+//                                           _ blockType: CustomBlockType.Base) -> SeparatedNSAttributedString{
+//        var (att_S, str_S, _): SeparatedNSAttributedString = ([],[],CustomBlockType.Base.none)
+//        
+//        attributedString.enumerateAttributes(in: attributedString.range,
+//                                                                 options: .longestEffectiveRangeNotRequired){
+//            attributes, subRange, pointer in
+//            
+//            let subText = attributedString.attributedSubstring(from: subRange)
+//            
+//            if subText.string != String.newLineString(){
+//                att_S.append(attributes)
+//                str_S.append(subText.string)
+//                
+//            }else{
+//                pointer.pointee = true
+//            }
+//        }
+//        return (att_S,str_S, blockType)
+//    }
 }

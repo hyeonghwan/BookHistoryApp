@@ -74,6 +74,9 @@ class TextAndChildrenBlockValueObject: NSObject,NSSecureCoding {
     }
     
     func encode(with coder: NSCoder) {
+        print(richText)
+        print(richText.first)
+        
         coder.encode(richText, forKey: Key.richText.rawValue)
         
         if let children = children{
@@ -88,6 +91,7 @@ class TextAndChildrenBlockValueObject: NSObject,NSSecureCoding {
     required convenience init?(coder: NSCoder) {
         print("decdoe richText")
         guard let richText = coder.decodeArrayOfObjects(ofClass: RichTextObject.self, forKey: Key.richText.rawValue) else {return nil}
+        print("richText: \(richText)")
         
         
         let children = coder.decodeArrayOfObjects(ofClass: BlockObject.self, forKey: Key.children.rawValue)

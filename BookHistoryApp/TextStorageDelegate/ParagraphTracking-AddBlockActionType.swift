@@ -47,7 +47,7 @@ extension ParagraphTrackingUtility: Add_Init_TextHeadSymbolType{
         let plusIndex =  (insertIndex < (count - 1)) ? 1 : 2
         
         return insertingTextHeadSymbolListAttachment(attributesString,
-                                                     attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes,
+                                                     attributes: NSAttributedString.Key.textHeadSymbolListAttributes,
                                                      plusIndex - 1,
                                                      insertIndex)
     }

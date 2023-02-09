@@ -15,6 +15,13 @@ protocol BlockValueType{
 }
 extension BlockValueType{
     
+    func getParagraphsValues() -> [String] {
+        self.richText.map{ obj in
+            guard let text = obj.text.content else {return String.emptyStr() }
+            return text
+        }
+    }
+    
     func getParagraphValue() -> String{
         self.richText.map{ obj in
             guard let text = obj.text.content else {return String.emptyStr() }

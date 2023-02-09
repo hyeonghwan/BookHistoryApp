@@ -18,7 +18,8 @@ class ParagraphBlock:NSObject, BlockElement{
     
     required convenience init?(coder: NSCoder) {
         
-        self.init(richText: RichTextObject(text: RawTextElement(content: "", link: "")))
+//        self.init(richText: RichTextObject(text: RawTextElement(content: "", link: "")))
+        self.init(richText: nil)
     }
     
     
@@ -31,7 +32,7 @@ class ParagraphBlock:NSObject, BlockElement{
     }
     
     public init(
-        richText: RichTextElement,
+        richText: RichTextElement?,
         children: [BlockObject]? = nil,
         color: UIColor? = nil
     ) {
