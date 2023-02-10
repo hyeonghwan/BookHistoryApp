@@ -18,6 +18,17 @@ extension Reactive where Base: ParagraphTrackingUtility{
             paragraphUtil.paragraphs = value
         }
     }
+    var newParagraphs: Binder<[[String]]>{
+        return Binder(self.base){ paragraphUtil , value in
+            paragraphUtil.newParagraphs = value
+        }
+    }
+    
+    var newAttributes: Binder<[[[NSAttributedString.Key : Any]]]>{
+        return Binder(self.base){ paragraphUtil , value in
+            paragraphUtil.newAttributes = value
+        }
+    }
     
     var blockObjects: Binder<[BlockObject]>{
         return Binder(self.base) { paragraphTUtil , blocks in
@@ -47,7 +58,6 @@ extension Reactive where Base: ParagraphTrackingUtility{
         }
         
         print("block:: \(attributeArray)")
-        
         self.newAttributes.onNext(attributeArray)
     }
     
@@ -65,7 +75,12 @@ extension Reactive where Base: ParagraphTrackingUtility{
             try blocks
                 .map{ block in  try block.object?.e.getBlockValueType()}
                 .compactMap{ blockType in blockType?.getParagraphsValues() }
-        
+            
+            print("paragraphsFromBlock | \(paragraphsFromBlock)")
+            
+            self.paragraphs.onNext(paragraphsFromBlock.map{ sequence in
+                return sequence.joined()
+            })
             self.newParagraphs.onNext(paragraphsFromBlock)
         }catch{
             print("\(#function) , \(#line)")

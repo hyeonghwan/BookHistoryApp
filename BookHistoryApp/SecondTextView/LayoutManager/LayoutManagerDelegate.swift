@@ -33,51 +33,51 @@ class LayoutManagerDelegate: NSObject, NSLayoutManagerDelegate {
     }
     
     
-    func layoutManager(_ layoutManager: NSLayoutManager,
-                       shouldSetLineFragmentRect lineFragmentRect: UnsafeMutablePointer<CGRect>,
-                       lineFragmentUsedRect: UnsafeMutablePointer<CGRect>,
-                       baselineOffset: UnsafeMutablePointer<CGFloat>,
-                       in textContainer: NSTextContainer,
-                       forGlyphRange glyphRange: NSRange) -> Bool {
-        
-        guard let textView = self.textView else { return false}
-        
-        
-        let paragraphRange = (textView.textStorage.string as NSString).paragraphRange(for: glyphRange)
-        
-        
-        if let commentBlockPath = textView.textStorage.attribute(.comment, at: paragraphRange.location, effectiveRange: nil) as? CommentBlockPath{
-            
-            guard var commentPath = commentBlockPath.commentPath else {return false}
-            guard var commentFrame = commentBlockPath.rect else {return false}
-            
-            
-            var addpath = CGRect(x: commentFrame.origin.x,
-                                 y: commentFrame.origin.y,
-                                 width: commentFrame.size.width,
-                                 height: commentFrame.size.height )
-            
-            commentPath = UIBezierPath(rect: addpath)
-            
-            
-            if (lineFragmentRect.pointee.origin.y + lineFragmentRect.pointee.size.height) > (addpath.size.height + addpath.origin.y){
-                
-                print("commentBlockPath.rect : \(commentBlockPath.rect)")
-                textView.textContainer.exclusionPaths = textView.textContainer.exclusionPaths.map{
-                    if $0 == commentPath{
-                        addpath.size.height += 20
-                        commentBlockPath.rect = addpath
-                        commentBlockPath.commentPath = UIBezierPath(rect: addpath)
-                        return commentBlockPath.commentPath!
-                    }
-                    return $0
-                }
-            }else{
-                print("notComment -----")
-            }
-            return false
-        }
-        return false
-        
-    }
+//    func layoutManager(_ layoutManager: NSLayoutManager,
+//                       shouldSetLineFragmentRect lineFragmentRect: UnsafeMutablePointer<CGRect>,
+//                       lineFragmentUsedRect: UnsafeMutablePointer<CGRect>,
+//                       baselineOffset: UnsafeMutablePointer<CGFloat>,
+//                       in textContainer: NSTextContainer,
+//                       forGlyphRange glyphRange: NSRange) -> Bool {
+//        
+//        guard let textView = self.textView else { return false}
+//        
+//        
+////        let paragraphRange = (textView.textStorage.string as NSString).paragraphRange(for: glyphRange)
+//        
+//        
+//        if let commentBlockPath = textView.textStorage.attribute(.comment, at: paragraphRange.location, effectiveRange: nil) as? CommentBlockPath{
+//            
+//            guard var commentPath = commentBlockPath.commentPath else {return false}
+//            guard var commentFrame = commentBlockPath.rect else {return false}
+//            
+//            
+//            var addpath = CGRect(x: commentFrame.origin.x,
+//                                 y: commentFrame.origin.y,
+//                                 width: commentFrame.size.width,
+//                                 height: commentFrame.size.height )
+//            
+//            commentPath = UIBezierPath(rect: addpath)
+//            
+//            
+//            if (lineFragmentRect.pointee.origin.y + lineFragmentRect.pointee.size.height) > (addpath.size.height + addpath.origin.y){
+//                
+//                print("commentBlockPath.rect : \(commentBlockPath.rect)")
+//                textView.textContainer.exclusionPaths = textView.textContainer.exclusionPaths.map{
+//                    if $0 == commentPath{
+//                        addpath.size.height += 20
+//                        commentBlockPath.rect = addpath
+//                        commentBlockPath.commentPath = UIBezierPath(rect: addpath)
+//                        return commentBlockPath.commentPath!
+//                    }
+//                    return $0
+//                }
+//            }else{
+//                print("notComment -----")
+//            }
+//            return false
+//        }
+//        return false
+//        
+//    }
 }

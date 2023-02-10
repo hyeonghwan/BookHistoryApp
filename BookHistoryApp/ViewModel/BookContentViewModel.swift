@@ -225,7 +225,9 @@ extension BookContentViewModel{
                 .getBlockObjectObservable()
                 .withLatestFrom(pipe){ newObject , original in
                     print("block1 ; \(newObject)")
-                    
+                    newObject.forEach{
+                        print($0?.description)
+                    }
                     return newObject
                 }
             }
