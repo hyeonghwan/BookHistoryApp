@@ -92,6 +92,7 @@
 		965AED97291E80A9005B616F /* CustomTextStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965AED96291E80A9005B616F /* CustomTextStorage.swift */; };
 		965BF35229805E81003A9644 /* Page_core.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965BF35129805E81003A9644 /* Page_core.swift */; };
 		965BF35429807551003A9644 /* PageParentType_c.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965BF35329807551003A9644 /* PageParentType_c.swift */; };
+		965E3BEC29979C600026A301 /* PageDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965E3BEB29979C600026A301 /* PageDIContainer.swift */; };
 		96622850295AFA9400E39FC3 /* PlanGoalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662284F295AFA9300E39FC3 /* PlanGoalViewController.swift */; };
 		96622852295AFFFA00E39FC3 /* LineContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96622851295AFFFA00E39FC3 /* LineContainerView.swift */; };
 		96622854295B12C900E39FC3 /* DotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96622853295B12C900E39FC3 /* DotView.swift */; };
@@ -228,6 +229,7 @@
 		965AED96291E80A9005B616F /* CustomTextStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextStorage.swift; sourceTree = "<group>"; };
 		965BF35129805E81003A9644 /* Page_core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page_core.swift; sourceTree = "<group>"; };
 		965BF35329807551003A9644 /* PageParentType_c.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageParentType_c.swift; sourceTree = "<group>"; };
+		965E3BEB29979C600026A301 /* PageDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageDIContainer.swift; sourceTree = "<group>"; };
 		9662284F295AFA9300E39FC3 /* PlanGoalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanGoalViewController.swift; sourceTree = "<group>"; };
 		96622851295AFFFA00E39FC3 /* LineContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineContainerView.swift; sourceTree = "<group>"; };
 		96622853295B12C900E39FC3 /* DotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotView.swift; sourceTree = "<group>"; };
@@ -510,6 +512,7 @@
 		96477D1A291A041D00830EFB /* BookHistoryApp */ = {
 			isa = PBXGroup;
 			children = (
+				965E3BEA29979C280026A301 /* DIContainer */,
 				96CD9244298A29F500DFFF0D /* Hangul */,
 				9655FE2F2955FAC0008991F1 /* CoreData */,
 				9655FE332955FAED008991F1 /* Application */,
@@ -598,8 +601,8 @@
 				96CD923F2988C25000DFFF0D /* Page_ChildBlock+CoreDataProperties.swift */,
 				9655FE352955FCB2008991F1 /* BookPageMO+CoreDataProperties.swift */,
 				9655FE372955FCB2008991F1 /* BookMO+CoreDataProperties.swift */,
-				964F355F297D754700925229 /* ValueTransformer */,
 				9655FE302955FADA008991F1 /* BookData.xcdatamodeld */,
+				964F355F297D754700925229 /* ValueTransformer */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -628,6 +631,14 @@
 			children = (
 			);
 			path = BlockTypeValue;
+			sourceTree = "<group>";
+		};
+		965E3BEA29979C280026A301 /* DIContainer */ = {
+			isa = PBXGroup;
+			children = (
+				965E3BEB29979C600026A301 /* PageDIContainer.swift */,
+			);
+			path = DIContainer;
 			sourceTree = "<group>";
 		};
 		96622855295B215100E39FC3 /* PlanTable */ = {
@@ -867,6 +878,7 @@
 			files = (
 				9601D0C729530A6E0069EF58 /* TestViewController.swift in Sources */,
 				96CD92422988C25000DFFF0D /* MyPage+CoreDataProperties.swift in Sources */,
+				965E3BEC29979C600026A301 /* PageDIContainer.swift in Sources */,
 				96102667298F91FA00D286D1 /* PageModel.swift in Sources */,
 				965BF35429807551003A9644 /* PageParentType_c.swift in Sources */,
 				966228652960270E00E39FC3 /* SubviewTextAttachment+Ext.swift in Sources */,
