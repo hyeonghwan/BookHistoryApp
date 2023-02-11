@@ -109,6 +109,8 @@ class SecondTextView: UITextView {
         
         settUpBinding()
         setUpBlockActionBinding()
+        
+        print("self.number: \(self.layoutManager.numberOfGlyphs)")
     }
     
     func settUpBinding(){

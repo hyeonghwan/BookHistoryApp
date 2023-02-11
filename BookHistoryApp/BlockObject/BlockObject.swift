@@ -102,8 +102,13 @@ protocol BlockObjectType: NSObjCoding{
 
 public final class BlockObject: NSObjCoding{
     var blockInfo: BlockInfo?
-    var object: BlockTypeWrapping?
+    lazy var object: BlockTypeWrapping? = nil
     var blockType: CustomBlockType?
+    
+    
+    public override var description: String {
+        return "description Xblock Info :\(String(describing: self.blockInfo)), description,: \(self.blockType?.base ?? CustomBlockType.Base.none)  description,object: \(String(describing: self.object?.description))"
+    }
     
     public static var supportsSecureCoding: Bool {
         true
@@ -164,6 +169,7 @@ public final class BlockObject: NSObjCoding{
     init(blockInfo: BlockInfo?,
         object: BlockTypeWrapping?,
          blockType: CustomBlockType?) {
+        super.init()
         self.blockInfo = blockInfo
         self.object = object
         self.blockType = blockType

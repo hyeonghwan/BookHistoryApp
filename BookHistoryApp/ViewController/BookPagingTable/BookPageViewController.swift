@@ -59,19 +59,68 @@ class BookPagingViewController: UIViewController {
     var hangule: Hangule = Hangule()
     
     
+    var object: [Int] = []
+    private let blockObjectqueue = DispatchQueue(label: "com.example.propertyclass.array", attributes: .concurrent)
+    
+    var blocks: [Int]{
+        get{
+            print("object: get blocks")
+            return blockObjectqueue.sync { object }
+        }set{
+            blockObjectqueue.async(qos: .background, flags: .barrier, execute: {
+                print("object: set block , : \(newValue)")
+                self.object = newValue
+            })
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        print("object: \(blocks)")
+        var serialQueue = DispatchQueue(label: "SerialQueue")
+        let group = DispatchGroup()
+
+        for item in 0...5 {
+            
+            serialQueue.async(group: group) { [weak self] in
+                guard let self = self else {return}
+                self.blocks.append(item)
+                
+            }
+        }
+        print("asdfasdf")
+        // Add a barrier task that waits for completion of all other tasks in the group
+        serialQueue.async(group: group, flags: .barrier) {
+            // Perform task that needs to be done after all other tasks in the group have completed
+            print("object: task end")
+        }
+
         
-//        var font = UIFont.appleSDGothicNeo.regular.font(size: 16)
-//        print("font: \(font)")
-//        font = font.setBold()
-//        print("font: \(font)")
-//        font = font.setItalic()
-//        print("font: \(font)")
-//        font = font.setBoldItalic()
-//        print("font: \(font)")
-//        
+        
+//        var blockObjects: [BlockObject?] = [] {
+//            didSet{
+//                print("blockObjects : \(blockObjects.count)")
+//            }
+//        }
+//        private let blockObjectqueue = DispatchQueue(label: "com.example.propertyclass.array", attributes: .concurrent)
+//
+//        var blocks: [BlockObject?] {
+//            get {
+//                return blockObjectqueue.sync { blockObjects }
+//            }
+//            set {
+//                blockObjectqueue.async(flags: .barrier) {
+//                    self.blockObjects = newValue
+//                }
+//            }
+//        }
+        
+        
+//
+        
+        
+        
         var string: String = "안녕하세요"
         let index = string.index(string.startIndex, offsetBy: string.count - 1)
         string = String(string[..<index])
@@ -131,10 +180,6 @@ class BookPagingViewController: UIViewController {
                 guard let self = self else {return}
                 
                 let vc = SecondViewController(element)
-                
-                
-                
-            
                 
                 self.navigationController?
                     .pushViewController(vc, animated: true)

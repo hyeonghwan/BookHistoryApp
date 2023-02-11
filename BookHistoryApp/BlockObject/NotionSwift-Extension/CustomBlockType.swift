@@ -24,7 +24,16 @@ enum CustomBlockType{
     case callOut(CalloutBlockValueObject)
     case none
     
-    
+    func descriptionFunc() -> String{
+        var result : String = ""
+        if let value = try? self.getBlockValueType() as? TextAndChildrenBlockValueObject{
+            for ob in value.richText{
+                result += "richText: \(ob.description),"
+            }
+            return result
+        }
+        return "customBlock description failed"
+    }
     
     func editAttributes(_ attributes: [[NSAttributedString.Key : Any]]){
         switch self {
@@ -63,6 +72,7 @@ enum CustomBlockType{
                                         _ object: TextAndChildrenBlockValueObject){
         
         if object.richText.count == str.count{
+            
             object.richText
             =
             object
@@ -236,7 +246,8 @@ enum CustomBlockType{
             }else{
                 if annotations.italic == true{
                     font = font.setItalic()
-                }else{
+                }
+                if annotations.bold == true{
                     font = font.setBold()
                 }
             }
@@ -322,6 +333,10 @@ final class BlockTypeWrapping: NSObjCoding{
     
     var e: CustomBlockType
     
+    
+    override var description: String {
+        return e.descriptionFunc()
+    }
     
     init(_ e: CustomBlockType) {
         self.e = e

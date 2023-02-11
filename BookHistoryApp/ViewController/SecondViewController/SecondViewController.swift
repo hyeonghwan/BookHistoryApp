@@ -294,6 +294,7 @@ class SecondViewController: UIViewController {
         
         textMenuView.undoButton.isEnabled = textView.undoManager?.canUndo ?? false
         textMenuView.redoButton.isEnabled = textView.undoManager?.canRedo ?? false
+        
     }
         
 }
@@ -390,6 +391,7 @@ extension SecondViewController: UIGestureRecognizerDelegate{
 
 extension SecondViewController: UITextViewDelegate {
     func textViewDidChangeSelection(_ textView: UITextView) {
+        return
         
         let paragraphRange = self.textView.getParagraphRange(textView.selectedRange)
         
@@ -463,22 +465,24 @@ extension SecondViewController: UITextViewDelegate {
 
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        // self.textView.getParagraphRange(range)
+        return true
+        let paragraphRange = NSRange(location: 0, length: 10)
         
-        let paragraphRange = self.textView.getParagraphRange(range)
         
         if paragraphRange.length == 0 {
             textView.typingAttributes = defaultAttribute
             return true
         }
         
-        let blockAttribute = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil)
-        let foregroundColor = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil) as? UIColor
-        
+//        let blockAttribute = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil)
+//        let foregroundColor = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil) as? UIColor
+        let blockAttribute = CustomBlockType.Base.paragraph
         
         //toggle place holder detect
         if !isValidBlock(text,
                         paragraphRange,
-                         blockAttribute as? CustomBlockType.Base){
+                         blockAttribute ){ //as? CustomBlockType.Base
             return false
         }else{
             return true
@@ -486,43 +490,43 @@ extension SecondViewController: UITextViewDelegate {
         
         
         
-        if foregroundColor == UIColor.placeHolderColor,
-           let type = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil) as? CustomBlockType.Base,
-           let font = textView.textStorage.attribute(.font, at: paragraphRange.location, effectiveRange: nil) as? UIFont{
-            
-            let paragraphStyle = textView.textStorage.attribute(.paragraphStyle, at: paragraphRange.location, effectiveRange: nil) as? NSParagraphStyle
-            
-            var attributes: [NSAttributedString.Key : Any] = [:]
-            
-            if type == .title1 || type == .title2 || type == .title3{
-                attributes = NSAttributedString.Key.getTitleAttributes(type, font)
-            }else{
-                attributes = NSAttributedString.Key.defaultAttribute
-                attributes[.paragraphStyle] = paragraphStyle
-            }
-            
-            var newRange: NSRange = NSRange(location: paragraphRange.location, length: paragraphRange.length - 1)
-            
-            if paragraphRange.max == textView.text.count{
-                newRange = paragraphRange
-            }
-            
-            
-            textView.textStorage.beginEditing()
-            textView.textStorage.replaceCharacters(in: newRange, with: "")
-            textView.textStorage.endEditing()
-            
-            //첫번째 글자 이후로 Default attribute가 적용이 되는 현상
-            textView.textStorage.beginEditing()
-            textView.textStorage.replaceCharacters(in: NSRange(location: newRange.location, length: 0),
-                                                   with: NSAttributedString(string: "\(text)", attributes: attributes))
-            textView.textStorage.endEditing()
-            
-            self.textView.typingAttributes = attributes
-            self.textView.selectedRange = NSRange(location: newRange.location + 1, length: 0)
-            return false
-            
-        }
+//        if foregroundColor == UIColor.placeHolderColor,
+//           let type = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil) as? CustomBlockType.Base,
+//           let font = textView.textStorage.attribute(.font, at: paragraphRange.location, effectiveRange: nil) as? UIFont{
+//
+//            let paragraphStyle = textView.textStorage.attribute(.paragraphStyle, at: paragraphRange.location, effectiveRange: nil) as? NSParagraphStyle
+//
+//            var attributes: [NSAttributedString.Key : Any] = [:]
+//
+//            if type == .title1 || type == .title2 || type == .title3{
+//                attributes = NSAttributedString.Key.getTitleAttributes(type, font)
+//            }else{
+//                attributes = NSAttributedString.Key.defaultAttribute
+//                attributes[.paragraphStyle] = paragraphStyle
+//            }
+//
+//            var newRange: NSRange = NSRange(location: paragraphRange.location, length: paragraphRange.length - 1)
+//
+//            if paragraphRange.max == textView.text.count{
+//                newRange = paragraphRange
+//            }
+//
+//
+//            textView.textStorage.beginEditing()
+//            textView.textStorage.replaceCharacters(in: newRange, with: "")
+//            textView.textStorage.endEditing()
+//
+//            //첫번째 글자 이후로 Default attribute가 적용이 되는 현상
+//            textView.textStorage.beginEditing()
+//            textView.textStorage.replaceCharacters(in: NSRange(location: newRange.location, length: 0),
+//                                                   with: NSAttributedString(string: "\(text)", attributes: attributes))
+//            textView.textStorage.endEditing()
+//
+//            self.textView.typingAttributes = attributes
+//            self.textView.selectedRange = NSRange(location: newRange.location + 1, length: 0)
+//            return false
+//
+//        }
         
         
         // textView에서 붙여넣기(paste) 이벤트 발생시 -> URL 인지 검사
