@@ -12,6 +12,7 @@ import RxCocoa
 import OpenGraph
 
 
+
 protocol RxBookService {
     func rxAddBlockObjectDatas(_ blocks: [BlockObject?]) -> Observable<Result<Bool,Error>>
     
@@ -30,10 +31,6 @@ typealias MetaDataDictionatyOnURL = [OpenGraphMetadata: String]
 protocol URLBookMarkMakable{
     func makeBookMark(_ url: URL) -> Observable<MetaDataDictionatyOnURL>
 }
-
-
-typealias BookServiceAble = RxBookService & URLBookMarkMakable
-
 
 
 class BookService: NSObject, RxBookService{

@@ -10,8 +10,62 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
+
+typealias CellModel = (PageModel,PageSettingAction)
+
+extension Reactive where Base: BookPagingTableViewCell{
+    var cellBinder: Binder<CellModel>{
+        return Binder(self.base){ cell, model in
+            cell.bindModelToCell(model)
+        }
+    }
+}
+
 final class BookPagingTableViewCell: UITableViewCell{
     
+    
+    
+    weak var pageModelAction: PageSettingAction?
+    
+    var disposeBag = DisposeBag()
+    
+    
+    //MARK: - Bind to ViewModel
+    func bindModelToCell(_ model: CellModel){
+        self.titleLable.text = model.0.title
+        
+        self.pageModelAction = model.1
+        
+        self.pageModelAction?
+            .showSettingPageButtonTapped(settingButton.rx.tap.asDriver(),
+                                         model.0,
+                                         self.disposeBag)
+    }
+  
+    //MARK: - init
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        configure()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("required init fatalError")
+        
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.disposeBag = DisposeBag()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0))
+    }
+    
+    //MARK: - UI Configure
     private lazy var container: UIView = {
         let view = UIView()
         view.layer.borderWidth = 3
@@ -42,49 +96,7 @@ final class BookPagingTableViewCell: UITableViewCell{
         button.tintColor = .systemPink
         return button
     }()
-    
-    
-    var onPageData: AnyObserver<PageModel>
-    
-    var cellDisposeBag = DisposeBag()
-    
-    var disposeBag = DisposeBag()
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        
-        let pagePipe = PublishSubject<PageModel>()
-        
-        onPageData = pagePipe.asObserver()
-        
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        configure()
-        
-        pagePipe
-            .observe(on: MainScheduler.instance)
-            .bind(onNext: { [weak self] page in
-                guard let self = self else {return}
-            
-                self.titleLable.text = page.title
-                
-            }).disposed(by: cellDisposeBag)
-        
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("required init fatalError")
-        
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        self.disposeBag = DisposeBag()
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0))
-    }
+  
     
     private func configure() {
         self.selectionStyle = .default

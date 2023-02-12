@@ -11,6 +11,9 @@ import CoreData
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    
+    var pageContainer: PageFlowCoordinatorDependencies?
+    var coordinator: PageFlowCoordinator?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -20,25 +23,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let window = UIWindow(windowScene: windoScene)
         
-        window.makeKeyAndVisible()
      
+        let service = BookService()
         
-        let bookTableViewController = BookPagingViewController()
-        let viewController = PlanGoalViewController()
-        let secondViewController = SecondViewController()
-        let testview = TestViewController()
+        let dependency = PageDIContainer.Dependencies(coreDataTransferService: service,
+                                                      bookTransferService: service)
 
-        let nav = UINavigationController(rootViewController: bookTableViewController)
+        let navigationController = UINavigationController()
         
-        let test = CSTabBarController()
-        test.setViewControllers([nav,
-                                 viewController,
-                                 testview], animated: true)
+        window.rootViewController = navigationController
         
-        window.rootViewController = test
+        pageContainer = PageDIContainer(container: dependency)
+        coordinator = pageContainer?.makePageFlowCoordinator(navigationController)
+        coordinator?.start()
+        
+        window.makeKeyAndVisible()
         
         self.window = window
-        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

@@ -24,9 +24,9 @@ protocol OutputActionProtocol: AnyObject{
     
 }
 
-typealias AccessoryCompositionProtocol = OutputActionProtocol & InputActionProtocol
+typealias AccessoryCompositinalProtocol = OutputActionProtocol & InputActionProtocol
 
-final class AccessoryViewModel: NSObject,AccessoryCompositionProtocol {
+final class AccessoryViewModel: NSObject,AccessoryCompositinalProtocol {
     var imageAddActionEvent: PublishRelay<ContextMenuEventType> = PublishRelay<ContextMenuEventType>()
     
     var imageContextMenuTrigger: PublishRelay<Void>?

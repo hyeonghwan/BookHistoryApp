@@ -128,7 +128,7 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
         print("contentModel deinit")
     }
     
-    init(_ serviece: BookServiceAble = BookService()) {
+    init(serviece: BookServiceAble) {
         self.service = serviece
         
         

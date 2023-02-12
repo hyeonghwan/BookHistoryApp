@@ -13,17 +13,21 @@ import RxCocoa
 
 struct DependencyOfTextPropertyMenu{
     weak var viewModel: InputViewModelType?
-    weak var accessoryViewModel: AccessoryCompositionProtocol?
+    weak var accessoryViewModel: AccessoryCompositinalProtocol?
 }
 
-class TextPropertyMenuView: UIView {
+protocol KeyBoardStateType: NSObject{
+    var state: KeyBoardState? {get set}
+}
+
+class TextPropertyMenuView: UIView , KeyBoardStateType {
         
     //Second TextView UndoManager
     weak var textViewUndoManager: UndoManager?
     
     weak var viewModel: InputViewModelType?
     
-    weak var accessoryViewModel: AccessoryCompositionProtocol?
+    weak var accessoryViewModel: AccessoryCompositinalProtocol?
     
     
     var menuButtonDisposeBag = DisposeBag()

@@ -13,6 +13,27 @@ import RxSwift
 
 class BookPagingViewController: UIViewController {
     
+    static func create(dependency: PagingType) -> BookPagingViewController{
+        return BookPagingViewController(dependency)
+    }
+    
+    var disposeBag = DisposeBag()
+    
+    var bookPagingViewModel: PagingType
+    
+    
+    init(_ type: PagingType) {
+        self.bookPagingViewModel = type
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+
+    
     private lazy var bookPagingTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         
@@ -51,9 +72,6 @@ class BookPagingViewController: UIViewController {
     }()
     
     
-    var disposeBag = DisposeBag()
-    
-    var bookPagingViewModel: PagingType = BookPagingViewModel()
     
     
     var hangule: Hangule = Hangule()
@@ -89,7 +107,7 @@ class BookPagingViewController: UIViewController {
                 
             }
         }
-        print("asdfasdf")
+        
         // Add a barrier task that waits for completion of all other tasks in the group
         serialQueue.async(group: group, flags: .barrier) {
             // Perform task that needs to be done after all other tasks in the group have completed
@@ -97,27 +115,6 @@ class BookPagingViewController: UIViewController {
         }
 
         
-        
-//        var blockObjects: [BlockObject?] = [] {
-//            didSet{
-//                print("blockObjects : \(blockObjects.count)")
-//            }
-//        }
-//        private let blockObjectqueue = DispatchQueue(label: "com.example.propertyclass.array", attributes: .concurrent)
-//
-//        var blocks: [BlockObject?] {
-//            get {
-//                return blockObjectqueue.sync { blockObjects }
-//            }
-//            set {
-//                blockObjectqueue.async(flags: .barrier) {
-//                    self.blockObjects = newValue
-//                }
-//            }
-//        }
-        
-        
-//
         
         
         
@@ -163,9 +160,9 @@ class BookPagingViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(to: bookPagingTableView.rx.items(cellIdentifier:BookPagingTableViewCell.identify,
                                                    cellType: BookPagingTableViewCell.self)){
-                index, item , cell in
-                
-                cell.onPageData.onNext(item)
+                [weak self] index, item , cell in
+                guard let self = self else {return}
+                cell.rx.cellBinder.onNext((item,self.bookPagingViewModel))
                 
             }.disposed(by: disposeBag)
             
@@ -178,24 +175,14 @@ class BookPagingViewController: UIViewController {
             .map{  $0.compactMap{ page_block in page_block.ownObject } }
             .subscribe(onNext: { [weak self] element in
                 guard let self = self else {return}
-                
-                let vc = SecondViewController(element)
-                
-                self.navigationController?
-                    .pushViewController(vc, animated: true)
-                
+                self.bookPagingViewModel.createPage()
             }).disposed(by: disposeBag)
 
         
         self.navigationItem.rightBarButtonItem?.rx.tap
             .subscribe(onNext: { [weak self] _ in
                 guard let self = self else {return}
-                
-                let vc = SecondViewController()
-                vc.bookPagingViewModel = self.bookPagingViewModel
-                
-                self.navigationController?
-                    .pushViewController(vc, animated: false)
+                self.bookPagingViewModel.createPage()
             })
             .disposed(by: disposeBag)
         

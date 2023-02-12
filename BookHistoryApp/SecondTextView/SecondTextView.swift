@@ -25,7 +25,7 @@ class SecondTextView: UITextView {
     
     weak var contentViewModel: ContentViewModelProtocol?
     
-    private weak var accessoryViewModel: AccessoryCompositionProtocol?
+    private weak var accessoryViewModel: AccessoryCompositinalProtocol?
     
     weak var photoAndFileDelegate: PhotoAndFileDelegate?
     
@@ -36,7 +36,7 @@ class SecondTextView: UITextView {
     
     public let attachmentBehavior = SubviewAttachingTextViewBehavior()
     
-    lazy var blockVM: BlockVMProtocol = BlockViewModel()
+    weak var blockVM: BlockVMProtocol?
     
     lazy var layoutManagerDependency: DelegateDependency = DelegateDependency(attachmentBehavior: attachmentBehavior,
                                                                               textView: self)
@@ -93,7 +93,7 @@ class SecondTextView: UITextView {
     
     convenience init(frame: CGRect,
                      textContainer: NSTextContainer?,
-                     _ dependency: DependencyOfTextView?) {
+                     _ dependency: PageVCViewModel.DependencyOfTextView?) {
         
         self.init(frame: frame, textContainer: textContainer)
         
@@ -102,6 +102,7 @@ class SecondTextView: UITextView {
         self.accessoryViewModel = dependency?.accessoryViewModel
         self.photoAndFileDelegate = dependency?.photoAndFileDelegate
         self.inputViewModel = dependency?.inputViewModel
+        self.blockVM = dependency?.blockViewModel
         
         //paragrphTrackingUtility Depenecy Injection
         self.contentViewModel?.paragraphTrackingUtility.paragraphStorage = self.textStorage as? ParagraphTextStorage
@@ -161,7 +162,7 @@ class SecondTextView: UITextView {
         case .blockKeyBoard:
             var blockAddView: BlockAddView = BlockAddView(frame: .zero,
                                                           inputViewStyle: .keyboard,
-                                                          dependency: blockVM)
+                                                          dependency: blockVM!)
             self.inputView = blockAddView
         }
         
