@@ -88,7 +88,7 @@ class ViewController: UIViewController {
     
     @objc func presentToSecondVC(_ sender: Any){
 //        self.(SecondViewController(), animated: true)
-         let secondVC = SecondViewController()
+         let secondVC = TestViewController()
         self.navigationController?.pushViewController(secondVC, animated: true)
     }
     

@@ -40,8 +40,6 @@ protocol ContentViewModelType: AnyObject {
     
     var toParagraphBlockTypeEventResult: Observable<CustomBlockType.Base>? { get }
     
-    //utility
-    var paragraphTrackingUtility: ParagraphTrackingUtility { get }
 }
 
 protocol ContentVMBooMarkAble: AnyObject{
@@ -57,8 +55,11 @@ protocol ContentVMBooMarkAble: AnyObject{
     var toMetaDataURL: Observable<MetaDataDictionatyOnURL> { get }
 }
 
+protocol ParagraphTrackingDependency: AnyObject{
+    var paragraphTrackingUtility: ParagraphTrackingUtility {get set}
+}
 
-typealias ContentViewModelProtocol = ContentViewModelType & ContentVMBooMarkAble
+typealias ContentViewModelProtocol = ContentViewModelType & ContentVMBooMarkAble & ParagraphTrackingDependency
 
 
 struct TextViewData{
@@ -90,9 +91,16 @@ struct BookViewModelData {
 
 class BookContentViewModel: NSObject, ContentViewModelProtocol{
     
-    var service: BookServiceAble
     
-    var paragraphTrackingUtility: ParagraphTrackingUtility = ParagraphTrackingUtility()
+    struct Dependencies{
+        let service: BookServiceAble
+        let paragrphTrackingUtility: ParagraphTrackingUtility
+    }
+    
+    weak var service: BookServiceAble?
+    
+    var paragraphTrackingUtility: ParagraphTrackingUtility
+    
     
     //MARK: ContentViewModelType
     //input
@@ -128,8 +136,10 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
         print("contentModel deinit")
     }
     
-    init(serviece: BookServiceAble) {
-        self.service = serviece
+    init(dependencies: Dependencies) {
+        self.service = dependencies.service
+        self.paragraphTrackingUtility = dependencies.paragrphTrackingUtility
+        
         
         
         //ContentViewModelType
@@ -157,20 +167,22 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
         
         super.init()
         
+        guard let service = service else {return}
+        
         paragraphPipe
             .observe(on: MainScheduler.instance)
             .withLatestFrom(observablePipe){[weak self] textViewAttributedString, original in
                 
                 guard let self = self else {return TextViewData(id: nil, title: nil, attributedString: nil)}
                 guard original.id != nil else { return TextViewData(id: nil,
-                                                                        title: self.paragraphTrackingUtility.paragraphs.first!,
+                                                                    title: self.paragraphTrackingUtility.paragraphs.first!,
                                                                         attributedString: textViewAttributedString) }
                 
                 return TextViewData(id: original.id,
                                     title: self.paragraphTrackingUtility.paragraphs.first!
                                     ,attributedString: textViewAttributedString)
             }
-            .flatMap(serviece.rxAddParagraphData(_:))
+            .flatMap(service.rxAddParagraphData(_:))
             
             .subscribe(onNext: {  result in
                 switch result{
@@ -189,7 +201,7 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
         
         
         urlPipe
-            .flatMap(serviece.makeBookMark(_:))
+            .flatMap(service.makeBookMark(_:))
             .subscribe(onNext: metaDataPipe.onNext(_:))
             .disposed(by: disposeBag)
       
@@ -232,7 +244,7 @@ extension BookContentViewModel{
                 }
             }
             .withUnretained(self)
-            .flatMap{ owend ,value in owend.service.rxAddBlockObjectDatas(value) }
+            .flatMap{ owend ,value in owend.service!.rxAddBlockObjectDatas(value) }
             .subscribe(onNext: {  blocks in
                 
                 print("block3 ; \(blocks)")

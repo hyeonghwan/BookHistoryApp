@@ -26,13 +26,10 @@ class ParagraphValidator: ParagraphValidatorProtocol{
     weak var contentViewModel: ContentViewModelProtocol?
     
     weak var pageViewModel: PageVCValidDelegate?
-    
-    init(){
-        
-    }
+   
     
     func isValidURL() {
-        <#code#>
+        
     }
     
     func isValidBlock(_ text: String,_ paragraphRange: NSRange,_ type: CustomBlockType.Base?) -> Bool {
@@ -103,6 +100,7 @@ extension ParagraphValidator{
             
             return viewModel.resetParagraphToPlaceHodlerAttribute(textToValidData)
         }
+        return false
     }
     
     private func toggleValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
@@ -119,5 +117,6 @@ extension ParagraphValidator{
             
             return viewModel.resetParagraphToPlaceHodlerAttribute(textToValidData)
         }
+        return false
     }   
 }

@@ -52,7 +52,7 @@ extension SecondViewController{
     
     @objc private func keyBoardChangeOriginal(_ notification: Notification?) -> Void {
         
-        pageViewModel?.keyBoardChangeOriginal()
+        pageViewModel.keyBoardChangeOriginal()
         
         self.keyBoardDisposeBag = DisposeBag()
         self.textView.inputView = nil
@@ -69,25 +69,25 @@ extension SecondViewController{
     
     
     @objc private func keyBoardchangeInputViewAction(_ notification: Notification?) -> Void {
-        pageViewModel?.keyBoardChangeInputViewAction()
+        pageViewModel.keyBoardChangeInputViewAction()
     }
     
     @objc private func keyDownTapped(_ notification: Notification?) -> Void {
-        pageViewModel?.keyDownTapped()
+        pageViewModel.keyDownTapped()
         self.hideTextMenuView()
     }
     
     @objc private func keyboardWillHide(_ notification: Notification?) -> Void{
-        pageViewModel?.keyboardWillHide()
+        pageViewModel.keyboardWillHide()
     }
     
     @objc private func keyboardDidShow(_ notification: Notification?) -> Void{
-        pageViewModel?.keyboardDidShow(notification)
+        pageViewModel.keyboardDidShow(notification)
     }
     
     
     @objc private func keyboardWillShow(_ notification : Notification?) -> Void {
-        pageViewModel?.keyboardWillShow()
+        pageViewModel.keyboardWillShow()
     }
     
     

@@ -30,7 +30,7 @@ class SecondViewController: UIViewController {
     }
      
     
-    var pageViewModel: PageVCViewModelProtocol?
+    var pageViewModel: PageVCViewModelProtocol
     
     
     static func create(with pageViewModel: PageVCViewModelProtocol) -> PageVC{
@@ -61,15 +61,14 @@ class SecondViewController: UIViewController {
                                             attributes: defaultAttribute)
     
     //MARK: - initializer    
-    init(){
+    init(_ viewModel: PageVCViewModelProtocol){
+        self.pageViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
     convenience init(_ object: [BlockObject],
                      _ viewModel: PageVCViewModelProtocol){
-        self.init()
-        self.pageViewModel = viewModel
-        self.pageViewModel?.pageVC = self
+        self.init(viewModel)
     }
 
     required init?(coder: NSCoder) {
@@ -78,15 +77,15 @@ class SecondViewController: UIViewController {
     
  
     lazy var textMenuView: TextPropertyMenuView = {
-        guard let menu = pageViewModel?.makeTextPropertMenuViewDependencies() else {return}
+        let menu = pageViewModel.makeTextPropertMenuViewDependencies()
         menu.backgroundColor = .tertiarySystemBackground
         return menu
     }()
     
     
     
-    lazy var textView: SecondTextView = {
-        guard let textView = pageViewModel?.makeTextViewDependencies(self) else {return}
+    lazy var textView: PageTextView = {
+        let textView = pageViewModel.makeTextViewDependencies(self) 
         textView.backgroundColor = .tertiarySystemBackground
         textView.delegate = self
         return textView
@@ -144,10 +143,10 @@ class SecondViewController: UIViewController {
     private func settupBinding(){
         
         if let saveButton = self.navigationItem.rightBarButtonItem{
-            pageViewModel?.storeBlockValue(saveButton.rx.tap.asSignal())
+            pageViewModel.storeBlockValue(saveButton.rx.tap.asSignal())
         }
         
-        pageViewModel?
+        pageViewModel
             .toTextObservable?
             .withUnretained(self)
             .observe(on: MainScheduler.instance)
@@ -156,7 +155,7 @@ class SecondViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        pageViewModel?
+        pageViewModel
             .toMetaDataURL?
             .subscribe(onNext: { [weak self] og in
                 guard let self = self else {return}
@@ -166,7 +165,7 @@ class SecondViewController: UIViewController {
             .disposed(by: disposeBag)
     
         
-        pageViewModel?
+        pageViewModel
             .outputLongPressObservable?
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] isEnable in
@@ -317,28 +316,11 @@ extension SecondViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
          
         
-        let paragraphRange = self.textView.getParagraphRange(range)
+//        guard let pageViewModel = pageViewModel else {return false}
         
-        
-        if paragraphRange.length == 0 {
-            textView.typingAttributes = defaultAttribute
-            return true
-        }
-        
-//        let blockAttribute = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil)
-//        let foregroundColor = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil) as? UIColor
-        let blockAttribute = CustomBlockType.Base.paragraph
-        
-        //toggle place holder detect
-        if !isValidBlock(text,
-                        paragraphRange,
-                         blockAttribute ){ //as? CustomBlockType.Base
-            return false
-        }else{
-            return true
-        }
-        
-        
+        return pageViewModel.textViewShouldChangeTextIn(textView,
+                                                 shouldChangeTextIn: range,
+                                                 replacementText: text)
         
 //        if foregroundColor == UIColor.placeHolderColor,
 //           let type = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil) as? CustomBlockType.Base,
@@ -380,11 +362,11 @@ extension SecondViewController: UITextViewDelegate {
         
         
         // textView에서 붙여넣기(paste) 이벤트 발생시 -> URL 인지 검사
-        if contentViewModel?.isPasteValue == true{
-            contentViewModel?.onPasteValue.onNext(false)
-            return isTextValidURL(text)
-        }
-        
+//        if contentViewModel?.isPasteValue == true{
+//            contentViewModel?.onPasteValue.onNext(false)
+//            return isTextValidURL(text)
+//        }
+//
         
         
         
@@ -457,81 +439,7 @@ extension SecondViewController: NSAttachmentSettingProtocol{
 }
 extension SecondViewController{
     
-    func isValidBlock(_ text: String,_ paragraphRange: NSRange,_ type: CustomBlockType.Base?) -> Bool {
-        guard let blockType = type else {return true}
-        switch blockType {
-        case .paragraph:
-            return true
-        case .page:
-            break
-        case .todoList:
-            break
-        case .title1:
-            break
-        case .title2:
-            break
-        case .title3:
-            break
-        case .graph:
-            break
-        case .textHeadSymbolList:
-            return textHeadSymbolListValid(text, paragraphRange)
-        case .numberList:
-            break
-        case .toggleList:
-            return toggleValid(text, paragraphRange)
-        case .quotation:
-            break
-        case .separatorLine:
-            break
-        case .pageLink:
-            break
-        case .callOut:
-            break
-        case .none:
-            break
-        }
-        return true
-    }
-    private func textHeadSymbolListValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
-        
-        
-        if self.contentViewModel!.replaceBlockAttribute(text,paragraphRange,.textHeadSymbolList){
-            guard let restRange = textView.textRangeFromNSRange(range: paragraphRange) else {return false}
-            guard let restText = textView.text(in: restRange) else {return false}
-            
-            if (restText.length == 3 && text == ""){
-                textView.textStorage.beginEditing()
-                textView.textStorage.replaceCharacters(in: NSRange(location: paragraphRange.location + 1, length: paragraphRange.length - 2), with: NSAttributedString(string: "리스트",attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes))
-                textView.textStorage.endEditing()
-                
-                textView.selectedRange = NSRange(location: paragraphRange.location + 1, length: 0)
-                return false
-            }
-            return true
-        }else{
-            return false
-        }
-    }
-    private func toggleValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
-        if self.contentViewModel!.replaceBlockAttribute(text,paragraphRange,.toggleList){
-            guard let restRange = textView.textRangeFromNSRange(range: paragraphRange) else {return false}
-            guard let restText = textView.text(in: restRange) else {return false}
-            
-            if (restText.length == 3 && text == ""){
-                textView.textStorage.beginEditing()
-                textView.textStorage.replaceCharacters(in: NSRange(location: paragraphRange.location + 1, length: paragraphRange.length - 2), with: NSAttributedString(string: "토글",attributes: NSAttributedString.Key.togglePlaceHolderAttributes))
-                textView.textStorage.endEditing()
-                
-                textView.selectedRange = NSRange(location: paragraphRange.location + 1, length: 0)
-                return false
-            }
-            return true
-        }else{
-            print("toggleValid false")
-            return false
-        }
-    }
+    
 }
 //MARK: - EXtension VC
 private extension SecondViewController{
@@ -555,7 +463,7 @@ private extension SecondViewController{
         
         guard let url = URL(string: urlString) else {return true}
         
-        contentViewModel?.onURLData.onNext(url)
+//        contentViewModel?.onURLData.onNext(url)
         return true
     }
     

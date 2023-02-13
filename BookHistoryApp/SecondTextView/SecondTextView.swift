@@ -20,7 +20,38 @@ public struct DelegateDependency{
     weak var textView: UITextView?
 }
 
+typealias PageTextView = SecondTextView
+
 class SecondTextView: UITextView {
+    
+    
+    //MARK: - make Page TextView Setting
+    struct DependencyOfTextView{
+        weak var colorViewModel: ColorViewModelProtocol?
+        weak var contentViewModel: ContentViewModelProtocol?
+        weak var accessoryViewModel: AccessoryCompositinalProtocol?
+        weak var photoAndFileDelegate: PhotoAndFileDelegate?
+        weak var blockViewModel: BlockViewModelProtocol?
+        weak var inputViewModel: InputViewModelProtocol?
+        
+        init(colorViewModel: ColorViewModelProtocol?,
+             contentViewModel: ContentViewModelProtocol?,
+             accessoryViewModel: AccessoryCompositinalProtocol?,
+             photoAndFileDelegate: PhotoAndFileDelegate?,
+             blockViewModel: BlockViewModelProtocol?,
+             inputViewModel: InputViewModelProtocol?) {
+            
+            self.colorViewModel = colorViewModel
+            self.contentViewModel = contentViewModel
+            self.accessoryViewModel = accessoryViewModel
+            self.photoAndFileDelegate = photoAndFileDelegate
+            self.blockViewModel = blockViewModel
+            self.inputViewModel = inputViewModel
+        }
+    }
+    
+
+    
     private weak var colorViewModel: ColorViewModelProtocol?
     
     weak var contentViewModel: ContentViewModelProtocol?
@@ -34,14 +65,13 @@ class SecondTextView: UITextView {
 
     var disposeBag = DisposeBag()
     
-    public let attachmentBehavior = SubviewAttachingTextViewBehavior()
-    
     weak var blockVM: BlockVMProtocol?
     
     lazy var layoutManagerDependency: DelegateDependency = DelegateDependency(attachmentBehavior: attachmentBehavior,
                                                                               textView: self)
     
     private lazy var layoutManagerDelegate = LayoutManagerDelegate(layoutManagerDependency)
+    public let attachmentBehavior = SubviewAttachingTextViewBehavior()
     
     private let topInset: CGFloat = 30
     private let leftInset: CGFloat = 12
@@ -93,7 +123,7 @@ class SecondTextView: UITextView {
     
     convenience init(frame: CGRect,
                      textContainer: NSTextContainer?,
-                     _ dependency: PageVCViewModel.DependencyOfTextView?) {
+                     _ dependency: DependencyOfTextView?) {
         
         self.init(frame: frame, textContainer: textContainer)
         

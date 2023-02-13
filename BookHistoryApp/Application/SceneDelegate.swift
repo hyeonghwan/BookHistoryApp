@@ -12,8 +12,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     
-    var pageContainer: PageFlowCoordinatorDependencies?
-    var coordinator: PageFlowCoordinator?
+    var pageContainer: PageAppFlowCoordinatorDependencies?
+    var coordinator: PageAppFlowCoordinator?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -26,14 +26,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
      
         let service = BookService()
         
-        let dependency = PageDIContainer.Dependencies(coreDataTransferService: service,
+        let dependency = PageAppDIContainer.Dependencies(coreDataTransferService: service,
                                                       bookTransferService: service)
 
         let navigationController = UINavigationController()
         
         window.rootViewController = navigationController
         
-        pageContainer = PageDIContainer(container: dependency)
+        pageContainer = PageAppDIContainer(container: dependency)
         coordinator = pageContainer?.makePageFlowCoordinator(navigationController)
         coordinator?.start()
         

@@ -16,7 +16,7 @@ struct PageViewModelActions{
 
 protocol PageVCDependencyInput{
     func makeTextPropertMenuViewDependencies() -> TextPropertyMenuView
-    func makeTextViewDependencies(_ photoAndFileDelegate: PhotoAndFileDelegate) -> UITextView
+    func makeTextViewDependencies(_ photoAndFileDelegate: PhotoAndFileDelegate) -> PageTextView
 }
 
 protocol PageVCViewModelInput{
@@ -38,7 +38,9 @@ protocol PageTextViewInput{
     func storeBlockValue(_ button: Signal<Void>)
     func textViewDidChangeSelection()
     func textViewDidChange()
-    func textViewShouldChangeTextIn(_ textView: UITextView)
+    func textViewShouldChangeTextIn(_ textView: UITextView,
+                                    shouldChangeTextIn range: NSRange,
+                                    replacementText text: String) -> Bool
 }
 
 
@@ -55,39 +57,55 @@ protocol PageVCValidDelegate: AnyObject{
 
 protocol PageDelegate{
     var pageVC: PageVC? { get set }
+    func setParagraphUseCase(_ validator: ParagraphValidatorProtocol)
 }
 
 typealias PageVCViewModelProtocol = PageVCViewModelOutPut & PageVCViewModelInput & PageTextViewInput & PageVCDependencyInput & PageDelegate
 
 class PageVCViewModel: PageDelegate {
+    
+    struct PageDependencies{
+        let inputViewModel: InputViewModelProtocol
+        let colorViewModel: ColorViewModelProtocol
+        let contentViewModel: ContentViewModelProtocol
+        let accessoryViewModel: AccessoryCompositinalProtocol
+        let blockViewModel: BlockViewModelProtocol
+        let bookPagingViewModel: PagingType
+    }
+    
     private let actions: PageViewModelActions
     
     weak var pageVC: PageVC?
     
+    func setParagraphUseCase(_ validator: ParagraphValidatorProtocol) {
+        self.paragraphValidator = validator
+        self.paragraphValidator?.contentViewModel = self.contentViewModel
+        self.paragraphValidator?.pageViewModel = self
+    }
+    
     
     var paragraphValidator: ParagraphValidatorProtocol?
     
-    var bookPagingViewModel: PagingType?
+    var bookPagingViewModel: PagingType
     
     // KeyBoard InputViewType State ViewModel
-    var inputViewModel: InputViewModelProtocol?
+    var inputViewModel: InputViewModelProtocol
     
     // TextView Color Type State ViewModel
-    var colorViewModel: ColorViewModelProtocol?
+    var colorViewModel: ColorViewModelProtocol
     
     // TextView Save Content State ViewModel
-    var contentViewModel: ContentViewModelProtocol?
+    var contentViewModel: ContentViewModelProtocol
     
-    var accessoryViewModel: AccessoryCompositinalProtocol?
+    var accessoryViewModel: AccessoryCompositinalProtocol
     
-    var blockViewModel: BlockViewModelProtocol?
+    var blockViewModel: BlockViewModelProtocol
     
     
     init(_ dependencies: PageDependencies,
          _ actions: PageViewModelActions){
         
         self.actions = actions
-        self.paragraphValidator = dependencies.validator
         self.inputViewModel = dependencies.inputViewModel
         self.colorViewModel = dependencies.colorViewModel
         self.bookPagingViewModel = dependencies.bookPagingViewModel
@@ -145,33 +163,48 @@ extension PageVCViewModel: PageVCValidDelegate{
 extension PageVCViewModel: PageVCViewModelOutPut{
     
     var toMetaDataURL: Observable<MetaDataDictionatyOnURL>? {
-        contentViewModel?.toMetaDataURL
+        contentViewModel.toMetaDataURL
     }
     
     var outputLongPressObservable: Observable<Bool>?{
-        inputViewModel?.outputLongPressObservable
+        inputViewModel.outputLongPressObservable
     }
     
     var toTextObservable: Observable<BookViewModelData>?{
-        contentViewModel?.toTextObservable
+        contentViewModel.toTextObservable
     }
     
 }
 extension PageVCViewModel: PageTextViewInput{
     func storeBlockValue(_ button: Signal<Void>) {
-        self.contentViewModel?.storeBlockValues(button)
+        self.contentViewModel.storeBlockValues(button)
     }
     
     func textViewDidChangeSelection() {
-        <#code#>
+     
     }
     
     func textViewDidChange() {
-        <#code#>
+     
     }
     
-    func textViewShouldChangeTextIn(_ textView: UITextView) {
+    
+    func textViewShouldChangeTextIn(_ textView: UITextView,
+                                    shouldChangeTextIn range: NSRange,
+                                    replacementText text: String) -> Bool{
         
+        let paragraphRange = textView.getParagraphRange(range)
+        
+        if paragraphRange.length == 0 {
+            textView.typingAttributes = pageVC!.defaultAttribute
+            return true
+        }
+        let blockAttribute = CustomBlockType.Base.paragraph
+        
+        //toggle place holder detect
+        guard let paragraphValidator = self.paragraphValidator else {return false}
+        
+        return paragraphValidator.isValidBlock(text, paragraphRange, blockAttribute)
     }
 }
 
@@ -189,7 +222,7 @@ extension PageVCViewModel: PageVCViewModelInput{
     }
     
     func keyboardWillShow() {
-        inputViewModel?.inputLongPressObserver.onNext(true) //false
+        inputViewModel.inputLongPressObserver.onNext(true) //false
     }
     
     //_ state: some KeyBoardStateType
@@ -229,12 +262,12 @@ extension PageVCViewModel: PageVCViewModelInput{
     
     private func keyBoardDidshowAction(){
         guard let pageVC = pageVC else {return}
-        inputViewModel?
+        inputViewModel
             .outputStateObservable
             .bind(to: pageVC.textMenuView.rx.state)
             .disposed(by: pageVC.disposeBag)
             
-        colorViewModel?
+        colorViewModel
                 .updateUndoButtonObservable
                 .withUnretained(self)
                 .bind(onNext: {owend,_ in owend.pageVC?.updateUndoButtons() })
@@ -243,7 +276,7 @@ extension PageVCViewModel: PageVCViewModelInput{
     }
     
     func keyboardWillHide() {
-        inputViewModel?.inputLongPressObserver.onNext(true)
+        inputViewModel.inputLongPressObserver.onNext(true)
     }
     
     func keyDownTapped() {
@@ -251,7 +284,7 @@ extension PageVCViewModel: PageVCViewModelInput{
     
     
     func keyBoardChangeOriginal() {
-        self.inputViewModel?.inputStateObserver.onNext(.originalkeyBoard)
+        self.inputViewModel.inputStateObserver.onNext(.originalkeyBoard)
     }
     
     func keyBoardChangeInputViewAction(){
@@ -276,79 +309,40 @@ extension PageVCViewModel: PageVCViewModelInput{
     }
     
     private func sendToinputViewStateAction() {
-        self.inputViewModel?.inputStateObserver.onNext(.backAndForeGroundColorState)
+        self.inputViewModel.inputStateObserver.onNext(.backAndForeGroundColorState)
     }
     
     private func keyBoardChangeInputViewActionColorViewModelBind(_ data: PresentationType){
-        colorViewModel?.onColorData.onNext(data)
+        colorViewModel.onColorData.onNext(data)
     }
-    
-    
 }
 
 
-
-
-
 extension PageVCViewModel: PageVCDependencyInput{
-    
-    struct PageDependencies{
-        let validator: ParagraphValidatorProtocol
-        let inputViewModel: InputViewModelProtocol
-        let colorViewModel: ColorViewModelProtocol
-        let contentViewModel: ContentViewModelProtocol
-        let accessoryViewModel: AccessoryCompositinalProtocol
-        let blockViewModel: BlockViewModelProtocol
-        let bookPagingViewModel: PagingType
-    }
+  
     
     //MARK: - make Page Property menu
     func makeTextPropertMenuViewDependencies() -> TextPropertyMenuView{
-        let dependencies = DependencyOfTextPropertyMenu(viewModel: inputViewModel!,
-                                                        accessoryViewModel: accessoryViewModel!)
+        let dependencies = DependencyOfTextPropertyMenu(viewModel: inputViewModel,
+                                                        accessoryViewModel: accessoryViewModel)
         return TextPropertyMenuView(frame: CGRect(x: 0, y: 0,
                                                  width: UIScreen.main.bounds.size.width,
                                                  height: 44),
                                     dependency: dependencies)
     }
     
-    //MARK: - make Page TextView Setting
-    struct DependencyOfTextView{
-        weak var colorViewModel: ColorViewModelProtocol?
-        weak var contentViewModel: ContentViewModelProtocol?
-        weak var accessoryViewModel: AccessoryCompositinalProtocol?
-        weak var photoAndFileDelegate: PhotoAndFileDelegate?
-        weak var blockViewModel: BlockViewModelProtocol?
-        weak var inputViewModel: InputViewModelProtocol?
-        
-        init(colorViewModel: ColorViewModelProtocol?,
-             contentViewModel: ContentViewModelProtocol?,
-             accessoryViewModel: AccessoryCompositinalProtocol?,
-             photoAndFileDelegate: PhotoAndFileDelegate?,
-             blockViewModel: BlockViewModelProtocol?,
-             inputViewModel: InputViewModelProtocol?) {
-            
-            self.colorViewModel = colorViewModel
-            self.contentViewModel = contentViewModel
-            self.accessoryViewModel = accessoryViewModel
-            self.photoAndFileDelegate = photoAndFileDelegate
-            self.blockViewModel = blockViewModel
-            self.inputViewModel = inputViewModel
-        }
-    }
-
     
-    func makeTextViewDependencies(_ photoAndFileDelegate: PhotoAndFileDelegate) -> UITextView{
-        let dependencies = DependencyOfTextView(colorViewModel: colorViewModel!,
-                                                contentViewModel: contentViewModel!,
-                                                accessoryViewModel: accessoryViewModel!,
-                                                photoAndFileDelegate: photoAndFileDelegate,
-                                                blockViewModel: blockViewModel!,
-                                                inputViewModel: inputViewModel!)
+    func makeTextViewDependencies(_ photoAndFileDelegate: PhotoAndFileDelegate) -> PageTextView{
+        let dependencies = PageTextView.DependencyOfTextView(colorViewModel: colorViewModel,
+                                                             contentViewModel: contentViewModel,
+                                                             accessoryViewModel: accessoryViewModel,
+                                                             photoAndFileDelegate: photoAndFileDelegate,
+                                                             blockViewModel: blockViewModel,
+                                                             inputViewModel: inputViewModel)
         return pageTextViewSetting(depenencies: dependencies)
     }
     
-    private func pageTextViewSetting(depenencies: DependencyOfTextView) -> UITextView {
+    private func pageTextViewSetting(depenencies: PageTextView.DependencyOfTextView) -> PageTextView {
         let paragraphTextStorage = ParagraphTextStorage()
         
         paragraphTextStorage.paragraphDelegate = makeParagraphTrackingDependency()
@@ -363,7 +357,7 @@ extension PageVCViewModel: PageVCDependencyInput{
         
         layoutManager.addTextContainer(customTextContainer)
         
-        let textView = SecondTextView(frame:.zero,
+        let textView = PageTextView(frame:.zero,
                                       textContainer: customTextContainer,
                                       depenencies)
         
@@ -373,11 +367,10 @@ extension PageVCViewModel: PageVCDependencyInput{
     }
     
     private func paragraphTrackingDependencySetting(_ textView: UITextView) {
-        contentViewModel?.paragraphTrackingUtility.paragrphTextView = textView
+        contentViewModel.paragraphTrackingUtility.paragrphTextView = textView
     }
     
-    private func makeParagraphTrackingDependency() -> ParagraphTextStorageDelegate? {
-        guard let contentViewModel = contentViewModel else {return nil}
+    private func makeParagraphTrackingDependency() -> ParagraphTextStorageDelegate {
         return contentViewModel.paragraphTrackingUtility.self
     }
     

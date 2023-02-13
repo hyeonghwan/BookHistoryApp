@@ -24,6 +24,27 @@ protocol BlockTrackingToCoreDataConvertible{
 
 final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     
+    weak var paragraphStorage: ParagraphTextStorage? {
+        didSet{
+            self.paragraphStorage?.delegate = self
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                self.insertions = []
+                self.removals = []
+                self.editions = []
+            })
+        }
+    }
+    
+    weak var subAttachMentBehavior: SubviewAttachingTextViewBehavior?
+    
+    
+    weak var paragrphTextView: UITextView?
+    
+    override init(){
+        super.init()
+    }
+    
     var paragraphs: [String] = []
     var attributes: [[NSAttributedString.Key: Any]] = []
     
@@ -82,21 +103,6 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     
     var disposeBag = DisposeBag()
     
-    weak var paragraphStorage: ParagraphTextStorage? {
-        didSet{
-            self.paragraphStorage?.delegate = self
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                self.insertions = []
-                self.removals = []
-                self.editions = []
-            })
-        }
-    }
-    
-    weak var paragrphTextView: UITextView?
-    
-    weak var subAttachMentBehavior: SubviewAttachingTextViewBehavior?
     
     
     private var firstInit = true

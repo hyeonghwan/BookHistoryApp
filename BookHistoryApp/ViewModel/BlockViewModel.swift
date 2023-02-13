@@ -104,9 +104,7 @@ final class BlockViewModel: NSObject,BlockVMProtocol {
     }
     
     func createBlockActionOutPut() -> BlockOutPut{
-        
         let outPut = BlockOutPut(outPut: self.blockOutPutAction.asDriver(onErrorJustReturn: .none))
-    
         return outPut
     }
     
