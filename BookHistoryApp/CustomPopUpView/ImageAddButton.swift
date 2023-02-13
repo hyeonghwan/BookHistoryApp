@@ -22,7 +22,7 @@ enum ContextMenuEventType{
 
 final class ImageAddButton: UIButton,ImageAddProtocol{
 
-    weak var accessoryViewModel: AccessoryCompositionProtocol?
+    weak var accessoryViewModel: AccessoryCompositinalProtocol?
     
     var actionObserver: AnyObserver<ContextMenuEventType>?
     
@@ -68,7 +68,7 @@ final class ImageAddButton: UIButton,ImageAddProtocol{
     }
     
     convenience init(_ frame: CGRect,
-                     _ accessoryViewModel : AccessoryCompositionProtocol?){
+                     _ accessoryViewModel : AccessoryCompositinalProtocol?){
         self.init(frame: frame)
         
         self.accessoryViewModel = accessoryViewModel

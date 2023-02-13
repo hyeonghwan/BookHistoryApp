@@ -21,31 +21,31 @@ import WebKit
 }
 
 
-struct DependencyOfTextView{
-    weak var colorViewModel: ColorViewModelProtocol?
-    weak var contentViewModel: ContentViewModelProtocol?
-    weak var accessoryViewModel: AccessoryCompositionProtocol?
-    weak var photoAndFileDelegate: PhotoAndFileDelegate?
-    weak var inputViewModel: InputViewModelProtocol?
-    
-    init(colorViewModel: ColorViewModelProtocol,
-         contentViewModel: ContentViewModelProtocol,
-         accessoryViewModel: AccessoryCompositionProtocol,
-         photoAndFileDelegate: PhotoAndFileDelegate,
-         inputViewModel: InputViewModelProtocol) {
-        
-        self.colorViewModel = colorViewModel
-        self.contentViewModel = contentViewModel
-        self.accessoryViewModel = accessoryViewModel
-        self.photoAndFileDelegate = photoAndFileDelegate
-        self.inputViewModel = inputViewModel
-    }
-}
 
 
 class SecondViewController: UIViewController {
     
+    struct Dependencies{
+        let pageViewModel: PageVCViewModelProtocol?
+    }
+     
+    
+    var pageViewModel: PageVCViewModelProtocol
+    
+    
+    static func create(with pageViewModel: PageVCViewModelProtocol) -> PageVC{
+        let vc = PageVC([], pageViewModel)
+        return vc
+    }
+   
+    
     let titlePresentationKey: String = "Title"
+    
+    var disposeBag = DisposeBag()
+    
+    var keyBoardDisposeBag = DisposeBag()
+    
+    private var keyBoardHeight: CGFloat = 0
     
     
     lazy var defaultAttribute: [NSAttributedString.Key : Any] =
@@ -60,93 +60,38 @@ class SecondViewController: UIViewController {
     lazy var titleAttributeString = NSAttributedString(string: "제목을 입력해주세요",
                                             attributes: defaultAttribute)
     
-    // KeyBoard InputViewType State ViewModel
-    var inputViewModel: InputViewModelProtocol = InputViewModel()
+    //MARK: - initializer    
+    init(_ viewModel: PageVCViewModelProtocol){
+        self.pageViewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
     
-    // TextView Color Type State ViewModel
-    var colorViewModel: ColorViewModelProtocol = ColorViewModel()
+    convenience init(_ object: [BlockObject],
+                     _ viewModel: PageVCViewModelProtocol){
+        self.init(viewModel)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
-    // TextView Save Content State ViewModel
-    var contentViewModel: ContentViewModelProtocol
-    
-    var accessoryViewModel: AccessoryCompositionProtocol = AccessoryViewModel()
-   
-    
-    //TextViewDependency
-    lazy var dependency: DependencyOfTextView? =
-    DependencyOfTextView(colorViewModel: self.colorViewModel,
-                         contentViewModel: self.contentViewModel,
-                         accessoryViewModel: self.accessoryViewModel,
-                         photoAndFileDelegate: self,
-                         inputViewModel: self.inputViewModel)
-    
-    
-    weak var bookPagingViewModel: PagingType?
-    
-    
-    var disposeBag = DisposeBag()
-    
-    var keyBoardDisposeBag = DisposeBag()
-    
-    private var keyBoardHeight: CGFloat = 0
-    
-    
+ 
     lazy var textMenuView: TextPropertyMenuView = {
-        let menu = TextPropertyMenuView(frame:  CGRect(x: 0, y: 0,
-                                                       width: UIScreen.main.bounds.size.width, height: 44),
-                                        dependency: DependencyOfTextPropertyMenu(viewModel: self.inputViewModel,
-                                                                                 accessoryViewModel: self.accessoryViewModel))
-        
+        let menu = pageViewModel.makeTextPropertMenuViewDependencies()
         menu.backgroundColor = .tertiarySystemBackground
         return menu
     }()
     
     
     
-    lazy var textView: SecondTextView = {
-        
-        let paragraphTextStorage = ParagraphTextStorage()
- 
-        paragraphTextStorage.paragraphDelegate = contentViewModel.paragraphTrackingUtility.self
-        
-        let layoutManager = TextWrapLayoutManager()
-        
-        layoutManager.textStorage = paragraphTextStorage
-        
-        let customTextContainer = CustomTextContainer(size: .zero)
-        
-        paragraphTextStorage.addLayoutManager(layoutManager)
-        
-        layoutManager.addTextContainer(customTextContainer)
-        
-        let textView = SecondTextView(frame:.zero,
-                                      textContainer: customTextContainer,
-                                      dependency)
-        
-        contentViewModel.paragraphTrackingUtility.paragrphTextView = textView
-        
+    lazy var textView: PageTextView = {
+        let textView = pageViewModel.makeTextViewDependencies(self) 
         textView.backgroundColor = .tertiarySystemBackground
         textView.delegate = self
-        
-        
         return textView
     }()
     
-    //MARK: - initializer
-    init(){
-        self.contentViewModel = BookContentViewModel()
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    convenience init(_ object: [BlockObject]){
-        self.init()
-        self.contentViewModel.bindingBlocksToParagraphUtil(object)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+ 
     deinit{
 //        self.disposeBag = DisposeBag()
 //        self.keyBoardDisposeBag = DisposeBag()
@@ -182,8 +127,6 @@ class SecondViewController: UIViewController {
     }
     
     
-                                            
-                                            
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.textView.inputAccessoryView = nil
@@ -196,28 +139,15 @@ class SecondViewController: UIViewController {
     }
     
 
-    
     //MARK: - Binding func
     private func settupBinding(){
         
         if let saveButton = self.navigationItem.rightBarButtonItem{
-            self.contentViewModel.storeBlockValues(saveButton.rx.tap.asSignal())
+            pageViewModel.storeBlockValue(saveButton.rx.tap.asSignal())
         }
-
         
-        // -> TextView Content Save trigger
-//        self.navigationItem.rightBarButtonItem?.rx.tap
-//            .observe(on: MainScheduler.instance)
-//            .bind(onNext: { [weak self] _ in
-//                guard let self = self else {return}
-//                self.contentViewModel
-//                    .onParagraphData
-//                    .onNext(self.textView.attributedText)
-//            }).disposed(by: disposeBag)
-        
-        
-        contentViewModel
-            .toTextObservable
+        pageViewModel
+            .toTextObservable?
             .withUnretained(self)
             .observe(on: MainScheduler.instance)
             .bind(onNext: { owned, data in
@@ -225,15 +155,18 @@ class SecondViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        contentViewModel
-            .toMetaDataURL
+        pageViewModel
+            .toMetaDataURL?
             .subscribe(onNext: { [weak self] og in
+                guard let self = self else {return}
+                print(self)
                 print(og)
             })
             .disposed(by: disposeBag)
+    
         
-        inputViewModel
-            .outputLongPressObservable
+        pageViewModel
+            .outputLongPressObservable?
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] isEnable in
                 guard let self = self else {return}
@@ -291,96 +224,12 @@ class SecondViewController: UIViewController {
     }
     
     func updateUndoButtons() {
-        
         textMenuView.undoButton.isEnabled = textView.undoManager?.canUndo ?? false
         textMenuView.redoButton.isEnabled = textView.undoManager?.canRedo ?? false
-        
     }
         
 }
 
-//MARK: - EXtension VC
-private extension SecondViewController{
-    
-    
-    // load from ContentVM
-    func setAttributedOnTextView_Title(_ bookData: BookViewModelData){
-        guard let title = bookData.bookTitle else {return}
-        guard let content = bookData.bookContent else {return}
-        
-        self.setLeftAlignTitleView(font: UIFont.boldSystemFont(ofSize: 16), text: title, textColor: .label)
-        self.textView.attributedText = content
-    }
-    
-   
-
-    //정규식 으로 추가해서 URL 추출이 필요함!
-    func isTextValidURL(_ text: String) -> Bool{
-        var urlString = text
-        urlString.removeAll(where: { $0 == "\n"})
-        
-        guard let url = URL(string: urlString) else {return true}
-        
-        contentViewModel.onURLData.onNext(url)
-        return true
-    }
-    
-    @objc func handle(_ sender: UIGestureRecognizer!) {
-        if let imageView = sender.view as? UIImageView {
-            imageView.alpha = CGFloat(arc4random_uniform(1000)) / 1000.0
-        }
-    }
-    
-    private func subAttatchViewTest() -> NSAttributedString{
- 
-        // Create an image view with a tap recognizer
-        let imageView = UIImageView(image: UIImage(systemName: "circle"))
-        imageView.tintColor = .black
-        imageView.contentMode = .scaleAspectFit
-        imageView.isUserInteractionEnabled = true
-
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.handle(_:)))
-        imageView.addGestureRecognizer(gestureRecognizer)
-
-        // Create an activity indicator view
-        let spinner = UIActivityIndicatorView(style: .large)
-        spinner.color = .black
-        spinner.hidesWhenStopped = false
-        spinner.startAnimating()
-
-        // Create a text field
-        let textField = UITextField()
-        textField.borderStyle = .roundedRect
-        
-        // Create a web view, because why not
-        
-        
-        // Add attachments to the string and set it on the text view
-        // This example avoids evaluating the attachments or attributed strings with attachments in the Playground because Xcode crashes trying to decode attachment objects
-        let richText = NSMutableAttributedString()
-        let width =  self.view.bounds.width - (self.textView.textContainerInset.left + self.textView.textContainerInset.right + 12)
-        print(self.systemMinimumLayoutMargins)
-        
-        print("widht : \(width)")
-        
-        richText.append(UITextView.testSetting().insertingAttachment(SubViewAttachmentContiner.settingContainer(self, imageView,
-                                                                                                                size: CGSize(width: width, height: 256)), at: 20))
-        richText.append(
-            UITextView
-            .testSetting()
-            .insertingAttachment(SubViewAttachmentContiner.settingContainer(self, spinner, size: nil), at: 0))
-        
-        richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: UISwitch()), at: 10))
-        return richText
-    }
-    
-    
-    @objc func deleteView(_ sender: UIButton){
-        let deleteButton = sender
-        guard let superView = deleteButton.superview else {return}
-        self.textView.attachmentBehavior.removeSeletedAttachedSubview(superView)
-    }
-}
 extension SecondViewController: UIGestureRecognizerDelegate{
     func gestureRecognizer (_ gestureRecognizer: UIGestureRecognizer,
                             shouldRecognizerSimultaneouslyWithotherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -465,30 +314,13 @@ extension SecondViewController: UITextViewDelegate {
 
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        // self.textView.getParagraphRange(range)
-        return true
-        let paragraphRange = NSRange(location: 0, length: 10)
+         
         
+//        guard let pageViewModel = pageViewModel else {return false}
         
-        if paragraphRange.length == 0 {
-            textView.typingAttributes = defaultAttribute
-            return true
-        }
-        
-//        let blockAttribute = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil)
-//        let foregroundColor = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil) as? UIColor
-        let blockAttribute = CustomBlockType.Base.paragraph
-        
-        //toggle place holder detect
-        if !isValidBlock(text,
-                        paragraphRange,
-                         blockAttribute ){ //as? CustomBlockType.Base
-            return false
-        }else{
-            return true
-        }
-        
-        
+        return pageViewModel.textViewShouldChangeTextIn(textView,
+                                                 shouldChangeTextIn: range,
+                                                 replacementText: text)
         
 //        if foregroundColor == UIColor.placeHolderColor,
 //           let type = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil) as? CustomBlockType.Base,
@@ -530,11 +362,11 @@ extension SecondViewController: UITextViewDelegate {
         
         
         // textView에서 붙여넣기(paste) 이벤트 발생시 -> URL 인지 검사
-        if contentViewModel.isPasteValue == true{
-            contentViewModel.onPasteValue.onNext(false)
-            return isTextValidURL(text)
-        }
-        
+//        if contentViewModel?.isPasteValue == true{
+//            contentViewModel?.onPasteValue.onNext(false)
+//            return isTextValidURL(text)
+//        }
+//
         
         
         
@@ -591,9 +423,7 @@ extension SecondViewController: UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
         print("textViewDidChange :textViewDidChange")
-        
         updateUndoButtons()
-        
     }
 }
 
@@ -609,80 +439,88 @@ extension SecondViewController: NSAttachmentSettingProtocol{
 }
 extension SecondViewController{
     
-    func isValidBlock(_ text: String,_ paragraphRange: NSRange,_ type: CustomBlockType.Base?) -> Bool {
-        guard let blockType = type else {return true}
-        switch blockType {
-        case .paragraph:
-            return true
-        case .page:
-            break
-        case .todoList:
-            break
-        case .title1:
-            break
-        case .title2:
-            break
-        case .title3:
-            break
-        case .graph:
-            break
-        case .textHeadSymbolList:
-            return textHeadSymbolListValid(text, paragraphRange)
-        case .numberList:
-            break
-        case .toggleList:
-            return toggleValid(text, paragraphRange)
-        case .quotation:
-            break
-        case .separatorLine:
-            break
-        case .pageLink:
-            break
-        case .callOut:
-            break
-        case .none:
-            break
-        }
+    
+}
+//MARK: - EXtension VC
+private extension SecondViewController{
+    
+    
+    // load from ContentVM
+    func setAttributedOnTextView_Title(_ bookData: BookViewModelData){
+        guard let title = bookData.bookTitle else {return}
+        guard let content = bookData.bookContent else {return}
+        
+        self.setLeftAlignTitleView(font: UIFont.boldSystemFont(ofSize: 16), text: title, textColor: .label)
+        self.textView.attributedText = content
+    }
+    
+   
+
+    //정규식 으로 추가해서 URL 추출이 필요함!
+    func isTextValidURL(_ text: String) -> Bool{
+        var urlString = text
+        urlString.removeAll(where: { $0 == "\n"})
+        
+        guard let url = URL(string: urlString) else {return true}
+        
+//        contentViewModel?.onURLData.onNext(url)
         return true
-        
-        
     }
-    private func textHeadSymbolListValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
-        if self.contentViewModel.replaceBlockAttribute(text,paragraphRange,.textHeadSymbolList){
-            guard let restRange = textView.textRangeFromNSRange(range: paragraphRange) else {return false}
-            guard let restText = textView.text(in: restRange) else {return false}
-            
-            if (restText.length == 3 && text == ""){
-                textView.textStorage.beginEditing()
-                textView.textStorage.replaceCharacters(in: NSRange(location: paragraphRange.location + 1, length: paragraphRange.length - 2), with: NSAttributedString(string: "리스트",attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes))
-                textView.textStorage.endEditing()
-                
-                textView.selectedRange = NSRange(location: paragraphRange.location + 1, length: 0)
-                return false
-            }
-            return true
-        }else{
-            return false
+    
+    @objc func handle(_ sender: UIGestureRecognizer!) {
+        if let imageView = sender.view as? UIImageView {
+            imageView.alpha = CGFloat(arc4random_uniform(1000)) / 1000.0
         }
     }
-    private func toggleValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
-        if self.contentViewModel.replaceBlockAttribute(text,paragraphRange,.toggleList){
-            guard let restRange = textView.textRangeFromNSRange(range: paragraphRange) else {return false}
-            guard let restText = textView.text(in: restRange) else {return false}
-            
-            if (restText.length == 3 && text == ""){
-                textView.textStorage.beginEditing()
-                textView.textStorage.replaceCharacters(in: NSRange(location: paragraphRange.location + 1, length: paragraphRange.length - 2), with: NSAttributedString(string: "토글",attributes: NSAttributedString.Key.togglePlaceHolderAttributes))
-                textView.textStorage.endEditing()
-                
-                textView.selectedRange = NSRange(location: paragraphRange.location + 1, length: 0)
-                return false
-            }
-            return true
-        }else{
-            print("toggleValid false")
-            return false
-        }
+    
+    private func subAttatchViewTest() -> NSAttributedString{
+ 
+        // Create an image view with a tap recognizer
+        let imageView = UIImageView(image: UIImage(systemName: "circle"))
+        imageView.tintColor = .black
+        imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
+
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.handle(_:)))
+        imageView.addGestureRecognizer(gestureRecognizer)
+
+        // Create an activity indicator view
+        let spinner = UIActivityIndicatorView(style: .large)
+        spinner.color = .black
+        spinner.hidesWhenStopped = false
+        spinner.startAnimating()
+
+        // Create a text field
+        let textField = UITextField()
+        textField.borderStyle = .roundedRect
+        
+        // Create a web view, because why not
+        
+        
+        // Add attachments to the string and set it on the text view
+        // This example avoids evaluating the attachments or attributed strings with attachments in the Playground because Xcode crashes trying to decode attachment objects
+        let richText = NSMutableAttributedString()
+        let width =  self.view.bounds.width - (self.textView.textContainerInset.left + self.textView.textContainerInset.right + 12)
+        print(self.systemMinimumLayoutMargins)
+        
+        print("widht : \(width)")
+        
+        richText.append(UITextView.testSetting().insertingAttachment(SubViewAttachmentContiner.settingContainer(self, imageView,
+                                                                                                                size: CGSize(width: width, height: 256)), at: 20))
+        richText.append(
+            UITextView
+            .testSetting()
+            .insertingAttachment(SubViewAttachmentContiner.settingContainer(self, spinner, size: nil), at: 0))
+        
+        richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: UISwitch()), at: 10))
+        return richText
+    }
+    
+    
+    @objc func deleteView(_ sender: UIButton){
+        let deleteButton = sender
+        guard let superView = deleteButton.superview else {return}
+        self.textView.attachmentBehavior.removeSeletedAttachedSubview(superView)
     }
 }
 

@@ -36,10 +36,6 @@ final class PlanViewModel: NSObject,PlanViewTypeAble{
             .flatMap{ _ in MockPlanService.getPlanDatas()}
             .subscribe(onNext: planDatasPipe.onNext(_:))
             .disposed(by: disposeBag)
-            
-            
-        
-        
     }
 }
 

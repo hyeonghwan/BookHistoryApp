@@ -13,8 +13,8 @@ import RxCocoa
 extension SecondTextView {
     
     func setUpBlockActionBinding(){
-        let output = blockVM.createBlockActionOutPut()
-        output.blockActionOutput?
+        let output = blockVM?.createBlockActionOutPut()
+        output?.blockActionOutput?
             .drive(onNext: { [weak self] type in
                 guard let self = self else {return}
                 print("type: \(type)")

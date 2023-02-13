@@ -9,10 +9,6 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-//[.basic("텍스트"), .basic("페이지"), .basic("할 일 목록"),
-//                                .basic("제목1"),.basic("제목2"),.basic("제목3"),
-//                                .basic("표"),.basic("글머리 기호 목록"),.basic("번호 매기기 목록"),.basic("토글 목록"),
-//                                .basic("인용"), .basic("구분선"), .basic("페이지 링크"), .basic("콜아웃")]
 
 
 enum ActionType{
@@ -66,12 +62,7 @@ final class BlockViewModel: NSObject,BlockVMProtocol {
     
     var blockActionModel: Observable<[CollectionViewElement]>
     
-    var actionType: [ActionType] = [.basic("텍스트"), .basic("페이지"), .basic("할 일 목록"),
-                                    .basic("제목1"),.basic("제목2"),.basic("제목3"),
-                                    .basic("표"),.basic("글머리 기호 목록"),.basic("번호 매기기 목록"),.basic("토글 목록"),
-                                    .basic("인용"), .basic("구분선"), .basic("페이지 링크"), .basic("콜아웃")]
     
-    private lazy var blockSetting: BehaviorRelay<[ActionType]> = BehaviorRelay<[ActionType]>(value: actionType)
     
     private var blockOutPutAction = BehaviorRelay<CustomBlockType.Base>(value: CustomBlockType.Base.none)
     
@@ -81,21 +72,19 @@ final class BlockViewModel: NSObject,BlockVMProtocol {
         self.disposeBag = DisposeBag()
     }
     
-    override init() {
+    init(setting: BehaviorRelay<[ActionType]>) {
         
         let model = BehaviorRelay<[CollectionViewElement]>(value: [])
          
         blockActionModel = model.asObservable()
         
-        
         super.init()
         
-        blockSetting
+        setting
             .asObservable()
             .flatMap(settingBlockCollectionViewData(_:))
             .bind(onNext: model.accept(_:))
             .disposed(by: disposeBag)
-        
     }
    
     
@@ -113,10 +102,9 @@ final class BlockViewModel: NSObject,BlockVMProtocol {
             .disposed(by: disposeBag)
         
     }
-    func createBlockActionOutPut() -> BlockOutPut{
-        
-        let outPut = BlockOutPut(outPut: self.blockOutPutAction.asDriver(onErrorJustReturn: .none))
     
+    func createBlockActionOutPut() -> BlockOutPut{
+        let outPut = BlockOutPut(outPut: self.blockOutPutAction.asDriver(onErrorJustReturn: .none))
         return outPut
     }
     

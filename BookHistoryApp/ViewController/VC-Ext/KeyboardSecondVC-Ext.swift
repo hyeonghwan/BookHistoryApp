@@ -51,7 +51,9 @@ extension SecondViewController{
     
     
     @objc private func keyBoardChangeOriginal(_ notification: Notification?) -> Void {
-        self.inputViewModel.inputStateObserver.onNext(.originalkeyBoard)
+        
+        pageViewModel.keyBoardChangeOriginal()
+        
         self.keyBoardDisposeBag = DisposeBag()
         self.textView.inputView = nil
         self.textView.reloadInputViews()
@@ -67,87 +69,27 @@ extension SecondViewController{
     
     
     @objc private func keyBoardchangeInputViewAction(_ notification: Notification?) -> Void {
-        
-        
-        if let state = self.textMenuView.state,
-           state != .backAndForeGroundColorState{
-            
-            self.inputViewModel.inputStateObserver.onNext(.backAndForeGroundColorState)
-            
-            let backGroundPickerView = BackORForeColorPickerView()
-            
-            backGroundPickerView
-                .buttonObservable
-                .withUnretained(self)
-                .bind(onNext: {owned , data in owned.colorViewModel.onColorData.onNext(data)})
-                .disposed(by: keyBoardDisposeBag)
-            
-            self.textView.inputView = backGroundPickerView
-            
-            self.textView.reloadInputViews()
-        }
+        pageViewModel.keyBoardChangeInputViewAction()
     }
     
     @objc private func keyDownTapped(_ notification: Notification?) -> Void {
+        pageViewModel.keyDownTapped()
         self.hideTextMenuView()
     }
     
     @objc private func keyboardWillHide(_ notification: Notification?) -> Void{
-        inputViewModel.inputLongPressObserver.onNext(true)
+        pageViewModel.keyboardWillHide()
     }
     
     @objc private func keyboardDidShow(_ notification: Notification?) -> Void{
-        var _kbSize:CGSize!
-        
-        if let info = notification?.userInfo{
-            
-            let frameEndUserInfoKey = UIResponder.keyboardFrameEndUserInfoKey
-            
-            //  Getting UIKeyboardSize.
-            if let kbFrame = info[frameEndUserInfoKey] as? CGRect {
-                
-                let screenSize = UIScreen.main.bounds
-                
-                //Calculating actual keyboard displayed size, keyboard frame may be different when hardware keyboard is attached (Bug ID: #469) (Bug ID: #381)
-                let intersectRect = kbFrame.intersection(screenSize)
-                
-                if intersectRect.isNull {
-                    _kbSize = CGSize(width: screenSize.size.width, height: 0)
-                } else {
-                    _kbSize = intersectRect.size
-                }
-                print("Your Keyboard Size \(String(describing: _kbSize))")
-                
-                
-                bindingInputAccessoryView()
-                
-                self.setKeyboardHeight(_kbSize.height)
-                
-                self.keyBoardAppearLayout(_kbSize)
-            }
-        }
+        pageViewModel.keyboardDidShow(notification)
     }
+    
     
     @objc private func keyboardWillShow(_ notification : Notification?) -> Void {
-        inputViewModel.inputLongPressObserver.onNext(true) //false
+        pageViewModel.keyboardWillShow()
     }
     
-    
-    // bind viewModelState to textMenuView( KeyBoard InPutView State)
-    func bindingInputAccessoryView() {
-            inputViewModel
-                .outputStateObservable
-                .bind(to: textMenuView.rx.state)
-                .disposed(by: disposeBag)
-            
-            colorViewModel
-                .updateUndoButtonObservable
-                .withUnretained(self)
-                .bind(onNext: {owend,_ in owend.updateUndoButtons() })
-                .disposed(by: keyBoardDisposeBag)
-        // disposeBag  , keyBoardDisposeBag
-    }
-
     
     func hideTextMenuView() {
         self.view.layoutIfNeeded()
@@ -166,18 +108,15 @@ extension SecondViewController{
     
     
     //When keyBoard appear setUndoManager
-    private func setUndoManager(){
-        self.textMenuView.textViewUndoManager = self.textView.undoManager
-    }
-    
-    private func keyBoardAppearLayout(_ kbSize: CGSize){
-        
+    func keyBoardAppearLayout(_ kbSize: CGSize){
         setUndoManager()
-        
         textView.snp.updateConstraints{
             $0.bottom.equalToSuperview().inset(kbSize.height)
         }
     }
-
+    
+    private func setUndoManager(){
+        self.textMenuView.textViewUndoManager = self.textView.undoManager
+    }
 }
 

@@ -12,7 +12,7 @@ import RxCocoa
 import RxRelay
 import RxSwift
 
-final class PlanGoalViewController: UIViewController{
+class PlanGoalViewController: UIViewController{
     
     private lazy var planCalendar: FSCalendar = {
         let calendar = FSCalendar()
@@ -29,8 +29,8 @@ final class PlanGoalViewController: UIViewController{
         return monthView
     }()
     
-    
-    
+    private var planViewModel: PlanViewTypeAble = PlanViewModel()
+
 //    let currentPageMonth = calendar.currentPage.get(.month)
     
     fileprivate var theme: Int = 0 {
@@ -55,7 +55,7 @@ final class PlanGoalViewController: UIViewController{
         }
     }
     
-    private var planViewModel: PlanViewTypeAble = PlanViewModel()
+    
     
     private var disposeBag = DisposeBag()
     

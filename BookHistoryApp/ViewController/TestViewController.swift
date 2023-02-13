@@ -10,7 +10,7 @@ import SnapKit
 import OpenGraph
 
 
-class TestViewController: UIViewController{
+final class TestViewController: UIViewController{
     
     
     lazy var textView: UITextView = {
@@ -20,6 +20,9 @@ class TestViewController: UIViewController{
         return text
     }()
     
+    static func create() -> TestViewController{
+        return TestViewController()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

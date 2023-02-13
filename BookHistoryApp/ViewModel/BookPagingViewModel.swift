@@ -11,7 +11,17 @@ import RxCocoa
 import CoreData
 import RxRelay
 
-protocol PagingType: AnyObject {
+
+
+struct PageListViewModelActions {
+    /// Note: if you would need to edit movie inside Details screen and update this Movies List screen with updated movie then you would need this closure:
+    /// showMovieDetails: (Movie, @escaping (_ updated: Movie) -> Void) -> Void
+    let createPage: () -> Void
+    let closePage: () -> Void
+    let showSettingPage: (PageModel) -> Void
+}
+
+protocol PageListViewModelProtocol: AnyObject {
     
     //input
     var onPaging: AnyObserver<Void> { get }
@@ -30,6 +40,22 @@ protocol PagingType: AnyObject {
     func getChildBlocksOFPage(_ id: PageModel) -> Observable<[Page_ChildBlock]>
 }
 
+protocol PageListAction: AnyObject {
+    func createPage() -> Void
+    
+    func closePage() -> Void
+}
+
+protocol PageSettingAction: AnyObject {
+    func showSettingPageButtonTapped(_ tap: Driver<Void>,
+                                     _ model: PageModel?,
+                                     _ disposeBag: DisposeBag)
+}
+
+typealias PageListActions = PageListAction & PageSettingAction
+
+typealias PagingType = PageListActions & PageListViewModelProtocol
+
 enum Book{
     case book
 }
@@ -37,6 +63,8 @@ enum Book{
 class BookPagingViewModel: NSObject, PagingType{
     
     private let service: RxBookService
+    
+    private let actions: PageListViewModelActions
     
     var onPaging: AnyObserver<Void>
     
@@ -50,9 +78,11 @@ class BookPagingViewModel: NSObject, PagingType{
     
     var disposeBag = DisposeBag()
     
-    init(_ service: RxBookService = BookService() ) {
+    init(coreDataService: RxBookService = BookService(),
+         action: PageListViewModelActions) {
         
-        self.service = service
+        service = coreDataService
+        actions = action
         
         let pagingPipe = PublishSubject<Void>()
         
@@ -105,12 +135,38 @@ class BookPagingViewModel: NSObject, PagingType{
     }
     
     
+    
     func getChildBlocksOFPage(_ id: PageModel) -> Observable<[Page_ChildBlock]>{
         return service
             .rxGetPage(id.pageID)
             .withUnretained(self)
             .compactMap{ own,page in own.makeChildrenBlockObject(page) }
     }
+    
+    
+    
+    //MARK: - PageList Action
+    func createPage(){
+        actions.createPage()
+    }
+    
+    func closePage() -> Void{
+        actions.closePage()
+    }
+    
+    func showSettingPageButtonTapped(_ tap: Driver<Void>,
+                                     _ model: PageModel? ,
+                                     _ disposeBag: DisposeBag) {
+        guard let model = model else {return}
+        tap.drive(onNext: { [weak self] _ in
+            guard let self = self else {return}
+            self.actions.showSettingPage(model)
+        })
+        .disposed(by: disposeBag)
+    }
+    
+    
+    
 }
 private extension BookPagingViewModel{
     

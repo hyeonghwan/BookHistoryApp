@@ -35,8 +35,6 @@ protocol InputVMLongPressAble: AnyObject{
     
 }
 
-
-
 typealias InputViewModelProtocol = InputViewModelType & InputVMLongPressAble
 
 class InputViewModel: NSObject, InputViewModelProtocol {
@@ -82,8 +80,6 @@ class InputViewModel: NSObject, InputViewModelProtocol {
         
         inputLongPressPipe
             .subscribe(onNext: outputLongPressPipe.onNext(_:))
-            .disposed(by: disposeBag)
-        
+            .disposed(by: disposeBag)   
     }
-    
 }

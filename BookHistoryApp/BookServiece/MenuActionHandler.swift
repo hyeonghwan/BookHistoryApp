@@ -45,14 +45,14 @@ struct MenuButtonType{
     let type: MenuActionType?
     let image: String?
     weak var disposeBag: DisposeBag?
-    weak var viewModel: AccessoryCompositionProtocol?
+    weak var viewModel: AccessoryCompositinalProtocol?
     var frame: CGRect?
     weak var color: UIColor?
     
     init(type: MenuActionType,
          image: String,
          disposeBag: DisposeBag,
-         viewModel: AccessoryCompositionProtocol,
+         viewModel: AccessoryCompositinalProtocol,
          _ frame: CGRect = CGRect(x: 0, y: 0, width: 30, height: 30),
          _ color: UIColor = UIColor.lightGray) {
         

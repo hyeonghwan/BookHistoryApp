@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class PlanMonthView: UIScrollView{
+class PlanMonthView: UIScrollView{
     
     private lazy var lineContainer: LineContainerView = {
         let view = LineContainerView(frame: .zero)

@@ -20,12 +20,43 @@ public struct DelegateDependency{
     weak var textView: UITextView?
 }
 
+typealias PageTextView = SecondTextView
+
 class SecondTextView: UITextView {
+    
+    
+    //MARK: - make Page TextView Setting
+    struct DependencyOfTextView{
+        weak var colorViewModel: ColorViewModelProtocol?
+        weak var contentViewModel: ContentViewModelProtocol?
+        weak var accessoryViewModel: AccessoryCompositinalProtocol?
+        weak var photoAndFileDelegate: PhotoAndFileDelegate?
+        weak var blockViewModel: BlockViewModelProtocol?
+        weak var inputViewModel: InputViewModelProtocol?
+        
+        init(colorViewModel: ColorViewModelProtocol?,
+             contentViewModel: ContentViewModelProtocol?,
+             accessoryViewModel: AccessoryCompositinalProtocol?,
+             photoAndFileDelegate: PhotoAndFileDelegate?,
+             blockViewModel: BlockViewModelProtocol?,
+             inputViewModel: InputViewModelProtocol?) {
+            
+            self.colorViewModel = colorViewModel
+            self.contentViewModel = contentViewModel
+            self.accessoryViewModel = accessoryViewModel
+            self.photoAndFileDelegate = photoAndFileDelegate
+            self.blockViewModel = blockViewModel
+            self.inputViewModel = inputViewModel
+        }
+    }
+    
+
+    
     private weak var colorViewModel: ColorViewModelProtocol?
     
     weak var contentViewModel: ContentViewModelProtocol?
     
-    private weak var accessoryViewModel: AccessoryCompositionProtocol?
+    private weak var accessoryViewModel: AccessoryCompositinalProtocol?
     
     weak var photoAndFileDelegate: PhotoAndFileDelegate?
     
@@ -34,14 +65,13 @@ class SecondTextView: UITextView {
 
     var disposeBag = DisposeBag()
     
-    public let attachmentBehavior = SubviewAttachingTextViewBehavior()
-    
-    lazy var blockVM: BlockVMProtocol = BlockViewModel()
+    weak var blockVM: BlockVMProtocol?
     
     lazy var layoutManagerDependency: DelegateDependency = DelegateDependency(attachmentBehavior: attachmentBehavior,
                                                                               textView: self)
     
     private lazy var layoutManagerDelegate = LayoutManagerDelegate(layoutManagerDependency)
+    public let attachmentBehavior = SubviewAttachingTextViewBehavior()
     
     private let topInset: CGFloat = 30
     private let leftInset: CGFloat = 12
@@ -102,6 +132,7 @@ class SecondTextView: UITextView {
         self.accessoryViewModel = dependency?.accessoryViewModel
         self.photoAndFileDelegate = dependency?.photoAndFileDelegate
         self.inputViewModel = dependency?.inputViewModel
+        self.blockVM = dependency?.blockViewModel
         
         //paragrphTrackingUtility Depenecy Injection
         self.contentViewModel?.paragraphTrackingUtility.paragraphStorage = self.textStorage as? ParagraphTextStorage
@@ -161,7 +192,7 @@ class SecondTextView: UITextView {
         case .blockKeyBoard:
             var blockAddView: BlockAddView = BlockAddView(frame: .zero,
                                                           inputViewStyle: .keyboard,
-                                                          dependency: blockVM)
+                                                          dependency: blockVM!)
             self.inputView = blockAddView
         }
         

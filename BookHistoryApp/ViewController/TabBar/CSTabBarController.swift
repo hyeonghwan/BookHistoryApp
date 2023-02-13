@@ -10,13 +10,52 @@ import SnapKit
 
 final class CSTabBarController: UITabBarController{
     
+  
+    struct TabBarModel{
+        let currentIndex: Int = 0
+        let bottomTabBarHeight: CGFloat = 80
+        let tabModels: [BottomStackItem]
+    }
+    
+    
+    init(currentIndex: Int = 0,
+         bottomTabBarHeight: CGFloat = 80,
+         tabModels: [BottomStackItem]) {
+        
+        self.currentIndex = currentIndex
+        self.bottomTabBarHeight = bottomTabBarHeight
+        self.tabModels = tabModels
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    static func create(with model: TabBarModel) -> CSTabBarController{
+        return CSTabBarController(currentIndex: model.currentIndex,
+                                  bottomTabBarHeight: model.bottomTabBarHeight,
+                                  tabModels: model.tabModels)
+    }
+    
     private var currentIndex = 0
     
     //Tab Bar Height Size
     private var bottomTabBarHeight: CGFloat = 80
     
-
-    private var bottomContainer: UIView = {
+    private var tabModels: [BottomStackItem]
+    
+    lazy var tabs: [StackItemView] = {
+        var items = [StackItemView]()
+        for _ in 0..<5{
+            items.append(StackItemView.newInstance)
+        }
+        return items
+    }()
+    
+    
+    private lazy var bottomContainer: UIView = {
        let view = UIView()
         view.backgroundColor = UIColor.systemPink
         return view
@@ -32,24 +71,6 @@ final class CSTabBarController: UITabBarController{
     }()
     
     
-    lazy var tabs: [StackItemView] = {
-        var items = [StackItemView]()
-        
-        for _ in 0..<5{
-            items.append(StackItemView.newInstance)
-        }
-        return items
-    }()
-    
-    lazy var tabModels: [BottomStackItem] = {
-        
-        return [
-            BottomStackItem(title: "Home", image: "house"),
-            BottomStackItem(title: "Favorites", image: "heart"),
-            BottomStackItem(title: "Search", image: "magnifyingglass"),
-            BottomStackItem(title: "Profile", image: "Person"),
-        ]
-    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
