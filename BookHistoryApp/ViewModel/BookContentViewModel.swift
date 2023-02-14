@@ -19,7 +19,8 @@ protocol ContentViewModelType: AnyObject {
     var onParagraphData: AnyObserver<NSAttributedString> {get}
     
     func createBlockAttributeInput(_ blockType: CustomBlockType.Base,
-                                   _ current: NSRange)
+                                   _ current: NSRange,
+                                   _ diposeBag: DisposeBag)
 
     func removePlaceHolderAttribute(_ attributes: [NSAttributedString.Key : Any],
                                     _ range: Int)
@@ -95,9 +96,11 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
     struct Dependencies{
         let service: BookServiceAble
         let paragrphTrackingUtility: ParagraphTrackingUtility
+        
+        
     }
     
-    weak var service: BookServiceAble?
+    var service: BookServiceAble?
     
     var paragraphTrackingUtility: ParagraphTrackingUtility
     
@@ -138,7 +141,8 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
     
     init(dependencies: Dependencies) {
         self.service = dependencies.service
-        self.paragraphTrackingUtility = dependencies.paragrphTrackingUtility
+        self.paragraphTrackingUtility = ParagraphTrackingUtility()
+//        self.paragraphTrackingUtility = dependencies.paragrphTrackingUtility
         
         
         
@@ -172,19 +176,16 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
         paragraphPipe
             .observe(on: MainScheduler.instance)
             .withLatestFrom(observablePipe){[weak self] textViewAttributedString, original in
-                
                 guard let self = self else {return TextViewData(id: nil, title: nil, attributedString: nil)}
                 guard original.id != nil else { return TextViewData(id: nil,
                                                                     title: self.paragraphTrackingUtility.paragraphs.first!,
                                                                         attributedString: textViewAttributedString) }
-                
                 return TextViewData(id: original.id,
                                     title: self.paragraphTrackingUtility.paragraphs.first!
                                     ,attributedString: textViewAttributedString)
             }
             .flatMap(service.rxAddParagraphData(_:))
-            
-            .subscribe(onNext: {  result in
+            .subscribe(onNext: { result in
                 switch result{
                 case .success(_):
                     print("add success")
@@ -253,20 +254,25 @@ extension BookContentViewModel{
     }
     
     
-    func createBlockAttributeInput(_ blockType: CustomBlockType.Base,_ current: NSRange){
-        let relay = BehaviorRelay<(CustomBlockType.Base,NSRange)>(value: (.none,NSRange()))
-        
-        relay.accept((blockType,current))
+    func createBlockAttributeInput(_ blockType: CustomBlockType.Base,_ current: NSRange,_ disposeBag: DisposeBag){
+        //        return self.paragraphTrackingUtility.addBlockActionPropertyToTextStorage(blockType, current)
+        let relay = BehaviorSubject<(CustomBlockType.Base,NSRange)>(value: (.none,NSRange()))
         
         relay
             .withUnretained(self)
             .asDriver(onErrorJustReturn: (self ,(.none, NSRange())))
             .drive(onNext: { owned,tuple in
                 let (blockType, currentRange) = tuple
-                owned.paragraphTrackingUtility
-                    .addBlockActionPropertyToTextStorage(blockType, currentRange)
+                owned.paragraphTrackingUtility.addBlockActionPropertyToTextStorage(blockType, currentRange)
+                print("Resource count \(RxSwift.Resources.total)")
+
+            },onDisposed: {
+                print("Resource disposed count \(RxSwift.Resources.total)")
             })
             .disposed(by: disposeBag)
+        
+        relay.onNext((blockType,current))
+        
     }
     
     func removePlaceHolderAttribute(_ attributes: [NSAttributedString.Key : Any], _ location: Int){

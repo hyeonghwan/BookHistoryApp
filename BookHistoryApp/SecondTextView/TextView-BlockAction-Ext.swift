@@ -18,8 +18,10 @@ extension SecondTextView {
             .drive(onNext: { [weak self] type in
                 guard let self = self else {return}
                 print("type: \(type)")
+                
+                
                 let currentParagraphRange = self.getParagraphRange(self.selectedRange)
-                self.contentViewModel?.createBlockAttributeInput(type,currentParagraphRange)
+                self.contentViewModel?.createBlockAttributeInput(type,currentParagraphRange,self.disposeBag)
             },onDisposed: {
                 print("onDisposed :")
             }).disposed(by: disposeBag)

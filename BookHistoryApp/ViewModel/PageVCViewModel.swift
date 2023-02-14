@@ -86,7 +86,7 @@ class PageVCViewModel: PageDelegate {
     
     var paragraphValidator: ParagraphValidatorProtocol?
     
-    var bookPagingViewModel: PagingType
+    weak var bookPagingViewModel: PagingType?
     
     // KeyBoard InputViewType State ViewModel
     var inputViewModel: InputViewModelProtocol
@@ -112,6 +112,10 @@ class PageVCViewModel: PageDelegate {
         self.contentViewModel = dependencies.contentViewModel
         self.accessoryViewModel = dependencies.accessoryViewModel
         self.blockViewModel = dependencies.blockViewModel
+    }
+    
+    deinit {
+        print("pageVCViewModel deinit")
     }
     
     

@@ -64,7 +64,7 @@ class BookPagingViewModel: NSObject, PagingType{
     
     private let service: RxBookService
     
-    private let actions: PageListViewModelActions
+    private let actions: PageListViewModelActions?
     
     var onPaging: AnyObserver<Void>
     
@@ -77,6 +77,10 @@ class BookPagingViewModel: NSObject, PagingType{
     var deletePage: AnyObserver<Void>
     
     var disposeBag = DisposeBag()
+    
+    deinit{
+        print("paggingViewmodel deinit")
+    }
     
     init(coreDataService: RxBookService = BookService(),
          action: PageListViewModelActions) {
@@ -147,11 +151,11 @@ class BookPagingViewModel: NSObject, PagingType{
     
     //MARK: - PageList Action
     func createPage(){
-        actions.createPage()
+        actions?.createPage()
     }
     
     func closePage() -> Void{
-        actions.closePage()
+        actions?.closePage()
     }
     
     func showSettingPageButtonTapped(_ tap: Driver<Void>,
@@ -160,7 +164,7 @@ class BookPagingViewModel: NSObject, PagingType{
         guard let model = model else {return}
         tap.drive(onNext: { [weak self] _ in
             guard let self = self else {return}
-            self.actions.showSettingPage(model)
+            self.actions?.showSettingPage(model)
         })
         .disposed(by: disposeBag)
     }
