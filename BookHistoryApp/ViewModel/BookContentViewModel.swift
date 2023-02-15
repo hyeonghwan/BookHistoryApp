@@ -219,7 +219,7 @@ class BookContentViewModel: NSObject, ContentViewModelProtocol{
 
 //MARK: - extension VM func to binding
 extension BookContentViewModel{
-    
+  
     func bindingBlocksToParagraphUtil(_ blocks: [BlockObject]){
         self.paragraphTrackingUtility.rx.blockObjects.onNext(blocks)
     }
@@ -238,8 +238,8 @@ extension BookContentViewModel{
                 .getBlockObjectObservable()
                 .withLatestFrom(pipe){ newObject , original in
                     print("block1 ; \(newObject)")
-                    newObject.forEach{
-                        print($0?.description)
+                    newObject.forEach{_ in
+                        
                     }
                     return newObject
                 }

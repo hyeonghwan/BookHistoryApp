@@ -63,6 +63,7 @@ class SecondViewController: UIViewController {
     //MARK: - initializer    
     init(_ viewModel: PageVCViewModelProtocol){
         self.pageViewModel = viewModel
+        pageViewModel.viewDidLoad()
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -85,7 +86,7 @@ class SecondViewController: UIViewController {
     
     
     lazy var textView: PageTextView = {
-        let textView = pageViewModel.makeTextViewDependencies(self) 
+        let textView = pageViewModel.makeTextViewDependencies(self)
         textView.backgroundColor = .tertiarySystemBackground
         textView.delegate = self
         return textView
@@ -124,17 +125,18 @@ class SecondViewController: UIViewController {
         
         addLongPressGesture()
         
+        
     }
     
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.textView.inputAccessoryView = nil
         print("secondViewController : viewWillDisappear")
         
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        self.textView.inputAccessoryView = nil
         print("secondViewController : viewDidDisappear")
     }
     
@@ -145,6 +147,7 @@ class SecondViewController: UIViewController {
         if let saveButton = self.navigationItem.rightBarButtonItem{
             pageViewModel.storeBlockValue(saveButton.rx.tap.asSignal())
         }
+        
         
         pageViewModel
             .toTextObservable?

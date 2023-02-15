@@ -182,18 +182,17 @@ class BookPagingViewController: UIViewController {
         bookPagingTableView
             .rx.modelSelected(PageModel.self)
             .withUnretained(self)
-            .flatMap{ own,pageValue in own.bookPagingViewModel.getChildBlocksOFPage(pageValue)}
-            .map{  $0.compactMap{ page_block in page_block.ownObject } }
-            .subscribe(onNext: { [weak self] element in
-                guard let self = self else {return}
-                self.bookPagingViewModel.createPage()
+//            .flatMap{ own,pageValue in own.bookPagingViewModel.getChildBlocksOFPage(pageValue)}
+//            .map{  $0.compactMap{ page_block in page_block.ownObject } }
+            .subscribe(onNext: { owned,value in
+                owned.bookPagingViewModel.createPage(value)
             }).disposed(by: disposeBag)
 
         
         self.navigationItem.rightBarButtonItem?.rx.tap
             .subscribe(onNext: { [weak self] _ in
                 guard let self = self else {return}
-                self.bookPagingViewModel.createPage()
+                self.bookPagingViewModel.createPage(nil)
             })
             .disposed(by: disposeBag)
         

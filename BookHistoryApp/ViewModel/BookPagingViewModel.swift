@@ -16,7 +16,7 @@ import RxRelay
 struct PageListViewModelActions {
     /// Note: if you would need to edit movie inside Details screen and update this Movies List screen with updated movie then you would need this closure:
     /// showMovieDetails: (Movie, @escaping (_ updated: Movie) -> Void) -> Void
-    let createPage: () -> Void
+    let createPage: (PageModel?) -> Void
     let closePage: () -> Void
     let showSettingPage: (PageModel) -> Void
 }
@@ -41,7 +41,8 @@ protocol PageListViewModelProtocol: AnyObject {
 }
 
 protocol PageListAction: AnyObject {
-    func createPage() -> Void
+    
+    func createPage(_ page: PageModel?) -> Void
     
     func closePage() -> Void
 }
@@ -61,6 +62,7 @@ enum Book{
 }
 
 class BookPagingViewModel: NSObject, PagingType{
+    
     
     private let service: RxBookService
     
@@ -150,10 +152,11 @@ class BookPagingViewModel: NSObject, PagingType{
     
     
     //MARK: - PageList Action
-    func createPage(){
-        actions?.createPage()
+    func createPage(_ page: PageModel?) {
+        actions?.createPage(page)
     }
-    
+
+  
     func closePage() -> Void{
         actions?.closePage()
     }

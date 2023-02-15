@@ -25,10 +25,16 @@ class PageFlowCoordinator {
         self.dependency = dependency
     }
     
-    func start(_ pageViewModel: PageVCViewModelProtocol){
-        pageViewController = dependency?.makePageViewController(pageViewModel)
+    func start(_ pageDependency: PageVCViewModel.PageDependencies,
+               _ pageModel: PageModel?){
+        let actions: PageViewModelActions = PageViewModelActions(pageModel: pageModel)
+        
+        let pageVcViewModel = PageVCViewModel(pageDependency, actions)
+        
+        pageViewController = dependency?.makePageViewController(pageVcViewModel)
         navigationController!.pushViewController(pageViewController!, animated: true)
     }
+    
     
     func make(){
         

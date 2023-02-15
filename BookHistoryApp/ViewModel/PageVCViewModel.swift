@@ -11,6 +11,7 @@ import RxSwift
 import RxCocoa
 
 struct PageViewModelActions{
+    var pageModel: PageModel?
     // view Transaction Action
 }
 
@@ -76,6 +77,7 @@ class PageVCViewModel: PageDelegate {
     private let actions: PageViewModelActions
     
     weak var pageVC: PageVC?
+    var diposeBag: DisposeBag = DisposeBag()
     
     func setParagraphUseCase(_ validator: ParagraphValidatorProtocol) {
         self.paragraphValidator = validator
@@ -214,7 +216,17 @@ extension PageVCViewModel: PageTextViewInput{
 
 extension PageVCViewModel: PageVCViewModelInput{
     func viewDidLoad() {
+        guard let viewModel = self.bookPagingViewModel else {return}
+        guard let model = actions.pageModel else {
+            self.contentViewModel.paragraphTrackingUtility.rx.blockObjects.onNext([])
+            return
+        }
         
+        viewModel.getChildBlocksOFPage(model)
+            .map{ $0.compactMap{ page_block in page_block.ownObject} }
+            .bind(to: self.contentViewModel.paragraphTrackingUtility.rx.blockObjects)
+            .disposed(by: self.diposeBag)
+
     }
     
     func viewWillDissapear() {
@@ -266,6 +278,7 @@ extension PageVCViewModel: PageVCViewModelInput{
     
     private func keyBoardDidshowAction(){
         guard let pageVC = pageVC else {return}
+        
         inputViewModel
             .outputStateObservable
             .bind(to: pageVC.textMenuView.rx.state)
@@ -370,7 +383,7 @@ extension PageVCViewModel: PageVCDependencyInput{
         return textView
     }
     
-    private func paragraphTrackingDependencySetting(_ textView: UITextView) {
+    func paragraphTrackingDependencySetting(_ textView: UITextView) {
         contentViewModel.paragraphTrackingUtility.paragrphTextView = textView
     }
     

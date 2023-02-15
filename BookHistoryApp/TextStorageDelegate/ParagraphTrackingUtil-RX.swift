@@ -36,6 +36,8 @@ extension Reactive where Base: ParagraphTrackingUtility{
             onBlockType(blocks)
             onParagraph(blocks)
             onAttributes(blocks)
+            print("-dsfasdf")
+            print(self.paragraphs)
         }
     }
     

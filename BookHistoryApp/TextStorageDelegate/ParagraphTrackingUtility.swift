@@ -225,7 +225,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 }
             }
         }
-        print("newParagrpha : \(newParagraphs.count)")
+        
         print("serialQueue: task : 4")
         group.notify(queue: serialQueue) { [weak self] in
             guard let self = self else {return}
@@ -233,7 +233,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
         }
         print("hello")
         
-        
+        print("paragraphRange: \(ranges)")
         
         
         
