@@ -28,8 +28,12 @@ enum CustomBlockType{
         var result : String = ""
         if let value = try? self.getBlockValueType() as? TextAndChildrenBlockValueObject{
             for ob in value.richText{
-                result += "richText: \(ob.description),"
+                result += " --- richText: \(ob.description), ----rich----"
             }
+            if let children = value.children{
+                result += " ---- children: \(children) block ----"
+            }
+            
             return result
         }
         return "customBlock description failed"
@@ -196,17 +200,17 @@ enum CustomBlockType{
         switch self{
         case .paragraph:
 
-            var defalutAttributes = NSAttributedString.Key.defaultParagraphAttribute
+            let defalutAttributes = NSAttributedString.Key.defaultParagraphAttribute
             return getBlockChildAttributes(defalutAttributes,object)
             
         case .textHeadSymbolList:
 
-            var defalutAttributes = NSAttributedString.Key.textHeadSymbolListAttributes
+            let defalutAttributes = NSAttributedString.Key.textHeadSymbolListAttributes
             return getBlockChildAttributes(defalutAttributes,object)
             
         case .toggleList:
 
-            var defalutAttributes = NSAttributedString.Key.toggleAttributes
+            let defalutAttributes = NSAttributedString.Key.toggleAttributes
             return getBlockChildAttributes(defalutAttributes,object)
             
         default:
@@ -229,17 +233,13 @@ enum CustomBlockType{
             let annotations = value.annotations
             let color = "label" //annotations.color.create
             
-            
             var font : UIFont = UIFont.appleSDGothicNeo.regular.font(size: 16)
-            
-            
             if annotations.underline == true{
                 //append
             }
             if annotations.strikethrough == true{
                 //append
             }
-            
             
             if annotations.italic == true && annotations.bold == true {
                 font = font.setBoldItalic()
@@ -252,7 +252,6 @@ enum CustomBlockType{
                 }
             }
             
-            
             attribute[.font] = font
             
             if annotations.color == "label"{
@@ -263,12 +262,14 @@ enum CustomBlockType{
                 attribute[.backgroundColor] =  UIColor.label // annotations.color.create
             }
             
+            
             attributes.append(attribute)
         }
         
         return attributes
         
     }
+    
     
 }
 extension CustomBlockType{

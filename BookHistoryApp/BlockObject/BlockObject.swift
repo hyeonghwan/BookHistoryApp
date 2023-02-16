@@ -105,9 +105,11 @@ public final class BlockObject: NSObjCoding{
     lazy var object: BlockTypeWrapping? = nil
     var blockType: CustomBlockType?
     
+    private var _threeAttributes: [[[NSAttributedString.Key : Any]]] = []
+    
     
     public override var description: String {
-        return "description Xblock Info :\(String(describing: self.blockInfo)), description,: \(self.blockType?.base ?? CustomBlockType.Base.none)  description,object: \(String(describing: self.object?.description))"
+        return "description,: \(self.blockType?.base ?? CustomBlockType.Base.none)  description,object: \(String(describing: self.object?.description)) \n-------------\n"
     }
     
     public static var supportsSecureCoding: Bool {
@@ -178,14 +180,39 @@ public final class BlockObject: NSObjCoding{
 
 extension BlockObject{
     
+    var threeAttributes: [[[NSAttributedString.Key : Any]]] {
+        get {
+            return _threeAttributes
+        }
+        set {
+            _threeAttributes = newValue
+        }
+    }
+    
+    func getAllObejctAttributes() -> [[[NSAttributedString.Key : Any]]]{
+        let value = self.getObjectAttributes()
+        if value.count == 0{
+            return threeAttributes
+        }
+        return [value]
+    }
+    
     func getObjectAttributes() -> [[NSAttributedString.Key : Any]] {
         guard let wrappingObject = self.object else { return []}
         do {
             guard let object = try wrappingObject.e.getBlockValueType() as? TextAndChildrenBlockValueObject else {return []}
-            let attributes = wrappingObject.e.getAttributes(object)
             
-            return attributes
+            if object.children == nil{
+                let attributes = wrappingObject.e.getAttributes(object)
+                return attributes
+            }
             
+            if object.children != nil{
+                threeAttributes = object.children!.map{ childBlockObject in
+                    childBlockObject.getObjectAttributes()
+                }
+            }
+            return []
         }catch{
             fatalError("fattal error occur")
         }

@@ -33,6 +33,7 @@ extension Reactive where Base: ParagraphTrackingUtility{
     var blockObjects: Binder<[BlockObject]>{
         return Binder(self.base) { paragraphTUtil , blocks in
             paragraphTUtil.blockObjects = blocks
+            print("blocks : \(blocks)")
             onBlockType(blocks)
             onParagraph(blocks)
             onAttributes(blocks)
@@ -54,12 +55,18 @@ extension Reactive where Base: ParagraphTrackingUtility{
     }
     
     private func onAttributes(_ blocks: [BlockObject]){
-        let attributeArray =
-        blocks.compactMap{ block in
-            block.getObjectAttributes()
+        var attributeArray: [[[NSAttributedString.Key : Any]]] = []
+        blocks.forEach{ block in
+//            block.getObjectAttributes()
+            attributeArray += block.getAllObejctAttributes()
         }
         
-        print("block:: \(attributeArray)")
+        attributeArray.forEach{ value in
+            print("value[0][.blockType] : \(value[0][.blockType])")
+            print("value[0][.blockType] : \((value[0][.paragraphStyle] as! NSParagraphStyle).headIndent)")
+            print("--------------------------------------------")
+        }
+        
         self.newAttributes.onNext(attributeArray)
     }
     
@@ -78,11 +85,14 @@ extension Reactive where Base: ParagraphTrackingUtility{
                 .map{ block in  try block.object?.e.getBlockValueType()}
                 .compactMap{ blockType in blockType?.getParagraphsValues() }
             
-            print("paragraphsFromBlock | \(paragraphsFromBlock)")
-            
-            self.paragraphs.onNext(paragraphsFromBlock.map{ sequence in
+            print("paragraphsFromBlock: \(paragraphsFromBlock)")
+
+            let t = paragraphsFromBlock.map{ sequence in
                 return sequence.joined()
-            })
+            }
+            print("paragraphsFromBlock.map | \(t)")
+            
+            self.paragraphs.onNext(t)
             self.newParagraphs.onNext(paragraphsFromBlock)
         }catch{
             print("\(#function) , \(#line)")

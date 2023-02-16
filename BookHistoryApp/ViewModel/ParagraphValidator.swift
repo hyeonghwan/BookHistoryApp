@@ -8,10 +8,6 @@
 import Foundation
 
 protocol ParagraphValidInput{
-    
-    var contentViewModel: ContentViewModelProtocol? { get set }
-    var pageViewModel: PageVCValidDelegate? { get set }
-    
     func isValidURL()
     
     func isValidBlock(_ text: String,_ paragraphRange: NSRange,_ type: CustomBlockType.Base?) -> Bool
@@ -22,11 +18,15 @@ protocol ParagraphValidInput{
 typealias ParagraphValidatorProtocol = ParagraphValidInput
 
 class ParagraphValidator: ParagraphValidatorProtocol{
-    
-    weak var contentViewModel: ContentViewModelProtocol?
-    
+   
+    struct Dependencies{
+        var pageViewModel: PageVCValidDelegate
+    }
     weak var pageViewModel: PageVCValidDelegate?
    
+    init(dependencies: Dependencies? = nil) {
+        self.pageViewModel = dependencies?.pageViewModel
+    }
     
     func isValidURL() {
         
@@ -87,27 +87,27 @@ extension ParagraphValidator{
     
     
     private func textHeadSymbolListValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
-        if self.contentViewModel!.replaceBlockAttribute(text,paragraphRange,.textHeadSymbolList){
+        guard let pageViewModel = self.pageViewModel else {return false}
+        if pageViewModel.replaceBlockAttribute(text,paragraphRange,.textHeadSymbolList){
             
-            guard let viewModel = pageViewModel else {return false}
-            guard let restText = viewModel.getRestRangeAndText(paragraphRange) else {return false}
+            guard let restText = pageViewModel.getRestRangeAndText(paragraphRange) else {return false}
             
             let textToValidData = TextToValidData(text: text,
                                                   restText: restText,
-                                                  replaceMent: "리스트",
+                                                  replaceMent:"리스트",
                                                   paragraphRange: paragraphRange,
                                                   type: .textHeadSymbolList)
             
-            return viewModel.resetParagraphToPlaceHodlerAttribute(textToValidData)
+            return pageViewModel.resetParagraphToPlaceHodlerAttribute(textToValidData)
         }
         return false
     }
     
     private func toggleValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
-        if self.contentViewModel!.replaceBlockAttribute(text,paragraphRange,.toggleList){
+        guard let pageViewModel = self.pageViewModel else {return false}
+        if pageViewModel.replaceBlockAttribute(text,paragraphRange,.toggleList){
             
-            guard let viewModel = pageViewModel else {return false}
-            guard let restText = viewModel.getRestRangeAndText(paragraphRange) else {return false}
+            guard let restText = pageViewModel.getRestRangeAndText(paragraphRange) else {return false}
             
             let textToValidData = TextToValidData(text: text,
                                                   restText: restText,
@@ -115,8 +115,8 @@ extension ParagraphValidator{
                                                   paragraphRange: paragraphRange,
                                                   type: .toggleList)
             
-            return viewModel.resetParagraphToPlaceHodlerAttribute(textToValidData)
+            return pageViewModel.resetParagraphToPlaceHodlerAttribute(textToValidData)
         }
         return false
-    }   
+    }
 }

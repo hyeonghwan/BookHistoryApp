@@ -26,7 +26,7 @@ import WebKit
 class SecondViewController: UIViewController {
     
     struct Dependencies{
-        let pageViewModel: PageVCViewModelProtocol?
+        let pageViewModel: PageVC?
     }
      
     
@@ -35,6 +35,7 @@ class SecondViewController: UIViewController {
     
     static func create(with pageViewModel: PageVCViewModelProtocol) -> PageVC{
         let vc = PageVC([], pageViewModel)
+        
         return vc
     }
    
@@ -63,8 +64,8 @@ class SecondViewController: UIViewController {
     //MARK: - initializer    
     init(_ viewModel: PageVCViewModelProtocol){
         self.pageViewModel = viewModel
-        pageViewModel.viewDidLoad()
         super.init(nibName: nil, bundle: nil)
+        pageViewModel.pageVC_Init(self)
     }
     
     convenience init(_ object: [BlockObject],

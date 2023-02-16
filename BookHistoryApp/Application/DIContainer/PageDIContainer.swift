@@ -18,18 +18,18 @@ class PageDIContainer{
     
     func makePageViewController(_ pageViewModel: PageVCViewModelProtocol) -> PageVC{
         let pageVC = PageVC.create(with: pageViewModel)
-        pageVC.pageViewModel.pageVC = pageVC
         
-        let validatorUseCase = makeParagraphValidatorUseCase()
         
-        pageVC.pageViewModel.setParagraphUseCase(validatorUseCase)
+        let validatorUseCase = makeParagraphValidatorUseCase(pageVC.pageViewModel)
+        
+        pageVC.pageViewModel.settingValidatorUseCaseDependency(validatorUseCase)
         
         return pageVC
     }
     
     //MARK: - TextValidator
-    func makeParagraphValidatorUseCase() -> ParagraphValidatorProtocol{
-        return ParagraphValidator()
+    func makeParagraphValidatorUseCase(_ dependency: PageVCValidDelegate) -> ParagraphValidatorProtocol{
+        return ParagraphValidator(dependencies: ParagraphValidator.Dependencies(pageViewModel: dependency) )
     }
 
     

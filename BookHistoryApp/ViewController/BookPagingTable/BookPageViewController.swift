@@ -138,7 +138,9 @@ class BookPagingViewController: UIViewController {
 //        t = SomeStruct()
 //        test(t!)
 //
-        
+        print("\(("\u{fffc}리스트\n").count)")
+        print("\(("\u{fffc}리스트\n").length)")
+        print("\u{fffc}리스트\n")
         layoutConfigure()
         
         settingNavi()

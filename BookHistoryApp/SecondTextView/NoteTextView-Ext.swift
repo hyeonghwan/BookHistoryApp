@@ -121,6 +121,7 @@ extension UITextView{
     func getParagraphRange(_ range: NSRange) -> NSRange {
         let allText: String = self.text
         let composeText: NSString = allText as NSString
+        
         let paragraphRange = composeText.paragraphRange(for: range)
         return paragraphRange
     }

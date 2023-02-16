@@ -32,6 +32,7 @@ class PageFlowCoordinator {
         let pageVcViewModel = PageVCViewModel(pageDependency, actions)
         
         pageViewController = dependency?.makePageViewController(pageVcViewModel)
+        
         navigationController!.pushViewController(pageViewController!, animated: true)
     }
     
