@@ -239,6 +239,7 @@
 		965E3BF62999243A0026A301 /* ParagraphValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParagraphValidator.swift; sourceTree = "<group>"; };
 		965E3BF8299A3FF30026A301 /* PageDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageDIContainer.swift; sourceTree = "<group>"; };
 		965E3BFA299A40010026A301 /* PageFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageFlowCoordinator.swift; sourceTree = "<group>"; };
+		965E3BFC299B7E750026A301 /* RxSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RxSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9662284F295AFA9300E39FC3 /* PlanGoalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanGoalViewController.swift; sourceTree = "<group>"; };
 		96622851295AFFFA00E39FC3 /* LineContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineContainerView.swift; sourceTree = "<group>"; };
 		96622853295B12C900E39FC3 /* DotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotView.swift; sourceTree = "<group>"; };
@@ -298,6 +299,7 @@
 		4D00F6EB9AF45B9A13172246 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				965E3BFC299B7E750026A301 /* RxSwift.framework */,
 				A50DDEE5B459107E26A04E3E /* Pods_BookHistoryApp.framework */,
 			);
 			name = Frameworks;

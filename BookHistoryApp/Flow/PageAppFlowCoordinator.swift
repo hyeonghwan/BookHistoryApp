@@ -75,17 +75,12 @@ class PageAppFlowCoordinator{
     
     //MARK: - PageListVC actions
     //not yet
-    func createPage(){
+    func createPage(_ pageModel: PageModel?){
         guard let pagingType = pageListViewController?.bookPagingViewModel else { return }
         let pageDependency = dependencies.makePageDependencies(pagingType)
-        
-        let actions: PageViewModelActions = PageViewModelActions()
-      
-        let viewModel = PageVCViewModel(pageDependency, actions)
-        
         let pageDIContainer = dependencies.makePageDIContainer()
         let pageFlowCoordinaotr = pageDIContainer.makePageFlowCoordinator(pageNavigationController)
-        pageFlowCoordinaotr.start(viewModel)
+        pageFlowCoordinaotr.start(pageDependency,pageModel)
     }
     
     // should add store logic

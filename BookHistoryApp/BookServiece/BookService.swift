@@ -34,17 +34,32 @@ protocol URLBookMarkMakable: AnyObject{
 
 
 class BookService: NSObject, RxBookService{
+    private var _container: NSPersistentContainer?
 
-    
-    var container: NSPersistentContainer?
+    var container: NSPersistentContainer? {
+        get {
+            if _container == nil {
+                _container = loadPersistentContainer()
+            }
+            return _container!
+        }
+        set {
+            _container = newValue
+        }
+    }
     
     override init() {
         
+        super.init()
+        
+        self.container = loadPersistentContainer()
+        
+    }
+    
+    private func loadPersistentContainer() -> NSPersistentContainer {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         
-        container = appDelegate.persistentContainer
-        
-        super.init()
+        return appDelegate.persistentContainer
     }
 }
 
@@ -300,7 +315,10 @@ extension BookService{
                     data.setValue(object, forKey: BlockKey.ownObject.rawValue)
                     data.setValue(pageMO, forKey: BlockKey.parentPage.rawValue)
                     
+                    
+                    
                  }
+    
                 return saveContext()
             case .failure(let error):
                 throw error
@@ -383,13 +401,16 @@ extension BookService{
         }
     }
     
+    
     @discardableResult
     private func saveContext() -> Result<Bool,Error> {
         guard let container = container else {return .failure(CoreDataError.fetchContainerError)}
         
         let context = container.viewContext
+        
         do {
             try context.save()
+            context.refreshAllObjects()
             return .success(true)
         }catch{
             print("catch Error 1")

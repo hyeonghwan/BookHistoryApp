@@ -27,7 +27,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     weak var paragraphStorage: ParagraphTextStorage? {
         didSet{
             self.paragraphStorage?.delegate = self
-            
+            print("delegateIS didset")
             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
                 self.insertions = []
                 self.removals = []
@@ -110,50 +110,57 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     var ranges: [NSRange] {
         var location = 0
         
-        return paragraphs.map { string -> NSRange in
-            let range = NSRange(location: location, length: string.length)
-            location = range.max
+        return paragraphs.enumerated().map{ index, string -> NSRange in
+            var length: Int = string.length
+            var range = NSRange(location: location, length: length)
+            location = range.max 
             return range
         }
     }
+    var presentedParagraphs: [NSAttributedString] {
+        return newPresentedParagraphs
+    }
     
     var newPresentedParagraphs: [NSAttributedString]{
+        
         return self.newParagraphs.enumerated().map{ paragraph_index,paragraphs_d in
-            var attributedString = NSMutableAttributedString(attributedString: NSAttributedString(string: ""))
+            let attributedString = NSMutableAttributedString(attributedString: NSAttributedString(string: ""))
             paragraphs_d.enumerated().forEach{ index_element, string in
+                
                 let attributes = newAttributes[paragraph_index][index_element]
-                attributedString.append(NSAttributedString(string: string, attributes: attributes))
+                
+                
+                let att = NSAttributedString(string: string, attributes: attributes)
+                
+                attributedString.append(att)
             }
             return attributedString
         }
     }
-    
-    
-    var presentedParagraphs: [NSAttributedString] {
-        print("newPresentedParagraphs : \(newPresentedParagraphs)")
-        return newPresentedParagraphs
-        //        return paragraphs
-        //            .enumerated()
-        //            .map{ index, paragraph in
-        //                let attribute = attributes[index]
-        //                switch attribute.getBlockBaseType(){
-        //                case .paragraph:
-        //                    return NSAttributedString(string: paragraph, attributes: attribute)
-        //                case .toggleList:
-        //                    return addToggleWhenFirstInit(index,
-        //                                                  self.paragraphs.count,
-        //                                                  NSAttributedString(string: paragraph,
-        //                                                                     attributes: attribute))
-        //                case .textHeadSymbolList:
-        //                    return addTextHeadSymbolWhenFirstInit(index,
-        //                                                          self.paragraphs.count,
-        //                                                          NSAttributedString(string: paragraph,
-        //                                                                             attributes: attribute))
-        //                default:
-        //                    break
-        //                }
-        //                return NSAttributedString(string: paragraph, attributes: attributes[index])
-        //            }
+    func insertNSTextAttachMent(_ index: Int,
+                                _ attributedString: NSAttributedString) -> NSAttributedString?{
+        
+        guard let blocktype = attributedString.attribute(.blockType, at: 0, effectiveRange: nil) as? CustomBlockType.Base else {
+            return nil
+        }
+        switch blocktype {
+        case .paragraph:
+            return nil
+        case .toggleList:
+            self.newParagraphs[index].insert("\u{fffc}", at: 0)
+            self.paragraphs[index].insert(Character("\u{fffc}"), at: self.paragraphs[index].startIndex)
+            return addToggleWhenFirstInit(index,
+                                          self.paragraphs.count - 1,
+                                          attributedString)
+        case .textHeadSymbolList:
+            self.newParagraphs[index].insert("\u{fffc}", at: 0)
+            self.paragraphs[index].insert(Character("\u{fffc}"), at: self.paragraphs[index].startIndex)
+            return addTextHeadSymbolWhenFirstInit(index,
+                                                  self.paragraphs.count - 1,
+                                                  attributedString)
+        default:
+            return nil
+        }
     }
     
     
@@ -179,7 +186,8 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                     } else {
                         self.insertions.append(index)
                     }
-                    
+                    print("paragraphDescriptor : \(paragraphDescriptor.attributedString)")
+                    print("paragraphDescriptor : \(paragraphDescriptor.text)")
                     let separatedNSAttString = self.attributesArray(from: paragraphDescriptor)
                     self.newParagraphs.insert(separatedNSAttString.1, at: index)
                     self.newAttributes.insert(separatedNSAttString.0, at: index)
@@ -225,15 +233,30 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 }
             }
         }
-        print("newParagrpha : \(newParagraphs.count)")
+        
+        
+        
         print("serialQueue: task : 4")
         group.notify(queue: serialQueue) { [weak self] in
             guard let self = self else {return}
             print("serialQueue: task end")
+//            if firstInit == true{
+//                blockTypes.enumerated().map{ index , value in
+//                    switch value{
+//                    case .textHeadSymbolList:
+//                        break
+//                    case .toggleList:
+//                        break
+//                    default:
+//                        break
+//                    }
+//
+//                }
+//            }
         }
         print("hello")
         
-        
+        print("paragraphRange: \(ranges)")
         
         
         
@@ -442,4 +465,4 @@ extension ParagraphTrackingUtility{
 //    editions.append(index)
 //
 //}
-//}
+

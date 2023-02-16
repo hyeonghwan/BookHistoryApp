@@ -127,7 +127,17 @@ extension ParagraphTrackingUtility{
     
     func addTextHeadSymbolList(_ range: NSRange, _ text: String? = nil) {
 
-        
+        print("rangeS: \(self.ranges)")
+        print("seletedrange: \(range)")
+        print("self.paragraph: \(self.paragraphs)")
+        self.paragraphs.forEach{ va in
+            
+            print("vavavava: \(va.count)")
+            if va.contains(where: { $0 == "\u{fffc}"
+            }){
+                print("\(va) is contain ufffc")
+            }
+        }
         guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
        
         let insertedRange = ranges[currentIndex]
@@ -163,6 +173,7 @@ extension ParagraphTrackingUtility{
                                                                  attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes,
                                                                  plusIndex - 1,
                                                                  index)
+            
         }
         
         self.paragraphStorage?.beginEditing()
@@ -185,7 +196,7 @@ extension ParagraphTrackingUtility{
         
         
         var result = attString.insertingAttachment(attachment, at: position)
-        
+        print("result: \(result)")
         result = result.addingAttributes(attributes)
         return result
     }
@@ -219,8 +230,10 @@ extension ParagraphTrackingUtility{
 extension ParagraphTrackingUtility {
     
     private func addToggle(_ range: NSRange,_ text: String? = nil){
-        
+        print("self.ranges :\(self.ranges)")
+        print("currentParagraphRange range: \(range)")
         guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
+        
        
         let insertedRange = ranges[currentIndex]
         

@@ -9,17 +9,32 @@ import Foundation
 
 
 
-protocol BlockValueType{
+protocol BlockTextValueType{
     var richText: [RichTextObject] { get }
     func getParagraphValue() -> String
+    var children: [BlockObject]? { get }
 }
-extension BlockValueType{
+
+
+typealias BlockValueType =  BlockTextValueType
+
+extension BlockTextValueType{
     
     func getParagraphsValues() -> [String] {
-        self.richText.map{ obj in
-            guard let text = obj.text.content else {return String.emptyStr() }
+        
+        var t = self.richText.compactMap{ value -> String? in
+            guard let text = value.text.content else { return nil }
+            if text == "\u{fffc}"{
+                return nil
+            }
             return text
         }
+        
+        
+        if t.last == "\n"{
+            t.removeLast()
+        }
+        return t
     }
     
     func getParagraphValue() -> String{
@@ -33,10 +48,19 @@ extension BlockValueType{
 extension TextAndChildrenBlockValueObject: BlockValueType{
     
 }
+
 extension HeadingBlockValueObject: BlockValueType{
+    var children: [BlockObject]? {
+        return nil
+    }
+    
 }
 
 extension ChildPageBlockValueObject: BlockValueType{
+    var children: [BlockObject]? {
+        return nil  
+    }
+            
     var richText: [RichTextObject]{
         []
     }
@@ -46,12 +70,17 @@ extension ChildPageBlockValueObject: BlockValueType{
     }
 }
 extension ToDoBlockValueObject: BlockValueType{
+    
  
 }
 extension QuoteBlockValueObject: BlockValueType{
 
 }
 extension LinkToPageBlockValueObject: BlockValueType{
+    var children: [BlockObject]? {
+        return nil
+    }
+    
     var richText: [RichTextObject]{
         []
     }
@@ -61,6 +90,5 @@ extension LinkToPageBlockValueObject: BlockValueType{
     }
 }
 extension CalloutBlockValueObject: BlockValueType{
-  
 }
 

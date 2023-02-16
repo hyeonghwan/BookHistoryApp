@@ -28,6 +28,7 @@ class BookPagingViewController: UIViewController {
     }
     
     
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -73,61 +74,73 @@ class BookPagingViewController: UIViewController {
     
     
     
-    
-    var hangule: Hangule = Hangule()
-    
-    
-    var object: [Int] = []
-    private let blockObjectqueue = DispatchQueue(label: "com.example.propertyclass.array", attributes: .concurrent)
-    
-    var blocks: [Int]{
-        get{
-            print("object: get blocks")
-            return blockObjectqueue.sync { object }
-        }set{
-            blockObjectqueue.async(qos: .background, flags: .barrier, execute: {
-                print("object: set block , : \(newValue)")
-                self.object = newValue
-            })
+
+    func testFunction(){
+        let coldObservable = Observable<Int>.create { observer in
+            print("Subscribed")
+            observer.onNext(1)
+            observer.onNext(2)
+            observer.onCompleted()
+            return Disposables.create()
         }
+
+        coldObservable.subscribe(onNext: { value in
+            print("Subscriber 1: \(value)")
+        })
+
+        coldObservable.subscribe(onNext: { value in
+            print("Subscriber 2: \(value)")
+        })
+        
+        let hotObservable = BehaviorRelay<Int>(value: 100)
+        print("-----")
+        hotObservable.subscribe(onNext: { value in
+            print("Subscriber 1: \(value)")
+        })
+
+        hotObservable.accept(1)
+        hotObservable.accept(2)
+
+        hotObservable.subscribe(onNext: { value in
+            print("Subscriber 2: \(value)")
+        })
+        hotObservable.accept(4)
+        
+        print("-----")
+        
+        let ob = BehaviorSubject<Int>(value: 1)
+        ob.subscribe(onNext: {
+            print("oibbb : \($0)")
+        })
+        ob.subscribe(onNext: {
+            print("oibbb : \($0)")
+        })
+        
+        
+      
     }
-    
+//    class DeallocPrinter {
+//        deinit {
+//            print("deallocated")
+//        }
+//    }
+//
+//    struct SomeStruct {
+//        let printer = DeallocPrinter()
+//    }
+//
+//    func test(_ some: SomeStruct){
+//        print("some: \(some)")
+//    }
+//    var t : SomeStruct?
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        print("object: \(blocks)")
-        var serialQueue = DispatchQueue(label: "SerialQueue")
-        let group = DispatchGroup()
-
-        for item in 0...5 {
-            
-            serialQueue.async(group: group) { [weak self] in
-                guard let self = self else {return}
-                self.blocks.append(item)
-                
-            }
-        }
-        
-        // Add a barrier task that waits for completion of all other tasks in the group
-        serialQueue.async(group: group, flags: .barrier) {
-            // Perform task that needs to be done after all other tasks in the group have completed
-            print("object: task end")
-        }
-
-        
-        
-        
-        
-        var string: String = "안녕하세요"
-        let index = string.index(string.startIndex, offsetBy: string.count - 1)
-        string = String(string[..<index])
-        print(string)
-        var cha: [Character?] = ["ㅇ","ㅏ","ㄴ","ㅕ","ㅇ"," ",nil,nil,nil]
-        cha.forEach{
-            hangule.inputLetter($0)
-            print(hangule.getTotalString())
-        }
-      
+//        t = SomeStruct()
+//        test(t!)
+//
+        print("\(("\u{fffc}리스트\n").count)")
+        print("\(("\u{fffc}리스트\n").length)")
+        print("\u{fffc}리스트\n")
         layoutConfigure()
         
         settingNavi()
@@ -171,18 +184,17 @@ class BookPagingViewController: UIViewController {
         bookPagingTableView
             .rx.modelSelected(PageModel.self)
             .withUnretained(self)
-            .flatMap{ own,pageValue in own.bookPagingViewModel.getChildBlocksOFPage(pageValue)}
-            .map{  $0.compactMap{ page_block in page_block.ownObject } }
-            .subscribe(onNext: { [weak self] element in
-                guard let self = self else {return}
-                self.bookPagingViewModel.createPage()
+//            .flatMap{ own,pageValue in own.bookPagingViewModel.getChildBlocksOFPage(pageValue)}
+//            .map{  $0.compactMap{ page_block in page_block.ownObject } }
+            .subscribe(onNext: { owned,value in
+                owned.bookPagingViewModel.createPage(value)
             }).disposed(by: disposeBag)
 
         
         self.navigationItem.rightBarButtonItem?.rx.tap
             .subscribe(onNext: { [weak self] _ in
                 guard let self = self else {return}
-                self.bookPagingViewModel.createPage()
+                self.bookPagingViewModel.createPage(nil)
             })
             .disposed(by: disposeBag)
         

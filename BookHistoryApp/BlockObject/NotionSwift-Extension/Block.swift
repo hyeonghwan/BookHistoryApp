@@ -55,7 +55,9 @@ class TextAndChildrenBlockValueObject: NSObject,NSSecureCoding {
     public var color: UIColor?
     
     /// field used only for encoding for adding/appending new blocks
-    public var children: [BlockObject]?
+//    public var children: [BlockObject]?
+//    var chi
+    var children: [BlockObject]?
     
     public init(
         richText: [RichTextObject],
@@ -140,9 +142,9 @@ class ToDoBlockValueObject {
     public let checked: Bool?
     public let color: UIColor
     // field used only for encoding for adding/appending new blocks
-    public let children: [CustomBlockType]?
+    public let children: [BlockObject]?
 
-    public init(richText: [RichTextObject], checked: Bool? = nil, color: UIColor, children: [CustomBlockType]? = nil) {
+    public init(richText: [RichTextObject], checked: Bool? = nil, color: UIColor, children: [BlockObject]? = nil) {
         self.richText = richText
         self.checked = checked
         self.color = color
@@ -163,9 +165,9 @@ class QuoteBlockValueObject {
     public let color: UIColor
     
     // field used only for encoding for adding/appending new blocks
-    public let children: [CustomBlockType]?
+    public let children: [BlockObject]?
 
-    public init(richText: [RichTextObject], children: [CustomBlockType]? = nil, color: UIColor) {
+    public init(richText: [RichTextObject], children: [BlockObject]? = nil, color: UIColor) {
         self.richText = richText
         self.children = children
         self.color = color
@@ -181,11 +183,11 @@ class CalloutBlockValueObject {
     public let richText: [RichTextObject]
    
     // field used only for encoding for adding/appending new blocks
-    public let children: [CustomBlockType]?
+    public let children: [BlockObject]?
     public let icon: String?
     public let color: UIColor
   
-    public init(richText: [RichTextObject], children: [CustomBlockType]? = nil, icon: String? = nil, color: UIColor) {
+    public init(richText: [RichTextObject], children: [BlockObject]? = nil, icon: String? = nil, color: UIColor) {
         self.richText = richText
         self.children = children
         self.icon = icon

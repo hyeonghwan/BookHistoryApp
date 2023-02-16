@@ -11,6 +11,7 @@ import RxSwift
 import RxCocoa
 
 struct PageViewModelActions{
+    var pageModel: PageModel?
     // view Transaction Action
 }
 
@@ -20,7 +21,7 @@ protocol PageVCDependencyInput{
 }
 
 protocol PageVCViewModelInput{
-    func viewDidLoad()
+    func pageVC_Init(_ pageVC: PageVC)
     
     func viewWillDissapear()
     func pageSettupBinding()
@@ -51,18 +52,22 @@ protocol PageVCViewModelOutPut{
 }
 
 protocol PageVCValidDelegate: AnyObject{
+    var pageVC: PageVC? {get set}
+    func settingValidatorUseCaseDependency(_ validator: ParagraphValidatorProtocol)
+    
     func getRestRangeAndText(_ paragraphRange: NSRange) -> String?
     func resetParagraphToPlaceHodlerAttribute(_ data: ParagraphValidator.TextToValidData) -> Bool
+    
+    func replaceBlockAttribute(_ text: String,
+                               _ paragraphRange: NSRange,
+                               _ blockType: CustomBlockType.Base) -> Bool
 }
 
-protocol PageDelegate{
-    var pageVC: PageVC? { get set }
-    func setParagraphUseCase(_ validator: ParagraphValidatorProtocol)
-}
 
-typealias PageVCViewModelProtocol = PageVCViewModelOutPut & PageVCViewModelInput & PageTextViewInput & PageVCDependencyInput & PageDelegate
 
-class PageVCViewModel: PageDelegate {
+typealias PageVCViewModelProtocol = PageVCViewModelOutPut & PageVCViewModelInput & PageTextViewInput & PageVCDependencyInput & PageVCValidDelegate
+
+class PageVCViewModel {
     
     struct PageDependencies{
         let inputViewModel: InputViewModelProtocol
@@ -75,18 +80,13 @@ class PageVCViewModel: PageDelegate {
     
     private let actions: PageViewModelActions
     
-    weak var pageVC: PageVC?
+    private weak var _pageVC: PageVC?
     
-    func setParagraphUseCase(_ validator: ParagraphValidatorProtocol) {
-        self.paragraphValidator = validator
-        self.paragraphValidator?.contentViewModel = self.contentViewModel
-        self.paragraphValidator?.pageViewModel = self
-    }
-    
+    var diposeBag: DisposeBag = DisposeBag()
     
     var paragraphValidator: ParagraphValidatorProtocol?
     
-    var bookPagingViewModel: PagingType
+    weak var bookPagingViewModel: PagingType?
     
     // KeyBoard InputViewType State ViewModel
     var inputViewModel: InputViewModelProtocol
@@ -114,12 +114,38 @@ class PageVCViewModel: PageDelegate {
         self.blockViewModel = dependencies.blockViewModel
     }
     
+    deinit {
+        print("pageVCViewModel deinit")
+    }
     
     //MARK: - Dependencies make
     //MARK: - View move func
 }
 
 extension PageVCViewModel: PageVCValidDelegate{
+    
+    
+
+    var pageVC: PageVC?{
+        get{
+            if _pageVC == nil {
+                return nil
+            }else{
+                return _pageVC!
+            }
+        }set{
+            _pageVC = newValue
+        }
+    }
+    
+    func settingValidatorUseCaseDependency(_ validator: ParagraphValidatorProtocol) {
+        self.paragraphValidator = validator
+    }
+    
+    func replaceBlockAttribute(_ text: String, _ paragraphRange: NSRange, _ blockType: CustomBlockType.Base) -> Bool {
+        return contentViewModel.replaceBlockAttribute(text, paragraphRange, blockType)
+    }
+    
     
     func getRestRangeAndText(_ paragraphRange: NSRange) -> String?{
         guard let restRange = pageVC?.textView.textRangeFromNSRange(range: paragraphRange) else {return nil}
@@ -209,8 +235,19 @@ extension PageVCViewModel: PageTextViewInput{
 }
 
 extension PageVCViewModel: PageVCViewModelInput{
-    func viewDidLoad() {
+    func pageVC_Init(_ pageVC: PageVC) {
+        self.pageVC = pageVC
+        guard let viewModel = self.bookPagingViewModel else {return}
+        guard let model = actions.pageModel else {
+            self.contentViewModel.paragraphTrackingUtility.rx.blockObjects.onNext([])
+            return
+        }
         
+        viewModel.getChildBlocksOFPage(model)
+            .map{ $0.compactMap{ page_block in page_block.ownObject} }
+            .bind(to: self.contentViewModel.paragraphTrackingUtility.rx.blockObjects)
+            .disposed(by: self.diposeBag)
+
     }
     
     func viewWillDissapear() {
@@ -262,6 +299,7 @@ extension PageVCViewModel: PageVCViewModelInput{
     
     private func keyBoardDidshowAction(){
         guard let pageVC = pageVC else {return}
+        
         inputViewModel
             .outputStateObservable
             .bind(to: pageVC.textMenuView.rx.state)
@@ -366,7 +404,7 @@ extension PageVCViewModel: PageVCDependencyInput{
         return textView
     }
     
-    private func paragraphTrackingDependencySetting(_ textView: UITextView) {
+    func paragraphTrackingDependencySetting(_ textView: UITextView) {
         contentViewModel.paragraphTrackingUtility.paragrphTextView = textView
     }
     

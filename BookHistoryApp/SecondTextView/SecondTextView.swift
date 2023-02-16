@@ -112,6 +112,10 @@ class SecondTextView: UITextView {
         self.commonInit()
         
     }
+    deinit {
+        print("textView deinit")
+        
+    }
     
     private func commonInit() {
         // Connect the attachment behavior
@@ -325,11 +329,11 @@ extension SecondTextView {
     
 //    override func caretRect(for position: UITextPosition) -> CGRect {
 //        var original = super.caretRect(for: position)
-//        
+//
 //        guard let height = self.font?.lineHeight else { return original}
-//        
+//
 //        original.size.height = height
-//        
+//
 //        return original
 //    }
     

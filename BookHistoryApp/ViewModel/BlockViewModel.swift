@@ -69,7 +69,7 @@ final class BlockViewModel: NSObject,BlockVMProtocol {
     var disposeBag = DisposeBag()
     
     deinit{
-        self.disposeBag = DisposeBag()
+        print("blockViewModel deinit")
     }
     
     init(setting: BehaviorRelay<[ActionType]>) {
@@ -82,7 +82,8 @@ final class BlockViewModel: NSObject,BlockVMProtocol {
         
         setting
             .asObservable()
-            .flatMap(settingBlockCollectionViewData(_:))
+            .withUnretained(self)
+            .flatMap{ own , value in own.settingBlockCollectionViewData(value)}
             .bind(onNext: model.accept(_:))
             .disposed(by: disposeBag)
     }
@@ -131,7 +132,6 @@ final class BlockViewModel: NSObject,BlockVMProtocol {
                     return CollectionViewElement(name: name, image: "book")
                 }
             }
-            
             emit.onNext(result)
             
             return Disposables.create()
