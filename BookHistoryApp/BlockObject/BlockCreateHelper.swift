@@ -23,8 +23,10 @@ class BlockCreateHelper{
         let att = separted.0
         let rawTexts = separted.1
         let type = separted.2
-        
+    
         let separated: SeparatedNSAttributes_Strings = (att, rawTexts)
+        
+        
         print("separated : \(separated)")
         switch type {
         case .paragraph:
@@ -72,10 +74,10 @@ class BlockCreateHelper{
         var bold: Bool = false
         var italic: Bool = false
         var code: Bool = false
-        var color: Color = .label
+        var color: Color.Base = .basic
         
         if let uiColor = att[.foregroundColor] as? UIColor{
-            color = Color.getColor(uiColor)
+            color = Color.getColor(uiColor).base
         }
         
         if let _ = att[.underlineStyle] as? NSUnderlineStyle{

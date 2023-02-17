@@ -37,7 +37,7 @@ protocol PageVCViewModelInput{
 
 protocol PageTextViewInput{
     func storeBlockValue(_ button: Signal<Void>)
-    func textViewDidChangeSelection()
+    func textViewDidChangeSelection(_ textView: UITextView)
     func textViewDidChange()
     func textViewShouldChangeTextIn(_ textView: UITextView,
                                     shouldChangeTextIn range: NSRange,
@@ -169,6 +169,7 @@ extension PageVCViewModel: PageVCValidDelegate{
         }
         
         if (restText.length == 3 && text == ""){
+            
             textView.textStorage.beginEditing()
             textView.textStorage.replaceCharacters(in: NSRange(location: paragraphRange.location + 1,
                                                                length: paragraphRange.length - 2),
@@ -204,8 +205,56 @@ extension PageVCViewModel: PageTextViewInput{
         self.contentViewModel.storeBlockValues(button)
     }
     
-    func textViewDidChangeSelection() {
-     
+    func textViewDidChangeSelection(_ textView: UITextView) {
+        let paragraphRange = textView.getParagraphRange(textView.selectedRange)
+        
+        if paragraphRange.length == 0 {
+            return
+        }
+        
+        let attribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil)
+        var blockAttribute: Any?
+        
+        if paragraphRange.length > 1{
+            blockAttribute = textView.textStorage.attribute(.blockType, at: paragraphRange.location + 1, effectiveRange: nil)
+        }
+        
+        guard let seletedForeGround = attribute as? UIColor else {return}
+        
+    
+        if let blockAttribute = blockAttribute as? CustomBlockType.Base ,
+           (blockAttribute == .toggleList ) || (blockAttribute == .textHeadSymbolList){
+            var nsRange = NSRange()
+            nsRange = paragraphRange
+            
+            let toggleFirstAttribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location , effectiveRange: &nsRange) as? UIColor
+            let toggleParagraphattribute = textView.textStorage.attribute(.foregroundColor, at: nsRange.max , effectiveRange: &nsRange) as? UIColor
+            
+            if toggleFirstAttribute == UIColor.placeHolderColor,
+               textView.selectedRange == NSRange(location: paragraphRange.location, length: 0){
+                textView.selectedRange = NSMakeRange(paragraphRange.location + 1, 0)
+            }
+            
+            if let toggleForeGround = toggleParagraphattribute,
+            toggleForeGround == UIColor.placeHolderColor{
+                textView.selectedRange = NSMakeRange(paragraphRange.location + 1, 0)
+                
+            }else{
+                
+            }
+            return
+        }
+
+        if seletedForeGround == UIColor.placeHolderColor{
+            textView.selectedRange = NSMakeRange(paragraphRange.location, 0)
+            return
+            
+        }
+        
+        if textView.attributedText.string == NSAttributedString.titleAttributeString.string{
+            textView.selectedRange = NSMakeRange(0, 0)
+            return
+        }
     }
     
     func textViewDidChange() {
@@ -219,9 +268,9 @@ extension PageVCViewModel: PageTextViewInput{
         
         let paragraphRange = textView.getParagraphRange(range)
         
-        textView.typingAttributes = pageVC!.defaultAttribute
+        textView.typingAttributes = NSAttributedString.Key.defaultAttribute
         if paragraphRange.length == 0 {
-            textView.typingAttributes = pageVC!.defaultAttribute
+            textView.typingAttributes = NSAttributedString.Key.defaultAttribute
             return true
         }
         

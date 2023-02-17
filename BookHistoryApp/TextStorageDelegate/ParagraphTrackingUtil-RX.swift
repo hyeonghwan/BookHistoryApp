@@ -64,6 +64,7 @@ extension Reactive where Base: ParagraphTrackingUtility{
         attributeArray.forEach{ value in
             print("value[0][.blockType] : \(value[0][.blockType])")
             print("value[0][.blockType] : \((value[0][.paragraphStyle] as! NSParagraphStyle).headIndent)")
+            print("value[0][.blockType] : \((value[0][.foregroundColor] as! UIColor))")
             print("--------------------------------------------")
         }
         

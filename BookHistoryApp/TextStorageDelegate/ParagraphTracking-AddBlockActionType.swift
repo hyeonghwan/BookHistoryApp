@@ -29,12 +29,12 @@ extension ParagraphTrackingUtility: Add_Init_ToggleActionType{
     public func addToggleWhenFirstInit(_ insertIndex: Int,
                                        _ count: Int,
                                        _ attributesString: NSAttributedString) -> NSAttributedString{
-       
-        let plusIndex =  (insertIndex < (count - 1)) ? 1 : 2
-       
+        
+        print("toggleWhenInit : \(attributesString.string)")
+        print("toggleWhenInit : \(attributesString.string.count)")
        return insertingToggleAttachment(attString: attributesString,
-                                        attributes: NSAttributedString.Key.toggleAttributes,
-                                        position: plusIndex - 1,
+                                        attributes: nil,
+                                        position: 0,
                                         index: insertIndex)
     }
 }
@@ -44,11 +44,14 @@ extension ParagraphTrackingUtility: Add_Init_TextHeadSymbolType{
     public func addTextHeadSymbolWhenFirstInit(_ insertIndex: Int,
                                                _ count: Int,
                                                _ attributesString: NSAttributedString) -> NSAttributedString{
-        let plusIndex =  (insertIndex < (count - 1)) ? 1 : 2
+        
+        
+        print("textHeadWhenInit2 : \(attributesString.string)")
+        print("textHeadWhenInit2 : \(attributesString.string.count)")
         
         return insertingTextHeadSymbolListAttachment(attributesString,
-                                                     attributes: NSAttributedString.Key.textHeadSymbolListAttributes,
-                                                     plusIndex - 1,
+                                                     attributes: nil,
+                                                     0,
                                                      insertIndex)
     }
 }
@@ -89,6 +92,28 @@ extension ParagraphTrackingUtility{
             break
         }
     }
+    
+    func resetPlace(_ attributes: [NSAttributedString.Key : Any], _ location: Int){
+        let subject = PublishSubject<Int>()
+        editObserver = subject.asObserver()
+        print("editObserver setting")
+        subject
+            .observe(on: MainScheduler.instance)
+            .take(4)
+            .subscribe(onNext: { [weak self] index in
+                guard let self = self else {return}
+                
+                let paragraphRange = self.ranges[index]
+                print("paragrphRange for change : \(paragraphRange)")
+                
+                self.paragraphStorage?.beginEditing()
+                self.paragraphStorage?.addAttributes(attributes, range: NSRange(location: paragraphRange.location, length: paragraphRange.length))
+                
+                self.paragraphStorage?.endEditing()
+                
+            }).disposed(by: disposeBag)
+        
+    }
 
     
     private func addTitle(_ textStyle: UIFont.TextStyle,_ range: NSRange){
@@ -122,105 +147,6 @@ extension ParagraphTrackingUtility{
                                       at: insertedRange.max)
         self.paragraphStorage?.endEditing()
         
-        
-    }
-    
-    func addTextHeadSymbolList(_ range: NSRange, _ text: String? = nil) {
-
-        print("rangeS: \(self.ranges)")
-        print("seletedrange: \(range)")
-        print("self.paragraph: \(self.paragraphs)")
-        self.paragraphs.forEach{ va in
-            
-            print("vavavava: \(va.count)")
-            if va.contains(where: { $0 == "\u{fffc}"
-            }){
-                print("\(va) is contain ufffc")
-            }
-        }
-        guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
-       
-        let insertedRange = ranges[currentIndex]
-        
-        if let restText = text{
-            createTextHeadSymbolListAttributedString(restText, currentIndex, insertedRange)
-            return
-        }
-        
-        createTextHeadSymbolListAttributedString(nil,currentIndex, insertedRange)
-        
-    }
-    private func createTextHeadSymbolListAttributedString(_ text: String? = nil,
-                                                          _ index: Int,
-                                                          _ range: NSRange) {
-        
-        let plusIndex =  (index < (self.ranges.count - 1)) ? 1 : 2
-        let insertedRange = range
-        
-        var togglString: NSAttributedString
-        var resultString: NSAttributedString
-        
-        if let text = text{
-            togglString = NSAttributedString(string: "\(text)", attributes: NSAttributedString.Key.toggleAttributes)
-            resultString = insertingTextHeadSymbolListAttachment(togglString, attributes: NSAttributedString.Key.toggleAttributes, plusIndex - 1,index)
-        }else{
-            if plusIndex == 1{
-                togglString = NSAttributedString(string: "리스트\n", attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes)
-            }else{
-                togglString = NSAttributedString(string: "\n리스트", attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes)
-            }
-            resultString = insertingTextHeadSymbolListAttachment(togglString,
-                                                                 attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes,
-                                                                 plusIndex - 1,
-                                                                 index)
-            
-        }
-        
-        self.paragraphStorage?.beginEditing()
-        self.paragraphStorage?.insert(resultString, at: insertedRange.max)
-        self.paragraphStorage?.endEditing()
-        
-        self.paragrphTextView?.selectedRange = NSRange(location: insertedRange.max + plusIndex, length: 0)
-        
-    }
-    private func insertingTextHeadSymbolListAttachment(_ attString: NSAttributedString ,
-                                           attributes: [NSAttributedString.Key : Any],
-                                           _ position: Int,
-                                           _ index : Int) -> NSAttributedString{
-//        let blockObjectIndex = index + 1
-        
-        let textHeadSymbolView = TextHeadSymbolView(frame: .zero)
-        
-        let attachment = SubviewTextAttachment(view: textHeadSymbolView,
-                                               size: CGSize(width: 35, height: 13))
-        
-        
-        var result = attString.insertingAttachment(attachment, at: position)
-        print("result: \(result)")
-        result = result.addingAttributes(attributes)
-        return result
-    }
-    
-    
-    func resetPlace(_ attributes: [NSAttributedString.Key : Any], _ location: Int){
-        let subject = PublishSubject<Int>()
-        editObserver = subject.asObserver()
-        print("editObserver setting")
-        subject
-            .observe(on: MainScheduler.instance)
-            .take(4)
-            .subscribe(onNext: { [weak self] index in
-                guard let self = self else {return}
-                
-                let paragraphRange = self.ranges[index]
-                print("paragrphRange for change : \(paragraphRange)")
-                
-                self.paragraphStorage?.beginEditing()
-                self.paragraphStorage?.addAttributes(attributes, range: NSRange(location: paragraphRange.location, length: paragraphRange.length))
-                
-                self.paragraphStorage?.endEditing()
-                
-            }).disposed(by: disposeBag)
         
     }
     
@@ -283,10 +209,30 @@ extension ParagraphTrackingUtility {
         
     }
     private func insertingToggleAttachment(attString: NSAttributedString ,
-                                           attributes: [NSAttributedString.Key : Any],
+                                           attributes: [NSAttributedString.Key : Any]? = nil,
                                            position: Int,
                                            index : Int) -> NSAttributedString{
         let blockObjectIndex = index + 1
+        var newAttributes: [NSAttributedString.Key : Any] = [:]
+        var attString = attString
+        if let att = attributes{
+            newAttributes = att
+        }else{
+//            newAttributes = attString.allAttributes
+            
+            let (attributes_S,string_S, _): SeparatedNSAttributedString = attString.separatedNSAttributeString()
+            let mutableString: NSMutableAttributedString = NSMutableAttributedString(string: "")
+            
+            string_S.enumerated().forEach{ index ,str in
+               let nsAttributedString: NSAttributedString = NSAttributedString(string: str, attributes: attributes_S[index])
+               mutableString.append(nsAttributedString)
+           }
+            attString = mutableString
+            attributes_S.forEach{
+                print("$0[.blockType] : \($0[.blockType])")
+            }
+        }
+    
         
         let dependency = BlockToggleDependency(toggleAction: self, firstInitIndex: blockObjectIndex)
         
@@ -297,9 +243,115 @@ extension ParagraphTrackingUtility {
                                                size: CGSize(width: 35, height: 13))
         
         
-        var result = attString.insertingAttachment(attachment, at: position)
+        var result = attString.insertingAttachment(type: .toggleList, attachment: attachment, at: position)
         
-        result = result.addingAttributes(attributes)
+        result = result.addingAttributes(newAttributes)
+        print("resultString: \(result.string)")
+        print("resultString: \(result.string.count)")
+        print("resultString: \(result)")
+        return result
+    }
+}
+
+//MARK: - addTextHeadSymbolList logic
+extension ParagraphTrackingUtility{
+    func addTextHeadSymbolList(_ range: NSRange, _ text: String? = nil) {
+
+        print("rangeS: \(self.ranges)")
+        print("seletedrange: \(range)")
+        print("self.paragraph: \(self.paragraphs)")
+        self.paragraphs.forEach{ va in
+            
+            print("vavavava: \(va.count)")
+            if va.contains(where: { $0 == "\u{fffc}"
+            }){
+                print("\(va) is contain ufffc")
+            }
+        }
+        guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
+       
+        let insertedRange = ranges[currentIndex]
+        
+        if let restText = text{
+            createTextHeadSymbolListAttributedString(restText, currentIndex, insertedRange)
+            return
+        }
+        
+        createTextHeadSymbolListAttributedString(nil,currentIndex, insertedRange)
+        
+    }
+    private func createTextHeadSymbolListAttributedString(_ text: String? = nil,
+                                                          _ index: Int,
+                                                          _ range: NSRange) {
+        
+        let plusIndex =  (index < (self.ranges.count - 1)) ? 1 : 2
+        let insertedRange = range
+        
+        var togglString: NSAttributedString
+        var resultString: NSAttributedString
+        
+        if let text = text{
+            togglString = NSAttributedString(string: "\(text)", attributes: NSAttributedString.Key.toggleAttributes)
+            resultString = insertingTextHeadSymbolListAttachment(togglString, attributes: NSAttributedString.Key.toggleAttributes, plusIndex - 1,index)
+        }else{
+            if plusIndex == 1{
+                togglString = NSAttributedString(string: "리스트\n", attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes)
+            }else{
+                togglString = NSAttributedString(string: "\n리스트", attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes)
+            }
+            resultString = insertingTextHeadSymbolListAttachment(togglString,
+                                                                 attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes,
+                                                                 plusIndex - 1,
+                                                                 index)
+            
+        }
+        
+        self.paragraphStorage?.beginEditing()
+        self.paragraphStorage?.insert(resultString, at: insertedRange.max)
+        self.paragraphStorage?.endEditing()
+        
+        self.paragrphTextView?.selectedRange = NSRange(location: insertedRange.max + plusIndex, length: 0)
+        
+    }
+    private func insertingTextHeadSymbolListAttachment(_ attString: NSAttributedString ,
+                                           attributes: [NSAttributedString.Key : Any]?,
+                                           _ position: Int,
+                                           _ index : Int) -> NSAttributedString{
+//        let blockObjectIndex = index + 1
+        var newAttributes: [NSAttributedString.Key : Any] = [:]
+        var attString = attString
+        
+        if let att = attributes{
+            newAttributes = att
+        }else{
+//            newAttributes = attString.allAttributes
+            
+            let (attributes_S,string_S, _): SeparatedNSAttributedString = attString.separatedNSAttributeString()
+            let mutableString: NSMutableAttributedString = NSMutableAttributedString(string: "")
+            
+            string_S.enumerated().forEach{ index ,str in
+                
+               let nsAttributedString: NSAttributedString = NSAttributedString(string: str, attributes: attributes_S[index])
+               mutableString.append(nsAttributedString)
+           }
+            
+            attString = mutableString
+        }
+        
+        let textHeadSymbolView = TextHeadSymbolView(frame: .zero)
+        
+        let attachment = SubviewTextAttachment(view: textHeadSymbolView,
+                                               size: CGSize(width: 35, height: 13))
+        
+        print("attttttttt: \(attString)")
+        print("attString.string : \(attString.string)")
+        print("")
+        var result = attString.insertingAttachment(type: .textHeadSymbolList, attachment: attachment, at: position)
+        print("result: \(result)")
+        result = result.addingAttributes(newAttributes)
+        print("resultString: \(result.string)")
+        print("resultString: \(result.string.count)")
+        print("resultString: \(result)")
         return result
     }
 }

@@ -19,10 +19,10 @@ extension NSAttributedString.Key {
     
     static let blockType = NSAttributedString.Key("BlockType")
     
-    static let defaultAttribute = [NSAttributedString.Key.backgroundColor : UIColor.clear,
-                          NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
-                          NSAttributedString.Key.foregroundColor : UIColor.label,
-                                   .paragraphStyle : NSParagraphStyle.defaultParagraphStyle()]
+    static let defaultAttribute: [NSAttributedString.Key : Any] = [NSAttributedString.Key.backgroundColor : UIColor.clear,
+                                                                   NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+                                                                   NSAttributedString.Key.foregroundColor : UIColor.label,
+                                                                   .paragraphStyle : NSParagraphStyle.defaultParagraphStyle()]
     
     static let defaultParagraphAttribute: [NSAttributedString.Key : Any] =
     [NSAttributedString.Key.blockType : CustomBlockType.Base.paragraph,
@@ -58,7 +58,7 @@ extension NSAttributedString.Key {
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.placeHolderColor,
      .paragraphStyle : NSParagraphStyle.toggleChildIndentParagraphStyle()]
-   
+    
     
     
     static let toggleAttributes: [NSAttributedString.Key : Any] =
@@ -86,12 +86,12 @@ extension NSAttributedString.Key {
     
     
     static func getPlaceTitleAttribues(_ fontStyle: UIFont.TextStyle) -> [NSAttributedString.Key : Any]{
-    
+        
         let font = UIFont.preferredFont(forTextStyle: fontStyle, familyName: UIFont.appleFontFamiliyName)
         
         var result : [NSAttributedString.Key : Any] = [.font : font,
-                       .foregroundColor : UIColor.placeHolderColor,
-                       .paragraphStyle : NSParagraphStyle.titleParagraphStyle()]
+                                                       .foregroundColor : UIColor.placeHolderColor,
+                                                       .paragraphStyle : NSParagraphStyle.titleParagraphStyle()]
         switch fontStyle{
         case .title1:
             result[.blockType] = CustomBlockType.Base.title1
@@ -114,7 +114,55 @@ extension NSAttributedString.Key {
 }
 
 extension NSAttributedString{
+    static var titleAttributeString = NSAttributedString(string: "제목을 입력해주세요",
+                                                         attributes: NSAttributedString.Key.defaultAttribute)
+    
+    var allAttributes: [NSAttributedString.Key : Any]{
+        get{
+            self.attributes(at: self.range.location, effectiveRange: nil)
+        }
+    }
+    
+    var separatedAttributed: [[NSAttributedString.Key : Any]] {
+        return separteParagraphAttributes()
+    }
+    
+    func separatedNSAttributeString() -> SeparatedNSAttributedString{
+        var (att_S, str_S, _): SeparatedNSAttributedString = ([],[],CustomBlockType.Base.none)
+        self.enumerateAttributes(in: self.range,
+                                 options: .longestEffectiveRangeNotRequired){
+            attributes, subRange, pointer in
+            
+            print("separatedNSAttributeString : \(attributes[.blockType])")
+            let subText = self.attributedSubstring(from: subRange)
+            print("separatedNSAttributeString2 : \(subText.string)")
+            if subText.string != String.newLineString(){
+                att_S.append(attributes)
+                str_S.append(subText.string)
+                
+            }else{
+                var lastString = str_S.removeLast()
+                lastString.append(String.newLineString())
+                str_S.append(lastString)
+                
+                pointer.pointee = true
+            }
+        }
+        return (att_S, str_S, .none)
+    }
+    
+    
+    func separteParagraphAttributes() -> [[NSAttributedString.Key : Any]]{
+        var resultAttributes: [[NSAttributedString.Key : Any]] = []
+        self.enumerateAttributes(in: self.range,
+                                 options: .longestEffectiveRangeNotRequired){
+            attributes, subRange, pointer in
+            resultAttributes.append(attributes)
+        }
+        return resultAttributes
+    }
 }
+
 ///* let 2nd tuple be an array of tuples itself */
 //extension NSAttributedString {
 //    func getAttributes() -> [(NSRange, [(String, AnyObject)])] {
