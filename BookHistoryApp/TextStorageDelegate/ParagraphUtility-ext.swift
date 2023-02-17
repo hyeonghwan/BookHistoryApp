@@ -39,6 +39,7 @@ extension ParagraphTrackingUtility: BlockToggleAction{
             .subscribe(onNext: { [weak self] in
                 guard let self = self else {return}
                 guard let firstInitIndex = button.firstInitIndex else {return}
+                
                 button.object = self.blockObjects[firstInitIndex]
                 
                 toggleDisposeBag = DisposeBag()

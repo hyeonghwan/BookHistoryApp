@@ -123,8 +123,6 @@ class PageVCViewModel {
 }
 
 extension PageVCViewModel: PageVCValidDelegate{
-    
-    
 
     var pageVC: PageVC?{
         get{
@@ -221,12 +219,18 @@ extension PageVCViewModel: PageTextViewInput{
         
         let paragraphRange = textView.getParagraphRange(range)
         
+        textView.typingAttributes = pageVC!.defaultAttribute
         if paragraphRange.length == 0 {
             textView.typingAttributes = pageVC!.defaultAttribute
             return true
         }
-        let blockAttribute = CustomBlockType.Base.paragraph
         
+        let blockAttribute = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil) as? CustomBlockType.Base
+        
+        if blockAttribute == nil{
+            textView.textStorage.addAttribute(.blockType, value: CustomBlockType.Base.paragraph, range: paragraphRange)
+        }
+
         //toggle place holder detect
         guard let paragraphValidator = self.paragraphValidator else {return false}
         

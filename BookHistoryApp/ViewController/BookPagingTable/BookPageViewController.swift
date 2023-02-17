@@ -133,11 +133,66 @@ class BookPagingViewController: UIViewController {
 //        print("some: \(some)")
 //    }
 //    var t : SomeStruct?
+    func replayTest(){
+        let replay = ReplaySubject<[Int]>.create(bufferSize: 3)
+        
+        replay.onNext([1,2,3])
+        replay.onNext([4,5,6])
+        replay.onNext([47,8,9])
+        
+        replay.subscribe(onNext: { print("adf : \($0)")},
+                         onError: { _ in print("error")},
+                         onCompleted: {  print("complted") },
+                         onDisposed: { print("diposed")} )
+        
+        replay.onNext([100,2000,3000])
+        
+        replay.subscribe(onNext: { print("adasdf : \($0)")},
+                         onError: { _ in print("error")},
+                         onCompleted: {  print("complted") },
+                         onDisposed: { print("diposed")} )
+        
+        replay.onNext([100,12412150,125121])
+    }
+    func behaviorTest() {
+        let behavior = BehaviorSubject<[Int]>(value: [1,2,3])
+        
+        behavior.subscribe(onNext: {
+            print("one :\($0)")
+        },onError: {_ in
+            print("one onError")
+        },onCompleted: {
+            print("one complted")
+        },onDisposed: {
+            print("one dispose")
+        })
+        
+        behavior.onNext([1])
+        behavior.onNext([1,3])
+//        behavior.onError(CoreDataError.entityNameError)
+        behavior.onCompleted()
+        
+        behavior.onNext([1,6])
+        
+        behavior.subscribe(onNext: {
+            print("two : \($0)")
+        },onError: {_ in
+            print("two onError")
+        },onCompleted: {
+            print("two complted")
+        },onDisposed: {
+            print("two dispose")
+        })
+        behavior.onNext([123,41,24,1])
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 //        t = SomeStruct()
 //        test(t!)
+        
+        replayTest()
 //
+        behaviorTest()
         print("\(("\u{fffc}리스트\n").count)")
         print("\(("\u{fffc}리스트\n").length)")
         print("\u{fffc}리스트\n")

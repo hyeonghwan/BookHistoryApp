@@ -244,7 +244,6 @@ extension SecondViewController: UIGestureRecognizerDelegate{
 
 extension SecondViewController: UITextViewDelegate {
     func textViewDidChangeSelection(_ textView: UITextView) {
-        return
         
         let paragraphRange = self.textView.getParagraphRange(textView.selectedRange)
         
@@ -261,7 +260,6 @@ extension SecondViewController: UITextViewDelegate {
         }
         
         guard let seletedForeGround = attribute as? UIColor else {return}
-        
         
     
         if let blockAttribute = blockAttribute as? CustomBlockType.Base ,

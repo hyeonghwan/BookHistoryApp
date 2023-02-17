@@ -236,31 +236,12 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
         
         
         
-        print("serialQueue: task : 4")
+        
         group.notify(queue: serialQueue) { [weak self] in
             guard let self = self else {return}
-            print("serialQueue: task end")
-//            if firstInit == true{
-//                blockTypes.enumerated().map{ index , value in
-//                    switch value{
-//                    case .textHeadSymbolList:
-//                        break
-//                    case .toggleList:
-//                        break
-//                    default:
-//                        break
-//                    }
-//
-//                }
-//            }
+            self.changeFinishObserver?.onNext(())
         }
-        print("hello")
         
-        print("paragraphRange: \(ranges)")
-        
-        
-        
-        changeFinishObserver?.onNext(())
     }
     
     func editBlock(from separated: SeparatedNSAttributedString, edited index: Int){

@@ -32,11 +32,11 @@ class ParagraphValidator: ParagraphValidatorProtocol{
         
     }
     
-    func isValidBlock(_ text: String,_ paragraphRange: NSRange,_ type: CustomBlockType.Base?) -> Bool {
+    func isValidBlock(_ text: String,_ paragraphRange: NSRange,_ type: CustomBlockType.Base? = .paragraph) -> Bool {
         guard let blockType = type else {return true}
         switch blockType {
         case .paragraph:
-            return true
+            return paragraphTextValid(text, paragraphRange)
         case .page:
             break
         case .todoList:
@@ -83,6 +83,11 @@ extension ParagraphValidator{
         let replaceMent: String
         let paragraphRange: NSRange
         let type: CustomBlockType.Base
+    }
+    
+    private func paragraphTextValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
+        guard let pageViewModel = self.pageViewModel else {return false}
+        return true
     }
     
     
