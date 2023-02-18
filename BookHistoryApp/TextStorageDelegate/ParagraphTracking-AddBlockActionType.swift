@@ -243,7 +243,10 @@ extension ParagraphTrackingUtility {
                                                size: CGSize(width: 35, height: 13))
         
         
-        var result = attString.insertingAttachment(type: .toggleList, attachment: attachment, at: position)
+        var result = attString.insertingAttachment(type: .toggleList,
+                                                   attachment: attachment,
+                                                   at: position,
+                                                   with: NSParagraphStyle.toggleHeadIndentParagraphStyle())
         
         result = result.addingAttributes(newAttributes)
         print("resultString: \(result.string)")
@@ -328,7 +331,9 @@ extension ParagraphTrackingUtility{
             
             let (attributes_S,string_S, _): SeparatedNSAttributedString = attString.separatedNSAttributeString()
             let mutableString: NSMutableAttributedString = NSMutableAttributedString(string: "")
-            
+            attributes_S.forEach{
+                print("$0[.paragraphStyle] : \($0[.paragraphStyle])")
+            }
             string_S.enumerated().forEach{ index ,str in
                 
                let nsAttributedString: NSAttributedString = NSAttributedString(string: str, attributes: attributes_S[index])
@@ -346,7 +351,10 @@ extension ParagraphTrackingUtility{
         print("attttttttt: \(attString)")
         print("attString.string : \(attString.string)")
         print("")
-        var result = attString.insertingAttachment(type: .textHeadSymbolList, attachment: attachment, at: position)
+        var result = attString.insertingAttachment(type: .textHeadSymbolList,
+                                                   attachment: attachment,
+                                                   at: position,
+                                                   with: NSParagraphStyle.toggleHeadIndentParagraphStyle())
         print("result: \(result)")
         result = result.addingAttributes(newAttributes)
         print("resultString: \(result.string)")

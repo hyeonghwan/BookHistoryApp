@@ -8,6 +8,20 @@
 import Foundation
 
 extension String {
+    
+    func isBackSpaceKey() -> Bool{
+        let char = self.cString(using: String.Encoding.utf8)
+        let isBackSpace: Int = Int(strcmp(char, "\u{8}"))
+        if isBackSpace == -8{
+            return true
+        }
+        return false
+    }
+    
+    func isNewLine() -> Bool{
+        return self == "\n"
+    }
+    
     static func newLineString() -> String{
         return "\n"
     }

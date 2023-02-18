@@ -59,12 +59,16 @@ extension NSAttributedString {
 
 extension NSMutableAttributedString {
 
-    func insertAttachment(type: CustomBlockType.Base,attachment: NSTextAttachment, at index: Int, with paragraphStyle: NSParagraphStyle? = NSParagraphStyle()) {
+    func insertAttachment(type: CustomBlockType.Base,
+                          attachment: NSTextAttachment,
+                          at index: Int,
+                          with paragraphStyle: NSParagraphStyle? = NSParagraphStyle()) {
         let plainAttachmentString = NSAttributedString(attachment: attachment)
         
         var attributes: [NSAttributedString.Key : Any] = [:]
         attributes = NSAttributedString.Key.defaultAttribute
         attributes[.blockType] = type
+        attributes[.paragraphStyle] = paragraphStyle
         
         if (paragraphStyle != nil) {
             let attachmentString = plainAttachmentString

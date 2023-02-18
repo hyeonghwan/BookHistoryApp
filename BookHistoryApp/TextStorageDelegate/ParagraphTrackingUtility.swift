@@ -128,7 +128,13 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
             let attributedString = NSMutableAttributedString(attributedString: NSAttributedString(string: ""))
             paragraphs_d.enumerated().forEach{ index_element, string in
                 
-                let attributes = newAttributes[paragraph_index][index_element]
+                var attributes: [NSAttributedString.Key : Any] = [:]
+                
+                if paragraph_index > newAttributes.count - 1{
+                    attributes = NSAttributedString.Key.defaultAttribute
+                }else{
+                    attributes = newAttributes[paragraph_index][index_element]
+                }
                 
                 let att = NSAttributedString(string: string, attributes: attributes)
                 attributedString.append(att)
@@ -218,6 +224,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                     self.blockTypes.remove(at: index)
                     self.blockObjects.remove(at: index)
                     //              self.  attributes.remove(at: index)
+                    
                     self.removals.append(index)
                     
                 case .editedParagraph(index: let index, descriptor: let paragraphDescriptor):
@@ -274,6 +281,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
             }else{
                 // text fix
                 blockObjects[index]?.editTextElement(strs,atts)
+                blockObjects[index]?.editAttributes(atts)
                 newParagraphs[index] = strs
             }
             

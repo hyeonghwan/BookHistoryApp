@@ -7,11 +7,61 @@
 
 import UIKit
 
+extension UITextView{
+    func rangeFromTextRange(textRange:UITextRange) -> NSRange {
+        let location:Int = self.offset(from: self.beginningOfDocument, to: textRange.start)
+        let length:Int = self.offset(from: textRange.start, to: textRange.end)
+           return NSMakeRange(location, length)
+       }
+    
+    
+    func getParagraphRange(_ range: NSRange) -> NSRange {
+        let allText: String = self.text
+        let composeText: NSString = allText as NSString
+        
+        let paragraphRange = composeText.paragraphRange(for: range)
+        return paragraphRange
+    }
+    
+    func getCurrentParagraphRange() -> NSRange {
+        let allText: String = self.text
+        let composeText: NSString = allText as NSString
+        
+        let paragraphRange = composeText.paragraphRange(for: self.selectedRange)
+        return paragraphRange
+    }
+    
+    
+    /// seleted range 에서 newLine이 입력 되었을때, 나머지 텍스트 부분 을 구하는 함수
+    /// - Returns: 나머지 text
+    func getTheRestText(paragrah range: NSRange, restRange restRange: NSRange) -> String?{
+        let restRange = restRange
+        if let range = self.textRangeFromNSRange(range: restRange),
+           let restText = self.text(in: range){
+            return restText
+        }else{
+            return nil
+        }
+    }
+    
+    func getTheRestRange(range: NSRange) -> NSRange{
+        let currentPosition = self.selectedRange
+        let paragraphRange = range
+        let restLength = paragraphRange.max - currentPosition.location
+        
+        let restRange = NSRange(location: currentPosition.location, length: restLength)
+        return restRange
+    }
+}
+
 extension UITextView {
     func settingCusor(_ color: UIColor){
         UITextView.appearance().tintColor = color
     }
     
+    func getTextCount() -> Int{
+        return self.text.count
+    }
 }
 
 extension UITextView{

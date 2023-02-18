@@ -42,11 +42,11 @@ class ParagraphValidator: ParagraphValidatorProtocol{
         case .todoList:
             break
         case .title1:
-            break
+            return titleValid(type:.title1,text: text, at: paragraphRange)
         case .title2:
-            break
+            return titleValid(type:.title2,text: text, at: paragraphRange)
         case .title3:
-            break
+            return titleValid(type:.title3,text: text, at: paragraphRange)
         case .graph:
             break
         case .textHeadSymbolList:
@@ -72,9 +72,11 @@ class ParagraphValidator: ParagraphValidatorProtocol{
     func isValidSelection() {
         
     }
-    
 }
 
+
+
+//MARK: - ParagraphValid
 extension ParagraphValidator{
     
     struct TextToValidData{
@@ -89,8 +91,27 @@ extension ParagraphValidator{
         guard let pageViewModel = self.pageViewModel else {return false}
         return true
     }
-    
-    
+}
+
+//MARK: - TitleValid
+extension ParagraphValidator{
+    private func titleValid(type: CustomBlockType.Base,text: String,at paragraphRange: NSRange) -> Bool{
+        guard let pageViewModel = self.pageViewModel else {return false}
+        if pageViewModel.replaceBlockAttribute(text, paragraphRange, type){
+            
+            
+            
+            
+            
+            
+        }
+        
+        return false
+    }
+}
+
+//MARK: - TextHeadSymbolListValid
+extension ParagraphValidator{
     private func textHeadSymbolListValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
         guard let pageViewModel = self.pageViewModel else {return false}
         if pageViewModel.replaceBlockAttribute(text,paragraphRange,.textHeadSymbolList){
@@ -107,7 +128,10 @@ extension ParagraphValidator{
         }
         return false
     }
-    
+}
+
+//MARK: - ToggleValid
+extension ParagraphValidator{
     private func toggleValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
         guard let pageViewModel = self.pageViewModel else {return false}
         if pageViewModel.replaceBlockAttribute(text,paragraphRange,.toggleList){

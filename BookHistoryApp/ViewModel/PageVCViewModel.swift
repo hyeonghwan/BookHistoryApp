@@ -169,7 +169,6 @@ extension PageVCViewModel: PageVCValidDelegate{
         }
         
         if (restText.length == 3 && text == ""){
-            
             textView.textStorage.beginEditing()
             textView.textStorage.replaceCharacters(in: NSRange(location: paragraphRange.location + 1,
                                                                length: paragraphRange.length - 2),
@@ -280,6 +279,7 @@ extension PageVCViewModel: PageTextViewInput{
             textView.textStorage.addAttribute(.blockType, value: CustomBlockType.Base.paragraph, range: paragraphRange)
         }
 
+        
         //toggle place holder detect
         guard let paragraphValidator = self.paragraphValidator else {return false}
         
@@ -445,7 +445,6 @@ extension PageVCViewModel: PageVCDependencyInput{
         let customTextContainer = CustomTextContainer(size: .zero)
         
         paragraphTextStorage.addLayoutManager(layoutManager)
-        
         layoutManager.addTextContainer(customTextContainer)
         
         let textView = PageTextView(frame:.zero,

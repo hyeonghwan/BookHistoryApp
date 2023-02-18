@@ -7,6 +7,11 @@
 
 import UIKit
 
+extension UIColor{
+    func isPlaceHolder() -> Bool{
+        return self == UIColor.placeHolderColor
+    }
+}
 enum Color: String {
     case placeHolder
     case basic
@@ -141,3 +146,4 @@ extension Color{
     }
 }
 extension Color: Codable{}
+

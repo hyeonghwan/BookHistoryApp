@@ -260,7 +260,6 @@ enum CustomBlockType{
                     font = font.setBold()
                 }
             }
-            
             attribute[.font] = font
             if let base = Color.Base(rawValue: annotations.color),
             let color = Color(rawValue: base.rawValue)?.create{

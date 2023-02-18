@@ -141,9 +141,11 @@ extension NSAttributedString{
                 str_S.append(subText.string)
                 
             }else{
-                var lastString = str_S.removeLast()
-                lastString.append(String.newLineString())
-                str_S.append(lastString)
+                if !str_S.isEmpty{
+                    var lastString = str_S.removeLast()
+                    lastString.append(String.newLineString())
+                    str_S.append(lastString)
+                }
                 
                 pointer.pointee = true
             }
