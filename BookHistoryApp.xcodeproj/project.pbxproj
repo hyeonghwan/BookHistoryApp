@@ -17,6 +17,7 @@
 		9601D0C9295332730069EF58 /* ParagraphTrackingUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9601D0C8295332730069EF58 /* ParagraphTrackingUtility.swift */; };
 		9601D0D12953364B0069EF58 /* ParagraphTextStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9601D0D02953364B0069EF58 /* ParagraphTextStorageTests.swift */; };
 		96029DEF29A105A30067D00A /* NSRange-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96029DEE29A105A30067D00A /* NSRange-Ext.swift */; };
+		96029DF229A249B60067D00A /* PageValidDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96029DF129A249B60067D00A /* PageValidDelegate.swift */; };
 		96102667298F91FA00D286D1 /* PageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96102666298F91FA00D286D1 /* PageModel.swift */; };
 		9610266B2991038E00D286D1 /* ParagraphTrackingUtil-RX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9610266A2991038E00D286D1 /* ParagraphTrackingUtil-RX.swift */; };
 		9610266D29910F9400D286D1 /* BlockValueType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9610266C29910F9400D286D1 /* BlockValueType.swift */; };
@@ -156,6 +157,7 @@
 		9601D0CE2953364B0069EF58 /* BookHistoryAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BookHistoryAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9601D0D02953364B0069EF58 /* ParagraphTextStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParagraphTextStorageTests.swift; sourceTree = "<group>"; };
 		96029DEE29A105A30067D00A /* NSRange-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSRange-Ext.swift"; sourceTree = "<group>"; };
+		96029DF129A249B60067D00A /* PageValidDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageValidDelegate.swift; sourceTree = "<group>"; };
 		96102666298F91FA00D286D1 /* PageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageModel.swift; sourceTree = "<group>"; };
 		9610266A2991038E00D286D1 /* ParagraphTrackingUtil-RX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ParagraphTrackingUtil-RX.swift"; sourceTree = "<group>"; };
 		9610266C29910F9400D286D1 /* BlockValueType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockValueType.swift; sourceTree = "<group>"; };
@@ -348,6 +350,15 @@
 			path = TextStorageDelegate;
 			sourceTree = "<group>";
 		};
+		96029DF029A2499B0067D00A /* PageViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				965E3BF22997CF150026A301 /* PageVCViewModel.swift */,
+				96029DF129A249B60067D00A /* PageValidDelegate.swift */,
+			);
+			path = PageViewModel;
+			sourceTree = "<group>";
+		};
 		96102665298F91E300D286D1 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -469,7 +480,7 @@
 			isa = PBXGroup;
 			children = (
 				965E3BF62999243A0026A301 /* ParagraphValidator.swift */,
-				965E3BF22997CF150026A301 /* PageVCViewModel.swift */,
+				96029DF029A2499B0067D00A /* PageViewModel */,
 				96CAFA1C296400E100E6D107 /* AccessoryViewModel.swift */,
 				962AA0DC292B8A5A00C2620B /* InputViewModel.swift */,
 				962AA0DE292B97FC00C2620B /* ColorViewModel.swift */,
@@ -963,6 +974,7 @@
 				962AA0CE29237E9C00C2620B /* KeyboardSecondVC-Ext.swift in Sources */,
 				965AED97291E80A9005B616F /* CustomTextStorage.swift in Sources */,
 				9653C55229740AAC00331143 /* BlockObject.swift in Sources */,
+				96029DF229A249B60067D00A /* PageValidDelegate.swift in Sources */,
 				962AA0DD292B8A5A00C2620B /* InputViewModel.swift in Sources */,
 				964F3542297852B000925229 /* RichTextElement.swift in Sources */,
 				964F3561297D756400925229 /* PageTransformer.swift in Sources */,

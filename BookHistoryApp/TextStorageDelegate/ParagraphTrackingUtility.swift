@@ -234,7 +234,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                     //                attributes[index] = allAttributes
                     print("serialQueue: task : 3")
                     self.editions.append(index)
-                    
+                    print("newParagraph: \(self.newParagraphs)")
                 }
             }
         }

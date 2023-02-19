@@ -176,11 +176,13 @@ extension ParagraphTrackingUtility{
             paragraphString = NSAttributedString(string: String.newLineString(),
                                                  attributes: NSAttributedString.Key.defaultAttribute)
         }
+        self.paragrphTextView?.typingAttributes = NSAttributedString.Key.defaultAttribute
+        
         self.paragraphStorage?.beginEditing()
         self.paragraphStorage?.insert(paragraphString, at: insertedRange.max)
         self.paragraphStorage?.endEditing()
         
-        self.paragrphTextView?.selectedRange = NSRange(location: insertedRange.max , length: 0)
+        self.paragrphTextView?.selectedRange = NSRange(location: (insertedRange.max + 1) - paragraphString.length , length: 0)
         
     }
     

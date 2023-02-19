@@ -192,8 +192,6 @@ extension ParagraphTrackingUtility{
         
         textView.selectedRange = NSRange(location: replaceRange.location + text.count, length: 0)
         
-        
-        
         return false
     }
 }
@@ -216,7 +214,7 @@ extension ParagraphTrackingUtility{
         let paragraphRange = range
         
         //toggle,textHeadSymbol 은 첫번째 range 에 NSTextAttachMent를 가지기 때문에 location을 1plus 하였다.
-        let attribute = paragraphTextView.textStorage.attribute(.foregroundColor, at: paragraphRange.location + 1, effectiveRange: nil) as? UIColor
+        let attribute = paragraphTextView.textStorage.attribute(.foregroundColor, at: paragraphRange.location , effectiveRange: nil) as? UIColor
         
         if let toggleForeGround = attribute,
            toggleForeGround.isPlaceHolder(),
@@ -298,14 +296,11 @@ extension ParagraphTrackingUtility{
             
             if let restText = restText,
                restText.isNewLine(){
-                print("restText: \(restText)")
-                print("restText.count: \(restText.count)")
                 addBlockActionPropertyToTextStorage(blockType, paragraphRange, nil)
             }else{
                 if let attribute = attribute,
                    attribute == UIColor.placeHolderColor{
                     addBlockActionPropertyToTextStorage(blockType, paragraphRange, nil)
-                    
                 }else{
                     if let remainText = restText,
                        remainText.isEmpty{

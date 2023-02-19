@@ -29,29 +29,18 @@ class BlockCreateHelper{
         
         print("separated : \(separated)")
         switch type {
-        case .paragraph:
+        case .paragraph,.textHeadSymbolList,.toggleList:
             return makeTextAndChildrenBlockValueObject(type,separated)!
-            
         case .page:
             break
         case .todoList:
             break
-        case .title1:
-            break
-        case .title2:
-            break
-        case .title3:
-            break
+        case .title1,.title2,.title3:
+            return makeHedingBlockValueObject(type,separated)
         case .graph:
             break
-        case .textHeadSymbolList:
-            return makeTextAndChildrenBlockValueObject(type,separated)!
-            
         case .numberList:
             break
-        case .toggleList:
-            return makeTextAndChildrenBlockValueObject(type,separated)!
-            
         case .quotation:
             break
         case .separatorLine:
@@ -106,6 +95,47 @@ class BlockCreateHelper{
                           color: color.rawValue)
     }
     
+    private func makeHedingBlockValueObject(_ type: CustomBlockType.Base,
+                                            _ separted : SeparatedNSAttributes_Strings) -> BlockObject?{
+        let att_s = separted.0
+        let str_s = separted.1
+        
+        let richTextObjects
+        =
+        str_s
+            .map{ value in RawTextElement(content: value , link: nil)}
+            .enumerated()
+            .map{ index, element in
+                let att = att_s[index]
+                let anotations = makeAnnotations(att)
+                return RichTextObject(text: element, element.content!, annotations: anotations)
+            }
+        
+        let value = HeadingBlockValueObject(richText: richTextObjects, color: UIColor.label)
+        
+        let blockType: CustomBlockType
+        
+        switch type {
+        case .title1:
+            blockType = CustomBlockType.title1(value)
+        case .title2:
+            blockType = CustomBlockType.title2(value)
+        case .title3:
+            blockType = CustomBlockType.title3(value)
+        default:
+            return nil
+        }
+        
+        let blockWrapping = BlockTypeWrapping(blockType)
+        
+        //make Block Info
+        let blockInfo = makeBlockInfo(type)
+        
+        let blockObject = BlockObject(blockInfo: blockInfo ,
+                                      object: blockWrapping,
+                                      blockType: blockWrapping.e)
+        return blockObject
+    }
 
     private func makeTextAndChildrenBlockValueObject(_ type: CustomBlockType.Base,
                                                      _ sepatedTuple: SeparatedNSAttributes_Strings) -> BlockObject?{

@@ -51,17 +51,7 @@ protocol PageVCViewModelOutPut{
     var toTextObservable: Observable<BookViewModelData>? { get }
 }
 
-protocol PageVCValidDelegate: AnyObject{
-    var pageVC: PageVC? {get set}
-    func settingValidatorUseCaseDependency(_ validator: ParagraphValidatorProtocol)
-    
-    func getRestRangeAndText(_ paragraphRange: NSRange) -> String?
-    func resetParagraphToPlaceHodlerAttribute(_ data: ParagraphValidator.TextToValidData) -> Bool
-    
-    func replaceBlockAttribute(_ text: String,
-                               _ paragraphRange: NSRange,
-                               _ blockType: CustomBlockType.Base) -> Bool
-}
+
 
 
 
@@ -81,6 +71,18 @@ class PageVCViewModel {
     private let actions: PageViewModelActions
     
     private weak var _pageVC: PageVC?
+    
+    var pageVC: PageVC?{
+        get{
+            if _pageVC == nil {
+                return nil
+            }else{
+                return _pageVC!
+            }
+        }set{
+            _pageVC = newValue
+        }
+    }
     
     var diposeBag: DisposeBag = DisposeBag()
     
@@ -122,66 +124,7 @@ class PageVCViewModel {
     //MARK: - View move func
 }
 
-extension PageVCViewModel: PageVCValidDelegate{
 
-    var pageVC: PageVC?{
-        get{
-            if _pageVC == nil {
-                return nil
-            }else{
-                return _pageVC!
-            }
-        }set{
-            _pageVC = newValue
-        }
-    }
-    
-    func settingValidatorUseCaseDependency(_ validator: ParagraphValidatorProtocol) {
-        self.paragraphValidator = validator
-    }
-    
-    func replaceBlockAttribute(_ text: String, _ paragraphRange: NSRange, _ blockType: CustomBlockType.Base) -> Bool {
-        return contentViewModel.replaceBlockAttribute(text, paragraphRange, blockType)
-    }
-    
-    
-    func getRestRangeAndText(_ paragraphRange: NSRange) -> String?{
-        guard let restRange = pageVC?.textView.textRangeFromNSRange(range: paragraphRange) else {return nil}
-        guard let restText = pageVC?.textView.text(in: restRange) else {return nil}
-        return restText
-    }
-    
-    func resetParagraphToPlaceHodlerAttribute(_ data: ParagraphValidator.TextToValidData) -> Bool{
-        guard let textView = pageVC?.textView else {return false}
-        
-        let restText = data.restText
-        let paragraphRange = data.paragraphRange
-        let text = data.text
-        let replacement = data.replaceMent
-        let type = data.type
-        
-        var attributes: [NSAttributedString.Key : Any] = [:]
-        
-        if type == .textHeadSymbolList{
-            attributes = NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes
-        }else{
-            attributes = NSAttributedString.Key.togglePlaceHolderAttributes
-        }
-        
-        if (restText.length == 3 && text == ""){
-            textView.textStorage.beginEditing()
-            textView.textStorage.replaceCharacters(in: NSRange(location: paragraphRange.location + 1,
-                                                               length: paragraphRange.length - 2),
-                                                   with: NSAttributedString(string: replacement,
-                                                                            attributes: attributes))
-            textView.textStorage.endEditing()
-            
-            textView.selectedRange = NSRange(location: paragraphRange.location + 1, length: 0)
-            return false
-        }
-        return true
-    }
-}
 
 
 extension PageVCViewModel: PageVCViewModelOutPut{
@@ -214,10 +157,6 @@ extension PageVCViewModel: PageTextViewInput{
         guard let paragraphValidator = self.paragraphValidator else { return }
         return paragraphValidator.isValidSelection(textView,paragraphRange)
         
-        if textView.attributedText.string == NSAttributedString.titleAttributeString.string{
-            textView.selectedRange = NSMakeRange(0, 0)
-            return
-        }
     }
     
     func textViewDidChange() {
@@ -231,23 +170,41 @@ extension PageVCViewModel: PageTextViewInput{
         
         let paragraphRange = textView.getParagraphRange(range)
         
-        
-        
         if paragraphRange.length == 0 {
             textView.typingAttributes = NSAttributedString.Key.defaultAttribute
             return true
         }
         
-        let blockAttribute = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil) as? CustomBlockType.Base
+        let blockType = textView.textStorage.attribute(.blockType, at: paragraphRange.location, effectiveRange: nil) as? CustomBlockType.Base
         
-        if blockAttribute == nil{
+        if blockType == nil{
             textView.textStorage.addAttribute(.blockType, value: CustomBlockType.Base.paragraph, range: paragraphRange)
         }
         
-        //toggle place holder detect
+        // validator to verify this paragraphRange is valid
+        // and current Paragraph change attribute and text when invalid block
         guard let paragraphValidator = self.paragraphValidator else {return false}
         
-        return paragraphValidator.isValidBlock(text, paragraphRange, blockAttribute)
+        
+        // is string removeAction or addAction?
+        // remove action verify using isBackSpaceKey method( return type is bool )
+        // and other cases are addAction so validCheck and add text
+        if text.isBackSpaceKey(),
+           textView.selectedRange.isLineChangeRange(compare: paragraphRange){
+            
+            let upParagraphRange = paragraphRange
+            let seletedRange = textView.selectedRange
+            let replaceRange = textView.getParagraphRange(seletedRange)
+            
+            let attributedString = textView.textStorage.attributedSubstring(from: replaceRange)
+            
+            return paragraphValidator.isParagraphRemoveAction(replacement: attributedString,
+                                                              replaceRange: replaceRange,
+                                                              above: upParagraphRange,
+                                                              aboveBlock: blockType)
+        }else{
+            return paragraphValidator.isValidBlock(text, paragraphRange, blockType)
+        }
     }
 }
 

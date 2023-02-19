@@ -9,6 +9,10 @@ import Foundation
 
 extension String {
     
+    var endsWith_Newline: Bool {
+        !(last == nil || last?.isNewline == false)
+    }
+    
     func isBackSpaceKey() -> Bool{
         let char = self.cString(using: String.Encoding.utf8)
         let isBackSpace: Int = Int(strcmp(char, "\u{8}"))

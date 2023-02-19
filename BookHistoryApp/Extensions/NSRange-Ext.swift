@@ -33,4 +33,8 @@ extension NSRange{
         }
         return replaceRange
     }
+    
+    func isLineChangeRange(compare range: NSRange) -> Bool{
+        return self.location == range.max
+    }
 }
