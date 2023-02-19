@@ -176,9 +176,9 @@ extension ParagraphTrackingUtility: BlockToggleAction{
 //MARK: replace Logic
 extension ParagraphTrackingUtility{
     private func replaceParagraph(content text: String,
-                          attributes: [NSAttributedString.Key : Any],
-                          to textView: UITextView,
-                          at replaceRange: NSRange) -> Bool{
+                                  attributes: [NSAttributedString.Key : Any],
+                                  to textView: UITextView,
+                                  at replaceRange: NSRange) -> Bool{
         
         textView.textStorage.beginEditing()
         textView.textStorage.replaceCharacters(in: replaceRange, with: "")
@@ -190,8 +190,10 @@ extension ParagraphTrackingUtility{
                                                                         attributes: attributes))
         textView.textStorage.endEditing()
         
+        textView.selectedRange = NSRange(location: replaceRange.location + text.count, length: 0)
         
-        textView.selectedRange = NSRange(location: replaceRange.location + 1, length: 0)
+        
+        
         return false
     }
 }
@@ -209,7 +211,7 @@ extension ParagraphTrackingUtility{
     
     
     
-    func replaceTitleAttributes(_ text: String,_ range: NSRange,_ fontStyle: UIFont.TextStyle) -> Bool{
+    func replaceTitleAttributes(_ text: String,_ range: NSRange,_ type: CustomBlockType.Base) -> Bool{
         guard let paragraphTextView = self.paragrphTextView else {return false}
         let paragraphRange = range
         
@@ -219,35 +221,46 @@ extension ParagraphTrackingUtility{
         if let toggleForeGround = attribute,
            toggleForeGround.isPlaceHolder(),
            !text.isNewLine(){
-            let replaceRange: NSRange = paragraphRange.toggleReplaceRange(textView: paragraphTextView.getTextCount())
+            let replaceRange: NSRange = paragraphRange.titleReplaceRange(textView: paragraphTextView.getTextCount())
+            
+            let font = UIFont.preferredFont(block: type)
+            let titleAttributes = NSAttributedString.Key.getTitleAttributes(block: type,font: font)
+            
             return self.replaceParagraph(content: text,
-                                         attributes: NSAttributedString.Key.getPlaceTitleAttribues(fontStyle),
+                                         attributes: titleAttributes,
                                          to: paragraphTextView,
                                          at: replaceRange)
         }
+        
         
         if text.isNewLine(){
             let paragraphRange = paragraphTextView.getCurrentParagraphRange()
             let restRange = paragraphTextView.getTheRestRange(range: paragraphRange)
             let restText = paragraphTextView.getTheRestText(paragrah: paragraphRange, restRange: restRange)
+            paragraphTextView.typingAttributes = NSAttributedString.Key.defaultAttribute
             
             if let restText = restText,
                restText.isNewLine(){
                 
+                addBlockActionPropertyToTextStorage(.paragraph, paragraphRange, nil)
+                
             }else{
                 if let attribute = attribute,
                    attribute == UIColor.placeHolderColor{
-                    
-                }
-                    
-                if let restText = restText,
-                   restText.isEmpty{
-                    return true
+                    addBlockActionPropertyToTextStorage(.paragraph, paragraphRange, nil)
                 }else{
-                    
+                    if let restText = restText,
+                       restText.isEmpty{
+                        addBlockActionPropertyToTextStorage(.paragraph, paragraphRange, restText)
+                    }else{
+                        addBlockActionPropertyToTextStorage(.paragraph, paragraphRange, restText)
+                        self.paragraphStorage?.beginEditing()
+                        self.paragraphStorage?.replaceCharacters(in: NSRange(location: restRange.location, length: restRange.length - 1), with: String.emptyString())
+                        self.paragraphStorage?.endEditing()
+                    }
                 }
-                
             }
+            return false
         }
         return true
     }
@@ -285,6 +298,8 @@ extension ParagraphTrackingUtility{
             
             if let restText = restText,
                restText.isNewLine(){
+                print("restText: \(restText)")
+                print("restText.count: \(restText.count)")
                 addBlockActionPropertyToTextStorage(blockType, paragraphRange, nil)
             }else{
                 if let attribute = attribute,

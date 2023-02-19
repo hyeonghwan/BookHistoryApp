@@ -29,7 +29,6 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     weak var paragraphStorage: ParagraphTextStorage? {
         didSet{
             self.paragraphStorage?.delegate = self
-            print("delegateIS didset")
             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
                 self.insertions = []
                 self.removals = []
@@ -111,14 +110,13 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
         var location = 0
         
         return paragraphs.enumerated().map{ index, string -> NSRange in
-            print("paragraphString: \(string)")
-            print("paragraphString: \(string.count)")
             let length: Int = string.length
             let range = NSRange(location: location, length: length)
             location = range.max 
             return range
         }
     }
+    
     var presentedParagraphs: [NSAttributedString] {
         return newPresentedParagraphs
     }
@@ -144,7 +142,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     }
     func insertNSTextAttachMent(_ index: Int,
                                 _ attributedString: NSAttributedString) -> NSAttributedString?{
-        print("insertNSTExtAttachMent: \(attributedString)")
+        
         guard let blocktype = attributedString.attribute(.blockType, at: 0, effectiveRange: nil) as? CustomBlockType.Base else {
             return nil
         }
@@ -154,17 +152,12 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
         case .toggleList:
             self.newParagraphs[index].insert("\u{fffc}", at: 0)
             self.paragraphs[index].insert(Character("\u{fffc}"), at: self.paragraphs[index].startIndex)
-            print("paragraphs toggle: \(self.paragraphs)")
-            print("paragraphs newToggle: \(self.newParagraphs)")
             return addToggleWhenFirstInit(index,
                                           self.paragraphs.count ,
                                           attributedString)
         case .textHeadSymbolList:
             self.newParagraphs[index].insert("\u{fffc}", at: 0)
             self.paragraphs[index].insert(Character("\u{fffc}"), at: self.paragraphs[index].startIndex)
-            print("paragraphs symbol: \(self.paragraphs)")
-            print("countesadf : \(self.paragraphs[index].count)")
-            print("paragraphs newSymbol: \(self.newParagraphs)")
             return addTextHeadSymbolWhenFirstInit(index,
                                                   self.paragraphs.count ,
                                                   attributedString)
@@ -246,9 +239,6 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
             }
         }
         
-        
-        
-        
         group.notify(queue: serialQueue) { [weak self] in
             guard let self = self else {return}
             self.changeFinishObserver?.onNext(())
@@ -284,8 +274,6 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 blockObjects[index]?.editAttributes(atts)
                 newParagraphs[index] = strs
             }
-            
-            
             
         }else{
             // create behavior

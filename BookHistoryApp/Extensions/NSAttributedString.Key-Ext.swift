@@ -83,7 +83,7 @@ extension NSAttributedString.Key {
      .paragraphStyle : NSParagraphStyle.toggleChildIndentParagraphStyle()]
     
     
-    
+
     
     static func getPlaceTitleAttribues(_ fontStyle: UIFont.TextStyle) -> [NSAttributedString.Key : Any]{
         
@@ -105,7 +105,7 @@ extension NSAttributedString.Key {
         return result
     }
     
-    static func getTitleAttributes(_ type: CustomBlockType.Base,_ font: UIFont) -> [NSAttributedString.Key : Any]{
+    static func getTitleAttributes(block type: CustomBlockType.Base, font: UIFont) -> [NSAttributedString.Key : Any]{
         return [NSAttributedString.Key.blockType : type,
                 .font : font,
                 NSAttributedString.Key.foregroundColor : UIColor.label,

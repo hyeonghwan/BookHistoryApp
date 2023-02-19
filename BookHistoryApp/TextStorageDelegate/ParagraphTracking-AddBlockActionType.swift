@@ -61,7 +61,7 @@ extension ParagraphTrackingUtility{
     func addBlockActionPropertyToTextStorage(_ block: CustomBlockType.Base,_ current: NSRange,_ text: String? = nil){
         switch block {
         case .paragraph:
-            break
+            addParagraph(current,text)
         case .page:
             break
         case .todoList:
@@ -147,6 +147,40 @@ extension ParagraphTrackingUtility{
                                       at: insertedRange.max)
         self.paragraphStorage?.endEditing()
         
+        
+    }
+    
+}
+
+//MARK: - add Paragraph Logic
+extension ParagraphTrackingUtility{
+    private func addParagraph(_ range: NSRange, _ text: String? = nil){
+        guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
+        let insertedRange = ranges[currentIndex]
+        
+        if let restText = text{
+            createParagraph(content: restText, at: currentIndex, insert: insertedRange)
+            return
+        }
+        
+        createParagraph(content: nil, at: currentIndex, insert: insertedRange)
+        
+    }
+    func createParagraph(content text: String?, at index: Int, insert range: NSRange){
+        let insertedRange = range
+        var paragraphString: NSAttributedString
+        
+        if let text = text {
+            paragraphString = NSAttributedString(string: text, attributes: NSAttributedString.Key.defaultAttribute)
+        }else{
+            paragraphString = NSAttributedString(string: String.newLineString(),
+                                                 attributes: NSAttributedString.Key.defaultAttribute)
+        }
+        self.paragraphStorage?.beginEditing()
+        self.paragraphStorage?.insert(paragraphString, at: insertedRange.max)
+        self.paragraphStorage?.endEditing()
+        
+        self.paragrphTextView?.selectedRange = NSRange(location: insertedRange.max , length: 0)
         
     }
     

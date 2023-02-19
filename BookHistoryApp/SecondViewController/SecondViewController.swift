@@ -235,6 +235,7 @@ extension SecondViewController: UIGestureRecognizerDelegate{
 
 extension SecondViewController: UITextViewDelegate {
     func textViewDidChangeSelection(_ textView: UITextView) {
+        print("typingAttributes didset textViewDidChangeSelection:")
         pageViewModel.textViewDidChangeSelection(textView)
         
     }
@@ -253,12 +254,13 @@ extension SecondViewController: UITextViewDelegate {
     }
     func textViewDidEndEditing(_ textView: UITextView) {
         print("textViewDidEndEditing")
+        print("typingAttributes didset textViewDidEndEditing:")
     }
 
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
          
-        
+        print("typingAttributes didset shouldChangeTextIn:")
 //        guard let pageViewModel = pageViewModel else {return false}
         
         return pageViewModel.textViewShouldChangeTextIn(textView,
@@ -365,6 +367,7 @@ extension SecondViewController: UITextViewDelegate {
     
     
     func textViewDidChange(_ textView: UITextView) {
+        print("typingAttributes didset didchange:")
         print("textViewDidChange :textViewDidChange")
         updateUndoButtons()
     }

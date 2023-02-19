@@ -211,44 +211,8 @@ extension PageVCViewModel: PageTextViewInput{
             return
         }
         
-        let attribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil)
-        var blockAttribute: Any?
-        
-        if paragraphRange.length > 1{
-            blockAttribute = textView.textStorage.attribute(.blockType, at: paragraphRange.location + 1, effectiveRange: nil)
-        }
-        
-        guard let seletedForeGround = attribute as? UIColor else {return}
-        
-    
-        if let blockAttribute = blockAttribute as? CustomBlockType.Base ,
-           (blockAttribute == .toggleList ) || (blockAttribute == .textHeadSymbolList){
-            var nsRange = NSRange()
-            nsRange = paragraphRange
-            
-            let toggleFirstAttribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location , effectiveRange: &nsRange) as? UIColor
-            let toggleParagraphattribute = textView.textStorage.attribute(.foregroundColor, at: nsRange.max , effectiveRange: &nsRange) as? UIColor
-            
-            if toggleFirstAttribute == UIColor.placeHolderColor,
-               textView.selectedRange == NSRange(location: paragraphRange.location, length: 0){
-                textView.selectedRange = NSMakeRange(paragraphRange.location + 1, 0)
-            }
-            
-            if let toggleForeGround = toggleParagraphattribute,
-            toggleForeGround == UIColor.placeHolderColor{
-                textView.selectedRange = NSMakeRange(paragraphRange.location + 1, 0)
-                
-            }else{
-                
-            }
-            return
-        }
-
-        if seletedForeGround == UIColor.placeHolderColor{
-            textView.selectedRange = NSMakeRange(paragraphRange.location, 0)
-            return
-            
-        }
+        guard let paragraphValidator = self.paragraphValidator else { return }
+        return paragraphValidator.isValidSelection(textView,paragraphRange)
         
         if textView.attributedText.string == NSAttributedString.titleAttributeString.string{
             textView.selectedRange = NSMakeRange(0, 0)
@@ -267,7 +231,8 @@ extension PageVCViewModel: PageTextViewInput{
         
         let paragraphRange = textView.getParagraphRange(range)
         
-        textView.typingAttributes = NSAttributedString.Key.defaultAttribute
+        
+        
         if paragraphRange.length == 0 {
             textView.typingAttributes = NSAttributedString.Key.defaultAttribute
             return true
@@ -278,7 +243,6 @@ extension PageVCViewModel: PageTextViewInput{
         if blockAttribute == nil{
             textView.textStorage.addAttribute(.blockType, value: CustomBlockType.Base.paragraph, range: paragraphRange)
         }
-
         
         //toggle place holder detect
         guard let paragraphValidator = self.paragraphValidator else {return false}

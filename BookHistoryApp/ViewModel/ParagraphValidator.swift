@@ -5,19 +5,23 @@
 //  Created by 박형환 on 2023/02/12.
 //
 
-import Foundation
+import UIKit
 
 protocol ParagraphValidInput{
     func isValidURL()
     
     func isValidBlock(_ text: String,_ paragraphRange: NSRange,_ type: CustomBlockType.Base?) -> Bool
     
-    func isValidSelection()
+    func isValidSelection(_ textView: UITextView, _ paragraphRange: NSRange)
 }
+
+
 
 typealias ParagraphValidatorProtocol = ParagraphValidInput
 
 class ParagraphValidator: ParagraphValidatorProtocol{
+    
+    
    
     struct Dependencies{
         var pageViewModel: PageVCValidDelegate
@@ -69,8 +73,63 @@ class ParagraphValidator: ParagraphValidatorProtocol{
         return true
     }
     
-    func isValidSelection() {
+    func isValidSelection(_ textView: UITextView, _ paragraphRange: NSRange) {
+        return self.checkSelectionRange(textView: textView, paragraphRange)
+    }
+  
+}
+
+//MARK: - ParagraphSelection Check
+extension ParagraphValidator{
+    
+    func checkSelectionRange(textView: UITextView ,_ paragraphRange: NSRange) {
+        let attribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil)
+        var blockAttribute: Any?
         
+        if paragraphRange.length > 1{
+            blockAttribute = textView.textStorage.attribute(.blockType, at: paragraphRange.location + 1, effectiveRange: nil)
+        }
+        
+        guard let seletedForeGround = attribute as? UIColor else {return}
+        guard let blockType = blockAttribute as? CustomBlockType.Base else {return}
+        
+        if blockType == .title1 || blockType == .title2 || blockType == .title3{
+            guard let titleAttributes = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil) as? UIColor else { return }
+            
+            if titleAttributes.isPlaceHolder(){
+                textView.selectedRange = NSMakeRange(paragraphRange.location, 0)
+            }
+            return
+        }
+    
+                
+                
+        if (blockType == .toggleList ) || (blockType == .textHeadSymbolList){
+            var nsRange = NSRange()
+            nsRange = paragraphRange
+            
+            guard let toggleFirstAttribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location , effectiveRange: &nsRange) as? UIColor else {return}
+            let toggleParagraphattribute = textView.textStorage.attribute(.foregroundColor, at: nsRange.max , effectiveRange: &nsRange) as? UIColor
+            
+            
+            if toggleFirstAttribute.isPlaceHolder(),
+               textView.selectedRange == NSRange(location: paragraphRange.location, length: 0){
+                textView.selectedRange = NSMakeRange(paragraphRange.location + 1, 0)
+                return
+            }
+            
+            if let toggleForeGround = toggleParagraphattribute,
+               toggleForeGround.isPlaceHolder(){
+                textView.selectedRange = NSMakeRange(paragraphRange.location + 1, 0)
+                return
+            }
+        }
+
+        if seletedForeGround == UIColor.placeHolderColor{
+            textView.selectedRange = NSMakeRange(paragraphRange.location, 0)
+            return
+            
+        }
     }
 }
 
@@ -99,11 +158,7 @@ extension ParagraphValidator{
         guard let pageViewModel = self.pageViewModel else {return false}
         if pageViewModel.replaceBlockAttribute(text, paragraphRange, type){
             
-            
-            
-            
-            
-            
+            return true
         }
         
         return false

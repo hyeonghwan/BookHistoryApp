@@ -10,7 +10,7 @@ import Foundation
 extension NSRange{
     
     /// get replaceRange about toggle and TextHeadSymbol
-    /// - Parameter content: content
+    /// - Parameter content: cotent count about self.textView and weather content have newLine (\n)
     /// - Returns: replceRange
     ///  toggle,textHeadSymbol 은 첫번째 range 에 NSattachMent를 가지기 때문에 location을 1plus 하였다.
     ///  lenth 는 \n 은 바꾸지 않기에 - 2하여 view와 \n 을 제외한 text만 포함한다.
@@ -19,6 +19,17 @@ extension NSRange{
         
         if self.max == count{
             replaceRange = NSRange(location: self.location + 1, length: self.length - 1)
+        }
+        return replaceRange
+    }
+    
+    
+    func titleReplaceRange(textView count: Int) -> NSRange{
+        var replaceRange: NSRange = NSRange(location: self.location , length: self.length - 1)
+        
+        
+        if self.max == count{
+            replaceRange = NSRange(location: self.location, length: self.length)
         }
         return replaceRange
     }
