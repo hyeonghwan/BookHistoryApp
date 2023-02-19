@@ -27,7 +27,7 @@ struct Anotations{
          strikethrough: Bool = false,
          underline: Bool = false,
          code: Bool = false,
-         color: String = Color.label.rawValue) {
+         color: String = Color.Base.basic.rawValue) {
         self.bold = bold
         self.italic = italic
         self.strikethrough = strikethrough

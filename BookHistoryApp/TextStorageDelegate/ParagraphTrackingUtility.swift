@@ -11,7 +11,7 @@ import SubviewAttachingTextView
 import RxSwift
 
 
-typealias SeparatedNSAttributedString = ([[NSAttributedString.Key : Any]], [String], CustomBlockType.Base)
+
 
 enum BlockDirection{
     case up
@@ -22,12 +22,13 @@ protocol BlockTrackingToCoreDataConvertible{
     
 }
 
+typealias SeparatedNSAttributedString = ([[NSAttributedString.Key : Any]], [String], CustomBlockType.Base)
+
 final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     
     weak var paragraphStorage: ParagraphTextStorage? {
         didSet{
             self.paragraphStorage?.delegate = self
-            print("delegateIS didset")
             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
                 self.insertions = []
                 self.removals = []
@@ -58,7 +59,6 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     var newAttributes: [[[NSAttributedString.Key : Any]]] = [[]]{
         didSet{
             print("newAttributesx : \(newAttributes.count)")
-            
         }
     }
     
@@ -81,8 +81,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
             }
         }
     }
-    
-    
+
     
     var editObserver: AnyObserver<Int>?
     
@@ -111,27 +110,31 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
         var location = 0
         
         return paragraphs.enumerated().map{ index, string -> NSRange in
-            var length: Int = string.length
-            var range = NSRange(location: location, length: length)
+            let length: Int = string.length
+            let range = NSRange(location: location, length: length)
             location = range.max 
             return range
         }
     }
+    
     var presentedParagraphs: [NSAttributedString] {
         return newPresentedParagraphs
     }
     
     var newPresentedParagraphs: [NSAttributedString]{
-        
         return self.newParagraphs.enumerated().map{ paragraph_index,paragraphs_d in
             let attributedString = NSMutableAttributedString(attributedString: NSAttributedString(string: ""))
             paragraphs_d.enumerated().forEach{ index_element, string in
                 
-                let attributes = newAttributes[paragraph_index][index_element]
+                var attributes: [NSAttributedString.Key : Any] = [:]
                 
+                if paragraph_index > newAttributes.count - 1{
+                    attributes = NSAttributedString.Key.defaultAttribute
+                }else{
+                    attributes = newAttributes[paragraph_index][index_element]
+                }
                 
                 let att = NSAttributedString(string: string, attributes: attributes)
-                
                 attributedString.append(att)
             }
             return attributedString
@@ -150,13 +153,13 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
             self.newParagraphs[index].insert("\u{fffc}", at: 0)
             self.paragraphs[index].insert(Character("\u{fffc}"), at: self.paragraphs[index].startIndex)
             return addToggleWhenFirstInit(index,
-                                          self.paragraphs.count - 1,
+                                          self.paragraphs.count ,
                                           attributedString)
         case .textHeadSymbolList:
             self.newParagraphs[index].insert("\u{fffc}", at: 0)
             self.paragraphs[index].insert(Character("\u{fffc}"), at: self.paragraphs[index].startIndex)
             return addTextHeadSymbolWhenFirstInit(index,
-                                                  self.paragraphs.count - 1,
+                                                  self.paragraphs.count ,
                                                   attributedString)
         default:
             return nil
@@ -188,7 +191,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                     }
                     print("paragraphDescriptor : \(paragraphDescriptor.attributedString)")
                     print("paragraphDescriptor : \(paragraphDescriptor.text)")
-                    let separatedNSAttString = self.attributesArray(from: paragraphDescriptor)
+                    let separatedNSAttString = self.attributesArray(index:index,from: paragraphDescriptor)
                     self.newParagraphs.insert(separatedNSAttString.1, at: index)
                     self.newAttributes.insert(separatedNSAttString.0, at: index)
                     
@@ -214,14 +217,16 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                     self.blockTypes.remove(at: index)
                     self.blockObjects.remove(at: index)
                     //              self.  attributes.remove(at: index)
+                    
                     self.removals.append(index)
                     
                 case .editedParagraph(index: let index, descriptor: let paragraphDescriptor):
                     self.editObserver?.onNext(index)
                     
                     // test separate
-                    let separatedNSAttString = self.attributesArray(from: paragraphDescriptor)
-                    
+                    let separatedNSAttString = self.attributesArray(index: index,from: paragraphDescriptor)
+                    print("separatedNSAttring: \(separatedNSAttString.0)")
+                    print("separatedNSAttring: \(separatedNSAttString.1)")
                     self.editBlock(from: separatedNSAttString, edited: index)
                     
                     let allAttributes = self.attributes(from: paragraphDescriptor)
@@ -229,38 +234,16 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                     //                attributes[index] = allAttributes
                     print("serialQueue: task : 3")
                     self.editions.append(index)
-                    
+                    print("newParagraph: \(self.newParagraphs)")
                 }
             }
         }
         
-        
-        
-        print("serialQueue: task : 4")
         group.notify(queue: serialQueue) { [weak self] in
             guard let self = self else {return}
-            print("serialQueue: task end")
-//            if firstInit == true{
-//                blockTypes.enumerated().map{ index , value in
-//                    switch value{
-//                    case .textHeadSymbolList:
-//                        break
-//                    case .toggleList:
-//                        break
-//                    default:
-//                        break
-//                    }
-//
-//                }
-//            }
+            self.changeFinishObserver?.onNext(())
         }
-        print("hello")
         
-        print("paragraphRange: \(ranges)")
-        
-        
-        
-        changeFinishObserver?.onNext(())
     }
     
     func editBlock(from separated: SeparatedNSAttributedString, edited index: Int){
@@ -288,10 +271,9 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
             }else{
                 // text fix
                 blockObjects[index]?.editTextElement(strs,atts)
+                blockObjects[index]?.editAttributes(atts)
                 newParagraphs[index] = strs
             }
-            
-            
             
         }else{
             // create behavior
@@ -301,25 +283,13 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     }
     
     
-    func attributesArray(from paragraphDescriptor: ParagraphTextStorage.ParagraphDescriptor) -> SeparatedNSAttributedString{
+    
+    func attributesArray(index: Int,
+                         from paragraphDescriptor: ParagraphTextStorage.ParagraphDescriptor) -> SeparatedNSAttributedString{
+        
         if !paragraphDescriptor.text.isEmpty {
-            print(" serialQueue: task attributesArray: \(Thread.isMainThread)")
-            var (att_S, str_S, _): SeparatedNSAttributedString = ([],[],CustomBlockType.Base.none)
             
-            paragraphDescriptor.attributedString.enumerateAttributes(in: paragraphDescriptor.attributedString.range,
-                                                                     options: .longestEffectiveRangeNotRequired){
-                attributes, subRange, pointer in
-                
-                let subText = paragraphDescriptor.attributedString.attributedSubstring(from: subRange)
-                
-                if subText.string != String.newLineString(){
-                    att_S.append(attributes)
-                    str_S.append(subText.string)
-                    
-                }else{
-                    pointer.pointee = true
-                }
-            }
+            let (att_S, str_S, _): SeparatedNSAttributedString = paragraphDescriptor.attributedString.separatedNSAttributeString()
             
             if let blockType = paragraphDescriptor.attributedString.attribute(.blockType, at: 0, effectiveRange: nil) as? CustomBlockType.Base{
                 return (att_S, str_S, blockType)

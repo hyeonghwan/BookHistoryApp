@@ -49,17 +49,8 @@ class SecondViewController: UIViewController {
     private var keyBoardHeight: CGFloat = 0
     
     
-    lazy var defaultAttribute: [NSAttributedString.Key : Any] =
-    [NSAttributedString.Key.blockType : CustomBlockType.Base.paragraph,
-     NSAttributedString.Key.backgroundColor : UIColor.clear,
-     NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
-     NSAttributedString.Key.foregroundColor : UIColor.label,
-     .paragraphStyle : NSParagraphStyle.defaultParagraphStyle()]
     
-    
-    
-    lazy var titleAttributeString = NSAttributedString(string: "제목을 입력해주세요",
-                                            attributes: defaultAttribute)
+
     
     //MARK: - initializer    
     init(_ viewModel: PageVCViewModelProtocol){
@@ -244,59 +235,8 @@ extension SecondViewController: UIGestureRecognizerDelegate{
 
 extension SecondViewController: UITextViewDelegate {
     func textViewDidChangeSelection(_ textView: UITextView) {
-        return
-        
-        let paragraphRange = self.textView.getParagraphRange(textView.selectedRange)
-        
-        
-        if paragraphRange.length == 0 {
-            return
-        }
-        
-        let attribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil)
-        var blockAttribute: Any?
-        
-        if paragraphRange.length > 1{
-            blockAttribute = textView.textStorage.attribute(.blockType, at: paragraphRange.location + 1, effectiveRange: nil)
-        }
-        
-        guard let seletedForeGround = attribute as? UIColor else {return}
-        
-        
-    
-        if let blockAttribute = blockAttribute as? CustomBlockType.Base ,
-           (blockAttribute == .toggleList ) || (blockAttribute == .textHeadSymbolList){
-            var nsRange = NSRange()
-            nsRange = paragraphRange
-            
-            let toggleFirstAttribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location , effectiveRange: &nsRange) as? UIColor
-            let toggleParagraphattribute = textView.textStorage.attribute(.foregroundColor, at: nsRange.max , effectiveRange: &nsRange) as? UIColor
-            
-            if toggleFirstAttribute == UIColor.placeHolderColor,
-               textView.selectedRange == NSRange(location: paragraphRange.location, length: 0){
-                self.textView.selectedRange = NSMakeRange(paragraphRange.location + 1, 0)
-            }
-            
-            if let toggleForeGround = toggleParagraphattribute,
-            toggleForeGround == UIColor.placeHolderColor{
-                self.textView.selectedRange = NSMakeRange(paragraphRange.location + 1, 0)
-                
-            }else{
-                
-            }
-            return
-        }
-
-        if seletedForeGround == UIColor.placeHolderColor{
-            self.textView.selectedRange = NSMakeRange(paragraphRange.location, 0)
-            return
-            
-        }
-        
-        if textView.attributedText.string == titleAttributeString.string{
-            self.textView.selectedRange = NSMakeRange(0, 0)
-            return
-        }
+        print("typingAttributes didset textViewDidChangeSelection:")
+        pageViewModel.textViewDidChangeSelection(textView)
         
     }
     
@@ -314,12 +254,13 @@ extension SecondViewController: UITextViewDelegate {
     }
     func textViewDidEndEditing(_ textView: UITextView) {
         print("textViewDidEndEditing")
+        print("typingAttributes didset textViewDidEndEditing:")
     }
 
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
          
-        
+        print("typingAttributes didset shouldChangeTextIn:")
 //        guard let pageViewModel = pageViewModel else {return false}
         
         return pageViewModel.textViewShouldChangeTextIn(textView,
@@ -373,59 +314,60 @@ extension SecondViewController: UITextViewDelegate {
 //
         
         
-        
-        if text == "\n"{
-            // 제목을 입력하지 않으면 "\n" 입력 -> false
-            if range == NSRange(location: 0, length: 0){
-                return false
-            }else {
-                
-                textView.typingAttributes = defaultAttribute
-                
-                return true
-            }
-        }
-        
-        
-        // Combine the textView text and the replacement text to
-        // create the updated text string
-        let currentText:String = textView.text
-        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
-        
-        // If updated text view will be empty, add the placeholder
-        // and set the cursor to the beginning of the text view
-        if updatedText.isEmpty {
-            
-            textView.attributedText = titleAttributeString
-            textView.textColor = UIColor.lightGray
-            
-            textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
-        }
-        
-        // Else if the text view's placeholder is showing and the
-        // length of the replacement string is greater than 0, set
-        // the text color to black then set its text to the
-        // replacement string
-        else if textView.textColor == UIColor.lightGray && !text.isEmpty {
-            textView.textColor = UIColor.white
-            textView.text = ""
-            return true
-        }
-        
-        // For every other case, the text should change with the usual
-        // behavior...
-        else {
-            textView.typingAttributes = defaultAttribute
-            return true
-        }
-        
-        // ...otherwise return false since the updates have already
-        // been made
-        return false
+//
+//        if text == "\n"{
+//            // 제목을 입력하지 않으면 "\n" 입력 -> false
+//            if range == NSRange(location: 0, length: 0){
+//                return false
+//            }else {
+//
+//                textView.typingAttributes = defaultAttribute
+//
+//                return true
+//            }
+//        }
+//        
+//
+//        // Combine the textView text and the replacement text to
+//        // create the updated text string
+//        let currentText:String = textView.text
+//        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
+//
+//        // If updated text view will be empty, add the placeholder
+//        // and set the cursor to the beginning of the text view
+//        if updatedText.isEmpty {
+//
+//            textView.attributedText = titleAttributeString
+//            textView.textColor = UIColor.lightGray
+//
+//            textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+//        }
+//
+//        // Else if the text view's placeholder is showing and the
+//        // length of the replacement string is greater than 0, set
+//        // the text color to black then set its text to the
+//        // replacement string
+//        else if textView.textColor == UIColor.lightGray && !text.isEmpty {
+//            textView.textColor = UIColor.white
+//            textView.text = ""
+//            return true
+//        }
+//
+//        // For every other case, the text should change with the usual
+//        // behavior...
+//        else {
+//            textView.typingAttributes = defaultAttribute
+//            return true
+//        }
+//
+//        // ...otherwise return false since the updates have already
+//        // been made
+//        return false
     }
     
     
     func textViewDidChange(_ textView: UITextView) {
+        print("typingAttributes didset didchange:")
         print("textViewDidChange :textViewDidChange")
         updateUndoButtons()
     }
@@ -477,48 +419,48 @@ private extension SecondViewController{
         }
     }
     
-    private func subAttatchViewTest() -> NSAttributedString{
- 
-        // Create an image view with a tap recognizer
-        let imageView = UIImageView(image: UIImage(systemName: "circle"))
-        imageView.tintColor = .black
-        imageView.contentMode = .scaleAspectFit
-        imageView.isUserInteractionEnabled = true
-
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.handle(_:)))
-        imageView.addGestureRecognizer(gestureRecognizer)
-
-        // Create an activity indicator view
-        let spinner = UIActivityIndicatorView(style: .large)
-        spinner.color = .black
-        spinner.hidesWhenStopped = false
-        spinner.startAnimating()
-
-        // Create a text field
-        let textField = UITextField()
-        textField.borderStyle = .roundedRect
-        
-        // Create a web view, because why not
-        
-        
-        // Add attachments to the string and set it on the text view
-        // This example avoids evaluating the attachments or attributed strings with attachments in the Playground because Xcode crashes trying to decode attachment objects
-        let richText = NSMutableAttributedString()
-        let width =  self.view.bounds.width - (self.textView.textContainerInset.left + self.textView.textContainerInset.right + 12)
-        print(self.systemMinimumLayoutMargins)
-        
-        print("widht : \(width)")
-        
-        richText.append(UITextView.testSetting().insertingAttachment(SubViewAttachmentContiner.settingContainer(self, imageView,
-                                                                                                                size: CGSize(width: width, height: 256)), at: 20))
-        richText.append(
-            UITextView
-            .testSetting()
-            .insertingAttachment(SubViewAttachmentContiner.settingContainer(self, spinner, size: nil), at: 0))
-        
-        richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: UISwitch()), at: 10))
-        return richText
-    }
+//    private func subAttatchViewTest() -> NSAttributedString{
+// 
+//        // Create an image view with a tap recognizer
+//        let imageView = UIImageView(image: UIImage(systemName: "circle"))
+//        imageView.tintColor = .black
+//        imageView.contentMode = .scaleAspectFit
+//        imageView.isUserInteractionEnabled = true
+//
+//        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.handle(_:)))
+//        imageView.addGestureRecognizer(gestureRecognizer)
+//
+//        // Create an activity indicator view
+//        let spinner = UIActivityIndicatorView(style: .large)
+//        spinner.color = .black
+//        spinner.hidesWhenStopped = false
+//        spinner.startAnimating()
+//
+//        // Create a text field
+//        let textField = UITextField()
+//        textField.borderStyle = .roundedRect
+//        
+//        // Create a web view, because why not
+//        
+//        
+//        // Add attachments to the string and set it on the text view
+//        // This example avoids evaluating the attachments or attributed strings with attachments in the Playground because Xcode crashes trying to decode attachment objects
+//        let richText = NSMutableAttributedString()
+//        let width =  self.view.bounds.width - (self.textView.textContainerInset.left + self.textView.textContainerInset.right + 12)
+//        print(self.systemMinimumLayoutMargins)
+//        
+//        print("widht : \(width)")
+//        
+//        richText.append(UITextView.testSetting().insertingAttachment(SubViewAttachmentContiner.settingContainer(self, imageView,
+//                                                                                                                size: CGSize(width: width, height: 256)), at: 20))
+//        richText.append(
+//            UITextView
+//            .testSetting()
+//            .insertingAttachment(SubViewAttachmentContiner.settingContainer(self, spinner, size: nil), at: 0))
+//        
+//        richText.append(UITextView.testSetting().insertingAttachment(SubviewTextAttachment(view: UISwitch()), at: 10))
+//        return richText
+//    }
     
     
     @objc func deleteView(_ sender: UIButton){

@@ -22,7 +22,7 @@ public extension NSTextAttachment {
 
 }
 
-public extension NSAttributedString {
+extension NSAttributedString {
     
     static var defaultParagraphStyle: NSParagraphStyle {
         let style = NSMutableParagraphStyle()
@@ -30,14 +30,18 @@ public extension NSAttributedString {
         style.paragraphSpacingBefore = 10
         return style
     }
-
-    func insertingAttachment(_ attachment: NSTextAttachment,
+    
+    func insertingAttachment(type: CustomBlockType.Base,
+                             attachment: NSTextAttachment,
                              at index: Int,
                              with paragraphStyle: NSParagraphStyle? = NSParagraphStyle()) -> NSAttributedString {
         
         let copy = self.mutableCopy() as! NSMutableAttributedString
         
-        copy.insertAttachment(attachment, at: index, with: paragraphStyle)
+        copy.insertAttachment(type: type,
+                              attachment: attachment,
+                              at: index,
+                              with: paragraphStyle)
 
         return copy.copy() as! NSAttributedString
     }
@@ -53,14 +57,22 @@ public extension NSAttributedString {
 
 }
 
-public extension NSMutableAttributedString {
+extension NSMutableAttributedString {
 
-    func insertAttachment(_ attachment: NSTextAttachment, at index: Int, with paragraphStyle: NSParagraphStyle? = NSParagraphStyle()) {
+    func insertAttachment(type: CustomBlockType.Base,
+                          attachment: NSTextAttachment,
+                          at index: Int,
+                          with paragraphStyle: NSParagraphStyle? = NSParagraphStyle()) {
         let plainAttachmentString = NSAttributedString(attachment: attachment)
-
-        if let paragraphStyle = paragraphStyle {
+        
+        var attributes: [NSAttributedString.Key : Any] = [:]
+        attributes = NSAttributedString.Key.defaultAttribute
+        attributes[.blockType] = type
+        attributes[.paragraphStyle] = paragraphStyle
+        
+        if (paragraphStyle != nil) {
             let attachmentString = plainAttachmentString
-                .addingAttributes(NSAttributedString.Key.defaultAttribute)
+                .addingAttributes(attributes)
 //            let separatorString = NSAttributedString(string: .paragraphSeparator)
 
             // Surround the attachment string with paragraph separators, so that the paragraph style is only applied to it

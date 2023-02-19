@@ -104,6 +104,13 @@ enum CustomBlockType{
         }
     }
     
+    
+    /// changeObject Annotations
+    /// - Parameters:
+    ///   - attributes: attributes about object
+    ///   - object: about cofigure Object
+    ///   this func is occur when user change text Attributes
+    ///    editAttributes -> changeObjectAnnotaionValue
     private func changeObjectAnnotaionValue(_ attributes: [[NSAttributedString.Key : Any]],
                                    _ object: TextAndChildrenBlockValueObject){
         let annotations = getAnnotations(attributes)
@@ -136,16 +143,18 @@ enum CustomBlockType{
                     italic = true
                 }
             }
-            let color = value[.foregroundColor] as? UIColor
+            let loadedColor = value[.foregroundColor] as? UIColor
             let strike = value[.strikethroughStyle] as? NSUnderlineStyle
             let underline = value[.underlineStyle] as? NSUnderlineStyle
+            
+            let color = Color.getColor(loadedColor).base
             
             let annotation = Anotations(bold: bold,
                                         italic: italic,
                                         strikethrough: strike,
                                         underline: underline,
                                         code: nil,
-                                        color: "label")
+                                        color: color.rawValue)
             return annotation
         }
         return annotations
@@ -231,7 +240,7 @@ enum CustomBlockType{
             var attribute: [NSAttributedString.Key : Any]  = defaultAtt
             
             let annotations = value.annotations
-            let color = "label" //annotations.color.create
+//            let color = "label" //annotations.color.create
             
             var font : UIFont = UIFont.appleSDGothicNeo.regular.font(size: 16)
             if annotations.underline == true{
@@ -251,17 +260,11 @@ enum CustomBlockType{
                     font = font.setBold()
                 }
             }
-            
             attribute[.font] = font
-            
-            if annotations.color == "label"{
-                // foreGround
-                attribute[.foregroundColor] =  UIColor.label // annotations.color.create
-            }else{
-                // backGraound
-                attribute[.backgroundColor] =  UIColor.label // annotations.color.create
+            if let base = Color.Base(rawValue: annotations.color),
+            let color = Color(rawValue: base.rawValue)?.create{
+                attribute[.foregroundColor] = color
             }
-            
             
             attributes.append(attribute)
         }

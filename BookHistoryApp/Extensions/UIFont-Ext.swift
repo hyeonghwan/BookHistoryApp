@@ -7,7 +7,8 @@
 
 import UIKit
 
-public extension UIFont {
+
+extension UIFont {
     static var appleFontFamiliyName = "AppleSDGothicNeo"
     
     enum appleSDGothicNeo: String {
@@ -22,6 +23,21 @@ public extension UIFont {
         public func font(size: CGFloat) -> UIFont {
             return UIFont(name: self.rawValue, size: size)!
         }
+    }
+    
+    static func preferredFont(block type: CustomBlockType.Base) -> UIFont{
+        
+        if type == .title1{
+            return UIFont.preferredFont(forTextStyle: .title1, familyName: appleFontFamiliyName)
+        }
+        if type == .title3{
+            return UIFont.preferredFont(forTextStyle: .title3, familyName: appleFontFamiliyName)
+        }
+        if type == .title2{
+            return UIFont.preferredFont(forTextStyle: .title2, familyName: appleFontFamiliyName)
+        }
+        
+        return UIFont.preferredFont(forTextStyle: .body, familyName: appleFontFamiliyName)
     }
     
     static func preferredFont(forTextStyle style: UIFont.TextStyle,familyName: String ,scaleFactor: CGFloat = 1) -> UIFont {

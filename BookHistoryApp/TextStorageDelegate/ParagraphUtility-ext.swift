@@ -39,6 +39,9 @@ extension ParagraphTrackingUtility: BlockToggleAction{
             .subscribe(onNext: { [weak self] in
                 guard let self = self else {return}
                 guard let firstInitIndex = button.firstInitIndex else {return}
+                if self.blockObjects.count >= button.firstInitIndex ?? Int.max {
+                    return
+                }
                 button.object = self.blockObjects[firstInitIndex]
                 
                 toggleDisposeBag = DisposeBag()
@@ -134,7 +137,7 @@ extension ParagraphTrackingUtility: BlockToggleAction{
                             
                             var value: SeparatedNSAttributedString = ([],[],CustomBlockType.Base.none)
                             value =
-                            self.attributesArray(from: ParagraphTextStorage.ParagraphDescriptor(attributedString: attributedString,
+                            self.attributesArray(index: index,from: ParagraphTextStorage.ParagraphDescriptor(attributedString: attributedString,
                                                                                            storageRange: self.ranges[index]))
                             
                             guard let block = BlockCreateHelper.shared.createBlock_to_array(value) else {return}
@@ -168,6 +171,31 @@ extension ParagraphTrackingUtility: BlockToggleAction{
             }).disposed(by: disposeBag)
     }
 }
+
+
+//MARK: replace Logic
+extension ParagraphTrackingUtility{
+    private func replaceParagraph(content text: String,
+                                  attributes: [NSAttributedString.Key : Any],
+                                  to textView: UITextView,
+                                  at replaceRange: NSRange) -> Bool{
+        
+        textView.textStorage.beginEditing()
+        textView.textStorage.replaceCharacters(in: replaceRange, with: "")
+        textView.textStorage.endEditing()
+        
+        textView.textStorage.beginEditing()
+        textView.textStorage.replaceCharacters(in: NSRange(location: replaceRange.location, length: 0),
+                                               with: NSAttributedString(string: "\(text)",
+                                                                        attributes: attributes))
+        textView.textStorage.endEditing()
+        
+        textView.selectedRange = NSRange(location: replaceRange.location + text.count, length: 0)
+        
+        return false
+    }
+}
+
 extension ParagraphTrackingUtility{
     
     private func isValidParagraphStyle(_ paragraphStyle: NSParagraphStyle) -> Bool{
@@ -178,66 +206,115 @@ extension ParagraphTrackingUtility{
         }
         return false
     }
+    
+    
+    
+    func replaceTitleAttributes(_ text: String,_ range: NSRange,_ type: CustomBlockType.Base) -> Bool{
+        guard let paragraphTextView = self.paragrphTextView else {return false}
+        let paragraphRange = range
+        
+        //toggle,textHeadSymbol 은 첫번째 range 에 NSTextAttachMent를 가지기 때문에 location을 1plus 하였다.
+        let attribute = paragraphTextView.textStorage.attribute(.foregroundColor, at: paragraphRange.location , effectiveRange: nil) as? UIColor
+        
+        if let toggleForeGround = attribute,
+           toggleForeGround.isPlaceHolder(),
+           !text.isNewLine(){
+            let replaceRange: NSRange = paragraphRange.titleReplaceRange(textView: paragraphTextView.getTextCount())
+            
+            let font = UIFont.preferredFont(block: type)
+            let titleAttributes = NSAttributedString.Key.getTitleAttributes(block: type,font: font)
+            
+            return self.replaceParagraph(content: text,
+                                         attributes: titleAttributes,
+                                         to: paragraphTextView,
+                                         at: replaceRange)
+        }
+        
+        
+        if text.isNewLine(){
+            let paragraphRange = paragraphTextView.getCurrentParagraphRange()
+            let restRange = paragraphTextView.getTheRestRange(range: paragraphRange)
+            let restText = paragraphTextView.getTheRestText(paragrah: paragraphRange, restRange: restRange)
+            paragraphTextView.typingAttributes = NSAttributedString.Key.defaultAttribute
+            
+            if let restText = restText,
+               restText.isNewLine(){
+                
+                addBlockActionPropertyToTextStorage(.paragraph, paragraphRange, nil)
+                
+            }else{
+                if let attribute = attribute,
+                   attribute == UIColor.placeHolderColor{
+                    addBlockActionPropertyToTextStorage(.paragraph, paragraphRange, nil)
+                }else{
+                    if let restText = restText,
+                       restText.isEmpty{
+                        addBlockActionPropertyToTextStorage(.paragraph, paragraphRange, restText)
+                    }else{
+                        addBlockActionPropertyToTextStorage(.paragraph, paragraphRange, restText)
+                        self.paragraphStorage?.beginEditing()
+                        self.paragraphStorage?.replaceCharacters(in: NSRange(location: restRange.location, length: restRange.length - 1), with: String.emptyString())
+                        self.paragraphStorage?.endEditing()
+                    }
+                }
+            }
+            return false
+        }
+        return true
+    }
+    
+    
+    /// toggle OR TextHeadSymbol replace paragraph when current ForeGroundColor is placeHolderColor
+    /// - Parameters:
+    ///   - text: input text from KeyBoard
+    ///   - range: current ParagraphRange
+    ///   - blockType: currentBlocktype , exactly this type is toggle OR TextHeadSymbol
+    /// - Returns: return bool , when this type is ture -> not occur replaceCharacters , false -> occur replaceCharacters
     func replaceToggleAttribues(_ text: String,_ range: NSRange,_ blockType: CustomBlockType.Base) -> Bool{
         guard let paragraphTextView = self.paragrphTextView else {return false}
         let paragraphRange = range
         
-        //toggle 은 첫번째 range 에 NSattachMent를 가지기 때문에 location을 1plus 하였다.
+        //toggle,textHeadSymbol 은 첫번째 range 에 NSTextAttachMent를 가지기 때문에 location을 1plus 하였다.
         let attribute = paragraphTextView.textStorage.attribute(.foregroundColor, at: paragraphRange.location + 1, effectiveRange: nil) as? UIColor
         
+        
         if let toggleForeGround = attribute,
-           toggleForeGround == UIColor.placeHolderColor,
-           text != "\n" {
+           toggleForeGround.isPlaceHolder(),
+           !text.isNewLine(){
             
-            //toggle 은 첫번째 range 에 NSattachMent를 가지기 때문에 location을 1plus 하였다.
-            var toggleRange: NSRange = NSRange(location: paragraphRange.location + 1, length: paragraphRange.length - 2)
-            
-            if paragraphRange.max == paragraphTextView.text.count{
-                toggleRange = NSRange(location: paragraphRange.location + 1, length: paragraphRange.length - 1)
-            }
-            
-            paragraphTextView.textStorage.beginEditing()
-            paragraphTextView.textStorage.replaceCharacters(in: toggleRange, with: "")
-            paragraphTextView.textStorage.endEditing()
-            
-            paragraphTextView.textStorage.beginEditing()
-            paragraphTextView.textStorage.replaceCharacters(in: NSRange(location: toggleRange.location, length: 0),
-                                                   with: NSAttributedString(string: "\(text)",attributes: NSAttributedString.Key.toggleAttributes))
-            paragraphTextView.textStorage.endEditing()
-            
-            paragraphTextView.selectedRange = NSRange(location: toggleRange.location + 1, length: 0)
-            return false
+            let replaceRange: NSRange = paragraphRange.toggleReplaceRange(textView: paragraphTextView.getTextCount())
+            return self.replaceParagraph(content: text,
+                                         attributes: NSAttributedString.Key.toggleAttributes,
+                                         to: paragraphTextView,
+                                         at: replaceRange)
         }
         
-        if text == "\n"{
-            let currentPosition = paragraphTextView.selectedRange
-            let paragraphRange = paragraphTextView.getParagraphRange(currentPosition)
-            let restLength = paragraphRange.max - currentPosition.location
+        if text.isNewLine(){
+            let paragraphRange = paragraphTextView.getCurrentParagraphRange()
+            let restRange = paragraphTextView.getTheRestRange(range: paragraphRange)
+            let restText = paragraphTextView.getTheRestText(paragrah: paragraphRange, restRange: restRange)
             
-            let restRange = NSRange(location: currentPosition.location, length: restLength)
-            
-            let restText = self.paragrphTextView?.text(in: self.paragrphTextView!.textRangeFromNSRange(range: restRange)!)
-            
-            if restText == "\n"{
+            if let restText = restText,
+               restText.isNewLine(){
                 addBlockActionPropertyToTextStorage(blockType, paragraphRange, nil)
             }else{
                 if let attribute = attribute,
                    attribute == UIColor.placeHolderColor{
                     addBlockActionPropertyToTextStorage(blockType, paragraphRange, nil)
-                    
                 }else{
-                    addBlockActionPropertyToTextStorage(blockType, paragraphRange, restText)
-                    
-                    self.paragraphStorage?.beginEditing()
-                    self.paragraphStorage?.replaceCharacters(in: NSRange(location: restRange.location, length: restRange.length - 1), with: "")
-                    self.paragraphStorage?.endEditing()
+                    if let remainText = restText,
+                       remainText.isEmpty{
+                        addBlockActionPropertyToTextStorage(blockType, paragraphRange, restText)
+                    }else{
+                        addBlockActionPropertyToTextStorage(blockType, paragraphRange, restText)
+                        self.paragraphStorage?.beginEditing()
+                        self.paragraphStorage?.replaceCharacters(in: NSRange(location: restRange.location, length: restRange.length - 1), with: String.emptyString())
+                        self.paragraphStorage?.endEditing()
+                    }
                 }
             }
-            
             return false
         }
-        
-        
         return true
     }
 }

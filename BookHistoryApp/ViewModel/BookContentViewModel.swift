@@ -292,6 +292,34 @@ extension BookContentViewModel{
     }
     
     func replaceBlockAttribute(_ text: String,_ paragraphRange: NSRange,_ blockType: CustomBlockType.Base) -> Bool{
-        return self.paragraphTrackingUtility.replaceToggleAttribues(text,paragraphRange,blockType)
+        switch blockType {
+        case .page:
+            return true
+        case .title1:
+            return self.paragraphTrackingUtility.replaceTitleAttributes(text, paragraphRange, .title1)
+        case .title2:
+            return self.paragraphTrackingUtility.replaceTitleAttributes(text, paragraphRange, .title2)
+        case .title3:
+            return self.paragraphTrackingUtility.replaceTitleAttributes(text, paragraphRange, .title3)
+        case .graph:
+            return true
+        case .textHeadSymbolList,.toggleList:
+            return self.paragraphTrackingUtility.replaceToggleAttribues(text,paragraphRange,blockType)
+        case .numberList:
+            return true
+        case .quotation:
+            return true
+        case .separatorLine:
+            return true
+        case .pageLink:
+            return true
+        case .callOut:
+            return true
+        case .none:
+            return true
+        default:
+            return true
+        }
+     
     }
 }
