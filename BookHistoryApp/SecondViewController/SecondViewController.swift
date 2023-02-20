@@ -235,7 +235,7 @@ extension SecondViewController: UIGestureRecognizerDelegate{
 
 extension SecondViewController: UITextViewDelegate {
     func textViewDidChangeSelection(_ textView: UITextView) {
-        print("typingAttributes didset textViewDidChangeSelection:")
+        
         pageViewModel.textViewDidChangeSelection(textView)
         
     }

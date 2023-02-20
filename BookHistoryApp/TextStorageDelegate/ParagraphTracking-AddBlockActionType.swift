@@ -192,8 +192,7 @@ extension ParagraphTrackingUtility{
 extension ParagraphTrackingUtility {
     
     private func addToggle(_ range: NSRange,_ text: String? = nil){
-        print("self.ranges :\(self.ranges)")
-        print("currentParagraphRange range: \(range)")
+        
         guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
         
        
@@ -225,6 +224,7 @@ extension ParagraphTrackingUtility {
                                                      position: plusIndex - 1,
                                                      index: index)
         }else{
+            let spaceString = NSAttributedString.paragraphNewLine
             if plusIndex == 1{
                 togglString = NSAttributedString(string: "토글\n", attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
             }else{
@@ -254,7 +254,6 @@ extension ParagraphTrackingUtility {
         if let att = attributes{
             newAttributes = att
         }else{
-//            newAttributes = attString.allAttributes
             
             let (attributes_S,string_S, _): SeparatedNSAttributedString = attString.separatedNSAttributeString()
             let mutableString: NSMutableAttributedString = NSMutableAttributedString(string: "")
@@ -264,9 +263,7 @@ extension ParagraphTrackingUtility {
                mutableString.append(nsAttributedString)
            }
             attString = mutableString
-            attributes_S.forEach{
-                print("$0[.blockType] : \($0[.blockType])")
-            }
+            
         }
     
         
@@ -285,9 +282,7 @@ extension ParagraphTrackingUtility {
                                                    with: NSParagraphStyle.toggleHeadIndentParagraphStyle())
         
         result = result.addingAttributes(newAttributes)
-        print("resultString: \(result.string)")
-        print("resultString: \(result.string.count)")
-        print("resultString: \(result)")
+        
         return result
     }
 }
@@ -296,17 +291,6 @@ extension ParagraphTrackingUtility {
 extension ParagraphTrackingUtility{
     func addTextHeadSymbolList(_ range: NSRange, _ text: String? = nil) {
 
-        print("rangeS: \(self.ranges)")
-        print("seletedrange: \(range)")
-        print("self.paragraph: \(self.paragraphs)")
-        self.paragraphs.forEach{ va in
-            
-            print("vavavava: \(va.count)")
-            if va.contains(where: { $0 == "\u{fffc}"
-            }){
-                print("\(va) is contain ufffc")
-            }
-        }
         guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
        
         let insertedRange = ranges[currentIndex]
@@ -356,22 +340,17 @@ extension ParagraphTrackingUtility{
                                            attributes: [NSAttributedString.Key : Any]?,
                                            _ position: Int,
                                            _ index : Int) -> NSAttributedString{
-//        let blockObjectIndex = index + 1
+
         var newAttributes: [NSAttributedString.Key : Any] = [:]
         var attString = attString
         
         if let att = attributes{
             newAttributes = att
         }else{
-//            newAttributes = attString.allAttributes
-            
             let (attributes_S,string_S, _): SeparatedNSAttributedString = attString.separatedNSAttributeString()
             let mutableString: NSMutableAttributedString = NSMutableAttributedString(string: "")
-            attributes_S.forEach{
-                print("$0[.paragraphStyle] : \($0[.paragraphStyle])")
-            }
+            
             string_S.enumerated().forEach{ index ,str in
-                
                let nsAttributedString: NSAttributedString = NSAttributedString(string: str, attributes: attributes_S[index])
                mutableString.append(nsAttributedString)
            }
@@ -384,18 +363,14 @@ extension ParagraphTrackingUtility{
         let attachment = SubviewTextAttachment(view: textHeadSymbolView,
                                                size: CGSize(width: 35, height: 13))
         
-        print("attttttttt: \(attString)")
-        print("attString.string : \(attString.string)")
-        print("")
+        
         var result = attString.insertingAttachment(type: .textHeadSymbolList,
                                                    attachment: attachment,
                                                    at: position,
                                                    with: NSParagraphStyle.toggleHeadIndentParagraphStyle())
-        print("result: \(result)")
+        
         result = result.addingAttributes(newAttributes)
-        print("resultString: \(result.string)")
-        print("resultString: \(result.string.count)")
-        print("resultString: \(result)")
+        
         return result
     }
 }

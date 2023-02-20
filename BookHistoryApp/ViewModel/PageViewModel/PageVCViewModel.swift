@@ -171,7 +171,7 @@ extension PageVCViewModel: PageTextViewInput{
         let paragraphRange = textView.getParagraphRange(range)
         
         if paragraphRange.length == 0 {
-            textView.typingAttributes = NSAttributedString.Key.defaultAttribute
+            textView.typingAttributes = NSAttributedString.Key.defaultParagraphAttribute
             return true
         }
         

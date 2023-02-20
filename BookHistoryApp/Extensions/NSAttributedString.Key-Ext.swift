@@ -117,10 +117,19 @@ extension NSAttributedString{
     static var titleAttributeString = NSAttributedString(string: "제목을 입력해주세요",
                                                          attributes: NSAttributedString.Key.defaultAttribute)
     
+    
+    static var paragraphNewLine: NSAttributedString{
+        return NSAttributedString(string: String.newLineString(), attributes: NSAttributedString.Key.defaultParagraphAttribute)
+    }
+    
+    
     var allAttributes: [NSAttributedString.Key : Any]{
         get{
             self.attributes(at: self.range.location, effectiveRange: nil)
         }
+    }
+    static var enterNSAttributed: NSAttributedString{
+        return NSAttributedString(string: String.newLineString(), attributes: NSAttributedString.Key.defaultParagraphAttribute)
     }
     
     var separatedAttributed: [[NSAttributedString.Key : Any]] {
@@ -129,13 +138,15 @@ extension NSAttributedString{
     
     func separatedNSAttributeString() -> SeparatedNSAttributedString{
         var (att_S, str_S, _): SeparatedNSAttributedString = ([],[],CustomBlockType.Base.none)
+        if self.string.isNewLine(){
+            return ([NSAttributedString.Key.defaultAttribute], [String.newLineString()], .paragraph)
+        }
         self.enumerateAttributes(in: self.range,
                                  options: .longestEffectiveRangeNotRequired){
             attributes, subRange, pointer in
             
-            print("separatedNSAttributeString : \(attributes[.blockType])")
             let subText = self.attributedSubstring(from: subRange)
-            print("separatedNSAttributeString2 : \(subText.string)")
+            
             if subText.string != String.newLineString(){
                 att_S.append(attributes)
                 str_S.append(subText.string)
@@ -146,11 +157,10 @@ extension NSAttributedString{
                     lastString.append(String.newLineString())
                     str_S.append(lastString)
                 }
-                
                 pointer.pointee = true
             }
         }
-        return (att_S, str_S, .none)
+        return (att_S, str_S, .paragraph)
     }
     
     

@@ -146,7 +146,6 @@ private extension ParagraphValidator{
             guard let toggleFirstAttribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location , effectiveRange: &nsRange) as? UIColor else {return}
             let toggleParagraphattribute = textView.textStorage.attribute(.foregroundColor, at: nsRange.max , effectiveRange: &nsRange) as? UIColor
             
-            
             if toggleFirstAttribute.isPlaceHolder(),
                textView.selectedRange == NSRange(location: paragraphRange.location, length: 0){
                 textView.selectedRange = NSMakeRange(paragraphRange.location + 1, 0)
@@ -158,6 +157,7 @@ private extension ParagraphValidator{
                 textView.selectedRange = NSMakeRange(paragraphRange.location + 1, 0)
                 return
             }
+            return
         }
 
         if seletedForeGround == UIColor.placeHolderColor{
@@ -165,6 +165,7 @@ private extension ParagraphValidator{
             return
             
         }
+
     }
     
     func checkParagraphRemoveAction(replacement attString: NSAttributedString,
@@ -225,6 +226,23 @@ extension ParagraphValidator{
     
     private func paragraphTextValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
         guard let pageViewModel = self.pageViewModel else {return false}
+        guard let textView = pageViewModel.pageVC?.textView else {return false}
+        
+        if text.isNewLine(){
+            textView.textStorage.beginEditing()
+            textView.textStorage.insert(NSAttributedString.paragraphNewLine, at: paragraphRange.max)
+            textView.textStorage.endEditing()
+            
+            textView.textStorage.beginEditing()
+            textView.textStorage.setAttributes(NSAttributedString.Key.defaultParagraphAttribute, range: paragraphRange)
+            textView.textStorage.endEditing()
+            textView.selectedRange = NSRange(location: paragraphRange.max, length: 0)
+            
+            return false
+        }
+        
+        textView.typingAttributes = NSAttributedString.Key.defaultParagraphAttribute
+        
         return true
     }
 }

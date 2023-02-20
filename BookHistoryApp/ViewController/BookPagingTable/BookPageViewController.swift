@@ -187,8 +187,8 @@ class BookPagingViewController: UIViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-//        t = SomeStruct()
-//        test(t!)
+        
+    
         
         replayTest()
 //

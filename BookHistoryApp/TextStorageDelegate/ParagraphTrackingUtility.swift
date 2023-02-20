@@ -234,7 +234,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                     //                attributes[index] = allAttributes
                     print("serialQueue: task : 3")
                     self.editions.append(index)
-                    print("newParagraph: \(self.newParagraphs)")
+                    
                 }
             }
         }
@@ -242,6 +242,10 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
         group.notify(queue: serialQueue) { [weak self] in
             guard let self = self else {return}
             self.changeFinishObserver?.onNext(())
+            self.newParagraphs.forEach{ value in
+                print("value : \(value)")
+                print("value count : \(value.count)")
+            }
         }
         
     }
@@ -289,13 +293,14 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
         
         if !paragraphDescriptor.text.isEmpty {
             
-            let (att_S, str_S, _): SeparatedNSAttributedString = paragraphDescriptor.attributedString.separatedNSAttributeString()
+            let (att_S, str_S, block): SeparatedNSAttributedString = paragraphDescriptor.attributedString.separatedNSAttributeString()
             
-            if let blockType = paragraphDescriptor.attributedString.attribute(.blockType, at: 0, effectiveRange: nil) as? CustomBlockType.Base{
-                return (att_S, str_S, blockType)
-            }
+//            if let blockType = paragraphDescriptor.attributedString.attribute(.blockType, at: 0, effectiveRange: nil) as? CustomBlockType.Base{
+//                
+//                return (att_S, str_S, blockType)
+//            }
             
-            return (att_S, str_S , .paragraph)
+            return (att_S, str_S , block)
         }
         return ([],[],.paragraph)
     }
