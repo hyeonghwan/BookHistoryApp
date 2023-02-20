@@ -251,6 +251,7 @@ extension ParagraphTrackingUtility {
         let blockObjectIndex = index + 1
         var newAttributes: [NSAttributedString.Key : Any] = [:]
         var attString = attString
+        
         if let att = attributes{
             newAttributes = att
         }else{
@@ -263,7 +264,6 @@ extension ParagraphTrackingUtility {
                mutableString.append(nsAttributedString)
            }
             attString = mutableString
-            
         }
     
         

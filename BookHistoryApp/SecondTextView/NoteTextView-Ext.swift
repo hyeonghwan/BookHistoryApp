@@ -78,7 +78,8 @@ extension SecondTextView{
     func blockRemove(_ range: NSRange){
         let paragraphRange = self.getParagraphRange(range)
         
-        let newAttributedString = NSAttributedString(string: "", attributes: NSAttributedString.Key.defaultParagraphAttribute)
+        let newAttributedString = NSAttributedString(string: String.emptyStr(),
+                                                     attributes: NSAttributedString.Key.defaultParagraphAttribute)
     
         self.textStorage.beginEditing()
         self.textStorage.setAttributes(NSAttributedString.Key.defaultParagraphAttribute, range: paragraphRange)
@@ -87,6 +88,13 @@ extension SecondTextView{
         self.textStorage.beginEditing()
         self.textStorage.replaceCharacters(in: paragraphRange, with: newAttributedString)
         self.textStorage.endEditing()
+        
+        
+        if (range.location - 1) > 0{
+            self.selectedRange = NSMakeRange(paragraphRange.location - 1, 0)
+        }else{
+            self.selectedRange = NSMakeRange(0, 0)
+        }
         
         self.typingAttributes = NSAttributedString.Key.defaultParagraphAttribute
     }

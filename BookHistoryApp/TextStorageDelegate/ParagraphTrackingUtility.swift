@@ -295,10 +295,10 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
             
             let (att_S, str_S, block): SeparatedNSAttributedString = paragraphDescriptor.attributedString.separatedNSAttributeString()
             
-//            if let blockType = paragraphDescriptor.attributedString.attribute(.blockType, at: 0, effectiveRange: nil) as? CustomBlockType.Base{
-//                
-//                return (att_S, str_S, blockType)
-//            }
+            if let blockType = paragraphDescriptor.attributedString.attribute(.blockType, at: 0, effectiveRange: nil) as? CustomBlockType.Base{
+                
+                return (att_S, str_S, blockType)
+            }
             
             return (att_S, str_S , block)
         }

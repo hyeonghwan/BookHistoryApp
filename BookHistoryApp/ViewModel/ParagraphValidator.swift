@@ -12,8 +12,10 @@ protocol PageVCValidDelegate: AnyObject{
     func settingValidatorUseCaseDependency(_ validator: ParagraphValidatorProtocol)
     
     func getRestRangeAndText(_ paragraphRange: NSRange) -> String?
-    func resetParagraphToPlaceHodlerAttribute(_ data: ParagraphValidator.TextToValidData) -> Bool
     
+    func resetParagraphToPlaceHodlerAttribute(paragraphRange: NSRange,
+                                              replacement type: CustomBlockType.Base,
+                                              lastLine flag: Bool) -> Bool
     func replaceBlockAttribute(_ text: String,
                                _ paragraphRange: NSRange,
                                _ blockType: CustomBlockType.Base) -> Bool
@@ -308,19 +310,7 @@ extension ParagraphValidator{
 extension ParagraphValidator{
     private func textHeadSymbolListValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
         guard let pageViewModel = self.pageViewModel else {return false}
-        if pageViewModel.replaceBlockAttribute(text,paragraphRange,.textHeadSymbolList){
-            
-            guard let restText = pageViewModel.getRestRangeAndText(paragraphRange) else {return false}
-            
-            let textToValidData = TextToValidData(text: text,
-                                                  restText: restText,
-                                                  replaceMent:"리스트",
-                                                  paragraphRange: paragraphRange,
-                                                  type: .textHeadSymbolList)
-            
-            return pageViewModel.resetParagraphToPlaceHodlerAttribute(textToValidData)
-        }
-        return false
+        return pageViewModel.replaceBlockAttribute(text, paragraphRange, .textHeadSymbolList)
     }
 }
 
@@ -328,18 +318,6 @@ extension ParagraphValidator{
 extension ParagraphValidator{
     private func toggleValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
         guard let pageViewModel = self.pageViewModel else {return false}
-        if pageViewModel.replaceBlockAttribute(text,paragraphRange,.toggleList){
-            
-            guard let restText = pageViewModel.getRestRangeAndText(paragraphRange) else {return false}
-            
-            let textToValidData = TextToValidData(text: text,
-                                                  restText: restText,
-                                                  replaceMent: "토글",
-                                                  paragraphRange: paragraphRange,
-                                                  type: .toggleList)
-            
-            return pageViewModel.resetParagraphToPlaceHodlerAttribute(textToValidData)
-        }
-        return false
+        return pageViewModel.replaceBlockAttribute(text, paragraphRange, .toggleList)
     }
 }

@@ -258,6 +258,7 @@ extension ParagraphTrackingUtility{
                     }
                 }
             }
+            paragraphTextView.typingAttributes = NSAttributedString.Key.defaultParagraphAttribute
             return false
         }
         return true

@@ -189,24 +189,93 @@ extension PageVCViewModel: PageTextViewInput{
         // is string removeAction or addAction?
         // remove action verify using isBackSpaceKey method( return type is bool )
         // and other cases are addAction so validCheck and add text
-        if text.isBackSpaceKey(),
-           textView.selectedRange.isLineChangeRange(compare: paragraphRange){
+        if text.isBackSpaceKey(){
             
-            let upParagraphRange = paragraphRange
-            let seletedRange = textView.selectedRange
-            let replaceRange = textView.getParagraphRange(seletedRange)
+            if textView.selectedRange.isLineChangeRange(compare: paragraphRange){
+                let upParagraphRange = paragraphRange
+                let seletedRange = textView.selectedRange
+                let replaceRange = textView.getParagraphRange(seletedRange)
+               
+                let attributedString = textView.textStorage.attributedSubstring(from: replaceRange)
+                
+                return paragraphValidator.isParagraphRemoveAction(replacement: attributedString,
+                                                                  replaceRange: replaceRange,
+                                                                  above: upParagraphRange,
+                                                                  aboveBlock: blockType)
+            }
             
-            let attributedString = textView.textStorage.attributedSubstring(from: replaceRange)
+            print("rangess: \(range)")
+            print("rangess: paragraph: \(paragraphRange)")
+            if (paragraphRange.length - range.length) == 2{
+                return true
+//                return backKeyPreesedAndResetPlaceHolder(paragraphRange: <#T##NSRange#>, replace: blockType, lastLine: <#T##Bool#>)
+            }else{
+                return true
+            }
             
-            return paragraphValidator.isParagraphRemoveAction(replacement: attributedString,
-                                                              replaceRange: replaceRange,
-                                                              above: upParagraphRange,
-                                                              aboveBlock: blockType)
         }else{
             return paragraphValidator.isValidBlock(text, paragraphRange, blockType)
         }
     }
+    
+    private func backKeyPreesedAndResetPlaceHolder(paragraphRange: NSRange,
+                                                   replace type: CustomBlockType.Base,
+                                                   lastLine flag: Bool) -> Bool{
+        
+        switch type{
+        case .textHeadSymbolList,.toggleList,.title1,.title2,.title3:
+            return resetParagraphToPlaceHodlerAttribute(paragraphRange: paragraphRange,
+                                                        replacement: type,
+                                                        lastLine: flag)
+        default:
+            return true
+        }
+        
+    }
 }
+//        if pageViewModel.replaceBlockAttribute(text,paragraphRange,.toggleList){
+//
+//            guard let restText = pageViewModel.getRestRangeAndText(paragraphRange) else {return false}
+//
+//            let textToValidData = TextToValidData(text: text,
+//                                                  restText: restText,
+//                                                  replaceMent: "토글",
+//                                                  paragraphRange: paragraphRange,
+//                                                  type: .toggleList)
+//
+//            return pageViewModel.resetParagraphToPlaceHodlerAttribute(textToValidData)
+//        }
+
+//func resetParagraphToPlaceHodlerAttribute(_ data: ParagraphValidator.TextToValidData) -> Bool{
+//    guard let textView = pageVC?.textView else {return false}
+//    
+//    let restText = data.restText
+//    let paragraphRange = data.paragraphRange
+//    let text = data.text
+//    let replacement = data.replaceMent
+//    let type = data.type
+//    
+//    var attributes: [NSAttributedString.Key : Any] = [:]
+//    
+//    if type == .textHeadSymbolList{
+//        attributes = NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes
+//    }else{
+//        attributes = NSAttributedString.Key.togglePlaceHolderAttributes
+//    }
+//    
+//    if (restText.length == 3 && text == ""){
+//        textView.textStorage.beginEditing()
+//        textView.textStorage.replaceCharacters(in: NSRange(location: paragraphRange.location + 1,
+//                                                           length: paragraphRange.length - 2),
+//                                               with: NSAttributedString(string: replacement,
+//                                                                        attributes: attributes))
+//        textView.textStorage.endEditing()
+//        
+//        textView.selectedRange = NSRange(location: paragraphRange.location + 1, length: 0)
+//        return false
+//    }
+//    return true
+//}
 
 extension PageVCViewModel: PageVCViewModelInput{
     func pageVC_Init(_ pageVC: PageVC) {

@@ -56,17 +56,11 @@ extension Reactive where Base: ParagraphTrackingUtility{
     
     private func onAttributes(_ blocks: [BlockObject]){
         var attributeArray: [[[NSAttributedString.Key : Any]]] = []
+        
         blocks.forEach{ block in
-//            block.getObjectAttributes()
             attributeArray += block.getAllObejctAttributes()
         }
         
-        attributeArray.forEach{ value in
-            print("value[0][.blockType] : \(value[0][.blockType])")
-            print("value[0][.blockType] : \((value[0][.paragraphStyle] as! NSParagraphStyle).headIndent)")
-            print("value[0][.blockType] : \((value[0][.foregroundColor] as! UIColor))")
-            print("--------------------------------------------")
-        }
         
         self.newAttributes.onNext(attributeArray)
     }
