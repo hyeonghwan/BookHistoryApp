@@ -185,53 +185,16 @@ extension PageVCViewModel: PageTextViewInput{
         // and current Paragraph change attribute and text when invalid block
         guard let paragraphValidator = self.paragraphValidator else {return false}
         
-        
         // is string removeAction or addAction?
         // remove action verify using isBackSpaceKey method( return type is bool )
         // and other cases are addAction so validCheck and add text
         if text.isBackSpaceKey(){
-            
-            if textView.selectedRange.isLineChangeRange(compare: paragraphRange){
-                let upParagraphRange = paragraphRange
-                let seletedRange = textView.selectedRange
-                let replaceRange = textView.getParagraphRange(seletedRange)
-               
-                let attributedString = textView.textStorage.attributedSubstring(from: replaceRange)
-                
-                return paragraphValidator.isParagraphRemoveAction(replacement: attributedString,
-                                                                  replaceRange: replaceRange,
-                                                                  above: upParagraphRange,
-                                                                  aboveBlock: blockType)
-            }
-            
-            print("rangess: \(range)")
-            print("rangess: paragraph: \(paragraphRange)")
-            if (paragraphRange.length - range.length) == 2{
-                return true
-//                return backKeyPreesedAndResetPlaceHolder(paragraphRange: <#T##NSRange#>, replace: blockType, lastLine: <#T##Bool#>)
-            }else{
-                return true
-            }
-            
+            return paragraphValidator.replace_when_backKeyPressed(block: blockType, paragraph: paragraphRange)
         }else{
             return paragraphValidator.isValidBlock(text, paragraphRange, blockType)
         }
     }
     
-    private func backKeyPreesedAndResetPlaceHolder(paragraphRange: NSRange,
-                                                   replace type: CustomBlockType.Base,
-                                                   lastLine flag: Bool) -> Bool{
-        
-        switch type{
-        case .textHeadSymbolList,.toggleList,.title1,.title2,.title3:
-            return resetParagraphToPlaceHodlerAttribute(paragraphRange: paragraphRange,
-                                                        replacement: type,
-                                                        lastLine: flag)
-        default:
-            return true
-        }
-        
-    }
 }
 //        if pageViewModel.replaceBlockAttribute(text,paragraphRange,.toggleList){
 //

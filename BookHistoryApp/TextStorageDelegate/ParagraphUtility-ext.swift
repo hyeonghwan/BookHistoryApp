@@ -250,6 +250,7 @@ extension ParagraphTrackingUtility{
                     if let restText = restText,
                        restText.isEmpty{
                         addBlockActionPropertyToTextStorage(.paragraph, paragraphRange, restText)
+                        return true
                     }else{
                         addBlockActionPropertyToTextStorage(.paragraph, paragraphRange, restText)
                         self.paragraphStorage?.beginEditing()

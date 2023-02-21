@@ -117,6 +117,18 @@ extension NSAttributedString{
     static var titleAttributeString = NSAttributedString(string: "제목을 입력해주세요",
                                                          attributes: NSAttributedString.Key.defaultAttribute)
     
+    static var title1_placeHolderString = NSAttributedString(string: "제목없음1",
+                                                            attributes: NSAttributedString.Key.getPlaceTitleAttribues(.title1))
+    static var title2_placeHolderString = NSAttributedString(string: "제목없음2",
+                                                            attributes: NSAttributedString.Key.getPlaceTitleAttribues(.title2))
+    static var title3_placeHolderString = NSAttributedString(string: "제목없음3",
+                                                            attributes: NSAttributedString.Key.getPlaceTitleAttribues(.title3))
+    
+    static var toggle_placeHolderString = NSAttributedString(string: "토글",
+                                                             attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
+    
+    static var textHeadSymbolList_placeHolderString = NSAttributedString(string: "리스트",
+                                                             attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes)
     
     static var paragraphNewLine: NSAttributedString{
         return NSAttributedString(string: String.newLineString(), attributes: NSAttributedString.Key.defaultParagraphAttribute)

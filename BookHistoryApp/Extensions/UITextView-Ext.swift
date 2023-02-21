@@ -8,11 +8,44 @@
 import UIKit
 
 extension UITextView{
-    func rangeFromTextRange(textRange:UITextRange) -> NSRange {
+    
+    func selectedSeparatedText(paragraph range: NSRange) -> String?{
+        let seletedRange = self.selectedRange
+        let paragraphRange = range
+        let difference = paragraphRange.location - seletedRange.location
+        let length = difference + (paragraphRange.length - seletedRange.length)
+        
+        let location = seletedRange.max
+        let makeRange = NSMakeRange(location , length)
+        guard var text = getTextFromRange(at: makeRange) else {return nil}
+        if text.endsWith_Newline{ text.removeLast() }
+        return text
+    }
+    
+    func getTextFromRange(at range: NSRange) -> String?{
+        guard let text = self.textViewElementFromNSRange(range: range) else {return nil}
+        return text
+    }
+    
+    func isLineChangeRange() -> Bool{
+        return true
+    }
+    func isLineChangeRange(compare paragraphRange: NSRange) -> Bool{
+        let lineChangeRange = NSMakeRange(self.selectedRange.location - 1, 1)
+        guard let text = self.textViewElementFromNSRange(range: lineChangeRange) else {return false}
+        if text.isNewLine(),
+           self.selectedRange.location == paragraphRange.max{
+            return true
+        }else{
+            return false
+        }
+    }
+    
+    func rangeFromTextRange(textRange: UITextRange) -> NSRange {
         let location:Int = self.offset(from: self.beginningOfDocument, to: textRange.start)
         let length:Int = self.offset(from: textRange.start, to: textRange.end)
-           return NSMakeRange(location, length)
-       }
+        return NSMakeRange(location, length)
+    }
     
     
     func getParagraphRange(_ range: NSRange) -> NSRange {
@@ -34,7 +67,7 @@ extension UITextView{
     
     /// seleted range 에서 newLine이 입력 되었을때, 나머지 텍스트 부분 을 구하는 함수
     /// - Returns: 나머지 text
-    func getTheRestText(paragrah range: NSRange, restRange restRange: NSRange) -> String?{
+    func getTheRestText(paragrah range: NSRange, restRange: NSRange) -> String?{
         let restRange = restRange
         if let range = self.textRangeFromNSRange(range: restRange),
            let restText = self.text(in: range){
@@ -65,6 +98,12 @@ extension UITextView {
 }
 
 extension UITextView{
+    
+    func textViewElementFromNSRange(range: NSRange) -> String?{
+        guard let uitextRange = self.textRangeFromNSRange(range: range) else {return nil}
+        guard let text = self.text(in: uitextRange) else {return nil}
+        return text
+    }
     
     func textRangeFromNSRange(range:NSRange) -> UITextRange?
     {

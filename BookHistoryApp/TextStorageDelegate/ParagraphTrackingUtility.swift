@@ -81,7 +81,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
             }
         }
     }
-
+    
     
     var editObserver: AnyObserver<Int>?
     
@@ -112,7 +112,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
         return paragraphs.enumerated().map{ index, string -> NSRange in
             let length: Int = string.length
             let range = NSRange(location: location, length: length)
-            location = range.max 
+            location = range.max
             return range
         }
     }
@@ -168,85 +168,73 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
     
     
     func textStorage(_ textStorage: ParagraphTextStorage, didChangeParagraphs changes: [ParagraphTextStorage.ParagraphChange]) {
-        let serialQueue = DispatchQueue(label: "serial")
-        let group = DispatchGroup()
+        
         defer{
             print("didChangeParagraphs : defer")
         }
-        print("serialQueue: task : 1")
-        serialQueue.async(group: group){ [weak self] in
+        
+        
         for change in changes {
-            print("serialQueue: task : 2")
             
-                print(" serialQueue: task: \(Thread.isMainThread)")
-                guard let self = self else {return}
-            
-                switch change {
-                case .insertedParagraph(index: let index, descriptor: let paragraphDescriptor):
-                    
-                    if self.firstInit {
-                        self.firstInit = false
-                    } else {
-                        self.insertions.append(index)
-                    }
-                    print("paragraphDescriptor : \(paragraphDescriptor.attributedString)")
-                    print("paragraphDescriptor : \(paragraphDescriptor.text)")
-                    let separatedNSAttString = self.attributesArray(index:index,from: paragraphDescriptor)
-                    self.newParagraphs.insert(separatedNSAttString.1, at: index)
-                    self.newAttributes.insert(separatedNSAttString.0, at: index)
-                    
-                    let blockType = separatedNSAttString.2
-                    self.blockTypes.insert( blockType, at: index)
-                    
-                    
-                    guard let blockObj = BlockCreateHelper.shared.createBlock_to_array(separatedNSAttString) else {return}
-                    self.blockObjects.insert(blockObj, at: index)
-                    
-                    
-                    let allAttributes = self.attributes(from: paragraphDescriptor)
-                    self.paragraphs.insert(paragraphDescriptor.text, at: index)
-                    //                attributes.insert(allAttributes, at: index)
-                    
-                    
-                    
-                case .removedParagraph(index: let index):
-                    self.newParagraphs.remove(at: index)
-                    self.newAttributes.remove(at: index)
-                    
-                    self.paragraphs.remove(at: index)
-                    self.blockTypes.remove(at: index)
-                    self.blockObjects.remove(at: index)
-                    //              self.  attributes.remove(at: index)
-                    
-                    self.removals.append(index)
-                    
-                case .editedParagraph(index: let index, descriptor: let paragraphDescriptor):
-                    self.editObserver?.onNext(index)
-                    
-                    // test separate
-                    let separatedNSAttString = self.attributesArray(index: index,from: paragraphDescriptor)
-                    print("separatedNSAttring: \(separatedNSAttString.0)")
-                    print("separatedNSAttring: \(separatedNSAttString.1)")
-                    self.editBlock(from: separatedNSAttString, edited: index)
-                    
-                    let allAttributes = self.attributes(from: paragraphDescriptor)
-                    self.paragraphs[index] = paragraphDescriptor.text
-                    //                attributes[index] = allAttributes
-                    print("serialQueue: task : 3")
-                    self.editions.append(index)
-                    
+            switch change {
+            case .insertedParagraph(index: let index, descriptor: let paragraphDescriptor):
+                
+                if self.firstInit {
+                    self.firstInit = false
+                } else {
+                    self.insertions.append(index)
                 }
+                print("paragraphDescriptor : \(paragraphDescriptor.attributedString)")
+                print("paragraphDescriptor : \(paragraphDescriptor.text)")
+                let separatedNSAttString = self.attributesArray(index:index,from: paragraphDescriptor)
+                self.newParagraphs.insert(separatedNSAttString.1, at: index)
+                self.newAttributes.insert(separatedNSAttString.0, at: index)
+                
+                let blockType = separatedNSAttString.2
+                self.blockTypes.insert( blockType, at: index)
+                
+                
+                guard let blockObj = BlockCreateHelper.shared.createBlock_to_array(separatedNSAttString) else {return}
+                self.blockObjects.insert(blockObj, at: index)
+                
+                
+                let allAttributes = self.attributes(from: paragraphDescriptor)
+                self.paragraphs.insert(paragraphDescriptor.text, at: index)
+                //                attributes.insert(allAttributes, at: index)
+                
+                
+                
+            case .removedParagraph(index: let index):
+                self.newParagraphs.remove(at: index)
+                self.newAttributes.remove(at: index)
+                
+                self.paragraphs.remove(at: index)
+                self.blockTypes.remove(at: index)
+                self.blockObjects.remove(at: index)
+                //              self.  attributes.remove(at: index)
+                
+                self.removals.append(index)
+                
+            case .editedParagraph(index: let index, descriptor: let paragraphDescriptor):
+                self.editObserver?.onNext(index)
+                
+                // test separate
+                let separatedNSAttString = self.attributesArray(index: index,from: paragraphDescriptor)
+                print("separatedNSAttring: \(separatedNSAttString.0)")
+                print("separatedNSAttring: \(separatedNSAttString.1)")
+                self.editBlock(from: separatedNSAttString, edited: index)
+                
+                let allAttributes = self.attributes(from: paragraphDescriptor)
+                self.paragraphs[index] = paragraphDescriptor.text
+                //                attributes[index] = allAttributes
+                print("serialQueue: task : 3")
+                self.editions.append(index)
+                
             }
         }
         
-        group.notify(queue: serialQueue) { [weak self] in
-            guard let self = self else {return}
-            self.changeFinishObserver?.onNext(())
-            self.newParagraphs.forEach{ value in
-                print("value : \(value)")
-                print("value count : \(value.count)")
-            }
-        }
+        
+        
         
     }
     
