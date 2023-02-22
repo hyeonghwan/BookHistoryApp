@@ -124,13 +124,9 @@ extension ParagraphTrackingUtility{
         
         let resultAttributedString = NSMutableAttributedString()
         
-        let titleAttributeString = NSAttributedString(string: "제목1",attributes:titleAttributes )
+        let titleAttributeString = NSAttributedString(string: "제목1\n",attributes:titleAttributes )
         
         resultAttributedString.append(titleAttributeString)
-        
-        let titleEnterStyle = NSAttributedString.Key.defaultAttribute
-        
-        resultAttributedString.append(NSAttributedString(string: " \n", attributes: titleEnterStyle))
         
         let insertedRange = ranges[currentIndex]
         if currentIndex == self.ranges.count - 1{
@@ -171,12 +167,12 @@ extension ParagraphTrackingUtility{
         var paragraphString: NSAttributedString
         
         if let text = text {
-            paragraphString = NSAttributedString(string: text, attributes: NSAttributedString.Key.defaultAttribute)
+            paragraphString = NSAttributedString(string: text, attributes: NSAttributedString.Key.defaultParagraphAttribute)
         }else{
             paragraphString = NSAttributedString(string: String.newLineString(),
-                                                 attributes: NSAttributedString.Key.defaultAttribute)
+                                                 attributes: NSAttributedString.Key.defaultParagraphAttribute)
         }
-        self.paragrphTextView?.typingAttributes = NSAttributedString.Key.defaultAttribute
+        self.paragrphTextView?.typingAttributes = NSAttributedString.Key.defaultParagraphAttribute
         
         self.paragraphStorage?.beginEditing()
         self.paragraphStorage?.insert(paragraphString, at: insertedRange.max)

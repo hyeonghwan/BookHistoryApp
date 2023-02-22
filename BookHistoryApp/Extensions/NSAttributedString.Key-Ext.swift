@@ -19,10 +19,10 @@ extension NSAttributedString.Key {
     
     static let blockType = NSAttributedString.Key("BlockType")
     
-    static let defaultAttribute: [NSAttributedString.Key : Any] = [NSAttributedString.Key.backgroundColor : UIColor.clear,
-                                                                   NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
-                                                                   NSAttributedString.Key.foregroundColor : UIColor.label,
-                                                                   .paragraphStyle : NSParagraphStyle.defaultParagraphStyle()]
+//    static let defaultAttribute: [NSAttributedString.Key : Any] = [NSAttributedString.Key.backgroundColor : UIColor.clear,
+//                                                                   NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+//                                                                   NSAttributedString.Key.foregroundColor : UIColor.label,
+//                                                                   .paragraphStyle : NSParagraphStyle.defaultParagraphStyle()]
     
     static let defaultParagraphAttribute: [NSAttributedString.Key : Any] =
     [NSAttributedString.Key.blockType : CustomBlockType.Base.paragraph,
@@ -114,8 +114,8 @@ extension NSAttributedString.Key {
 }
 
 extension NSAttributedString{
-    static var titleAttributeString = NSAttributedString(string: "제목을 입력해주세요",
-                                                         attributes: NSAttributedString.Key.defaultAttribute)
+//    static var titleAttributeString = NSAttributedString(string: "제목을 입력해주세요",
+//                                                         attributes: NSAttributedString.Key.defaultAttribute)
     
     static var title1_placeHolderString = NSAttributedString(string: "제목없음1",
                                                             attributes: NSAttributedString.Key.getPlaceTitleAttribues(.title1))
@@ -140,7 +140,7 @@ extension NSAttributedString{
             self.attributes(at: self.range.location, effectiveRange: nil)
         }
     }
-    static var enterNSAttributed: NSAttributedString{
+    static var newLineNSAttributed: NSAttributedString{
         return NSAttributedString(string: String.newLineString(), attributes: NSAttributedString.Key.defaultParagraphAttribute)
     }
     
@@ -151,7 +151,7 @@ extension NSAttributedString{
     func separatedNSAttributeString() -> SeparatedNSAttributedString{
         var (att_S, str_S, _): SeparatedNSAttributedString = ([],[],CustomBlockType.Base.none)
         if self.string.isNewLine(){
-            return ([NSAttributedString.Key.defaultAttribute], [String.newLineString()], .paragraph)
+            return ([NSAttributedString.Key.defaultParagraphAttribute], [String.newLineString()], .paragraph)
         }
         self.enumerateAttributes(in: self.range,
                                  options: .longestEffectiveRangeNotRequired){

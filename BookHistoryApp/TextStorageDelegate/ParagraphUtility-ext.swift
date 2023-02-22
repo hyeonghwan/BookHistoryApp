@@ -216,6 +216,7 @@ extension ParagraphTrackingUtility{
         //toggle,textHeadSymbol 은 첫번째 range 에 NSTextAttachMent를 가지기 때문에 location을 1plus 하였다.
         let attribute = paragraphTextView.textStorage.attribute(.foregroundColor, at: paragraphRange.location , effectiveRange: nil) as? UIColor
         
+        
         if let toggleForeGround = attribute,
            toggleForeGround.isPlaceHolder(),
            !text.isNewLine(){
@@ -235,7 +236,7 @@ extension ParagraphTrackingUtility{
             let paragraphRange = paragraphTextView.getCurrentParagraphRange()
             let restRange = paragraphTextView.getTheRestRange(range: paragraphRange)
             let restText = paragraphTextView.getTheRestText(paragrah: paragraphRange, restRange: restRange)
-            paragraphTextView.typingAttributes = NSAttributedString.Key.defaultAttribute
+            paragraphTextView.typingAttributes = NSAttributedString.Key.defaultParagraphAttribute
             
             if let restText = restText,
                restText.isNewLine(){

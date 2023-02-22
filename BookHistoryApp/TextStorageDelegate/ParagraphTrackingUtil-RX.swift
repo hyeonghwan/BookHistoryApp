@@ -33,12 +33,9 @@ extension Reactive where Base: ParagraphTrackingUtility{
     var blockObjects: Binder<[BlockObject]>{
         return Binder(self.base) { paragraphTUtil , blocks in
             paragraphTUtil.blockObjects = blocks
-            print("blocks : \(blocks)")
             onBlockType(blocks)
             onParagraph(blocks)
             onAttributes(blocks)
-            print("-dsfasdf")
-            print(self.paragraphs)
         }
     }
     
@@ -61,12 +58,12 @@ extension Reactive where Base: ParagraphTrackingUtility{
             attributeArray += block.getAllObejctAttributes()
         }
         
-        
         self.newAttributes.onNext(attributeArray)
     }
     
     private func onBlockType(_ blocks: [BlockObject]){
         let types = blocks.compactMap{ $0.object?.e.base }
+        
         blockTypes.onNext(types)
     }
     
@@ -79,15 +76,14 @@ extension Reactive where Base: ParagraphTrackingUtility{
             try blocks
                 .map{ block in  try block.object?.e.getBlockValueType()}
                 .compactMap{ blockType in blockType?.getParagraphsValues() }
-            
-            print("paragraphsFromBlock: \(paragraphsFromBlock)")
 
-            let t = paragraphsFromBlock.map{ sequence in
+            
+            let sequence = paragraphsFromBlock.map{ sequence in
                 return sequence.joined()
             }
-            print("paragraphsFromBlock.map | \(t)")
-            
-            self.paragraphs.onNext(t)
+            print("paragraphSFromBlock : \(paragraphsFromBlock)")
+            print("sequence : \(sequence)")
+            self.paragraphs.onNext(sequence)
             self.newParagraphs.onNext(paragraphsFromBlock)
         }catch{
             print("\(#function) , \(#line)")

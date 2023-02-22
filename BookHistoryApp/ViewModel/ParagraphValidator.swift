@@ -13,7 +13,7 @@ protocol PageVCValidDelegate: AnyObject{
     
     func getRestRangeAndText(_ paragraphRange: NSRange) -> String?
     
-    func resetParagraphToPlaceHodlerAttribute(paragraphRange: NSRange,
+    func resetParagraphTo_PlaceHodlerAttribute(paragraphRange: NSRange,
                                               replacement type: CustomBlockType.Base,
                                               lastLine flag: Bool) -> Bool
     func replaceBlockAttribute(_ text: String,
@@ -25,7 +25,7 @@ protocol PageVCValidDelegate: AnyObject{
                                                   replaceRange range: NSRange,
                                                   block type: CustomBlockType.Base) -> Bool
     
-    func resetParagraphToRestTextAttributes(inserted range: NSRange,
+    func resetParagraphTo_RestTextAttributes(inserted range: NSRange,
                                             title type: CustomBlockType.Base,
                                             replacement text: String,
                                             lastLine flag: Bool) -> Bool
@@ -66,6 +66,7 @@ class ParagraphValidator: ParagraphValidatorProtocol{
         
     }
     
+    
     func replace_when_backKeyPressed(block type: CustomBlockType.Base?, paragraph range: NSRange) -> Bool{
         guard let textView = self.pageViewModel?.pageVC?.textView else {return false}
         let paragraphRange = range
@@ -94,6 +95,12 @@ class ParagraphValidator: ParagraphValidatorProtocol{
             let seleted = textView.selectedRange
             // 어느 위치에서 삭제 되었는지
             let difference = (seleted.location - paragraphRange.location)
+            
+            let firstParagraphRange = textView.getParagraphRange(NSRange(location: paragraphRange.location, length: 0))
+            // seletedRange가 singe Line만 포함하고 있을때 early return
+            if firstParagraphRange == paragraphRange{
+                return true
+            }
             
             return backKeyPreesedAndResetPlaceHolder(paragraphRange: paragraphRange,
                                                      difference: difference,
@@ -135,8 +142,9 @@ private extension ParagraphValidator{
                                            replace type: CustomBlockType.Base) -> Bool{
         guard let pageViewModel = pageViewModel else {return false}
         guard let textView = pageViewModel.pageVC?.textView else {return false}
-        let lastLine = paragraphRange.max == textView.getTextCount() ? true : false
-        
+        let lastLine = textView.isLastLine(paragraph: paragraphRange) ? true : false
+        print("paragraphRange: \(paragraphRange.max)")
+        print("paragraphRange: \(textView.getTextCount())")
         switch type{
         case .title1,.title2,.title3:
             
@@ -150,7 +158,7 @@ private extension ParagraphValidator{
             if difference > 2 {
                 return true
             }else{
-                return pageViewModel.resetParagraphToPlaceHodlerAttribute(paragraphRange: paragraphRange,
+                return pageViewModel.resetParagraphTo_PlaceHodlerAttribute(paragraphRange: paragraphRange,
                                                                           replacement: type,
                                                                           lastLine: lastLine)
             }
@@ -161,6 +169,8 @@ private extension ParagraphValidator{
     }
     
     private func checkValidBlock(_ text: String,_ paragraphRange: NSRange,_ blockType: CustomBlockType.Base) -> Bool{
+        
+        
         switch blockType {
         case .paragraph:
             return paragraphTextValid(text, paragraphRange)
@@ -306,12 +316,12 @@ extension ParagraphValidator{
         if difference == 0{
             if let text = text,
                text.isEmpty{
-                return pageViewModel.resetParagraphToPlaceHodlerAttribute(paragraphRange: paragraphRange,
+                return pageViewModel.resetParagraphTo_PlaceHodlerAttribute(paragraphRange: paragraphRange,
                                                                           replacement: type,
                                                                           lastLine: line)
             }else{
                 guard let text = text else {return false}
-                return pageViewModel.resetParagraphToRestTextAttributes(inserted: paragraphRange,
+                return pageViewModel.resetParagraphTo_RestTextAttributes(inserted: paragraphRange,
                                                                         title: type,
                                                                         replacement: text,
                                                                         lastLine: line)
@@ -319,10 +329,16 @@ extension ParagraphValidator{
         }else{
             if let text = text,
                text.isEmpty{
+                if difference == 1{
+                    return pageViewModel.resetParagraphTo_PlaceHodlerAttribute(paragraphRange: paragraphRange,
+                                                                               replacement: type,
+                                                                               lastLine: line)
+                }
                 return true
+                
             }else{
                 guard let text = text else {return false}
-                return pageViewModel.resetParagraphToRestTextAttributes(inserted: paragraphRange,
+                return pageViewModel.resetParagraphTo_RestTextAttributes(inserted: paragraphRange,
                                                                         title: type,
                                                                         replacement: text,
                                                                         lastLine: line)
@@ -346,7 +362,7 @@ extension ParagraphValidator{
     private func paragraphTextValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
         guard let pageViewModel = self.pageViewModel else {return false}
         guard let textView = pageViewModel.pageVC?.textView else {return false}
-        
+        let lastLine = textView.isLastLine(paragraph: paragraphRange)
         if text.isNewLine(){
             textView.textStorage.beginEditing()
             textView.textStorage.insert(NSAttributedString.paragraphNewLine, at: paragraphRange.max)
@@ -355,7 +371,13 @@ extension ParagraphValidator{
             textView.textStorage.beginEditing()
             textView.textStorage.setAttributes(NSAttributedString.Key.defaultParagraphAttribute, range: paragraphRange)
             textView.textStorage.endEditing()
-            textView.selectedRange = NSRange(location: paragraphRange.max, length: 0)
+            
+            
+            if lastLine {
+                textView.selectedRange = NSRange(location: paragraphRange.max + 1, length: 0)
+            }else{
+                textView.selectedRange = NSRange(location: paragraphRange.max  , length: 0)
+            }
             
             return false
         }

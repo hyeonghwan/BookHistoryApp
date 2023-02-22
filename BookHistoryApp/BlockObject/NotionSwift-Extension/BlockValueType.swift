@@ -9,8 +9,8 @@ import Foundation
 
 
 
-protocol BlockTextValueType{
-    var richText: [RichTextObject] { get }
+protocol BlockTextValueType: AnyObject{
+    var richText: [RichTextObject] { get set }
     func getParagraphValue() -> String
     var children: [BlockObject]? { get }
 }
@@ -22,19 +22,14 @@ extension BlockTextValueType{
     
     func getParagraphsValues() -> [String] {
         
-        var t = self.richText.compactMap{ value -> String? in
-            guard let text = value.text.content else { return nil }
+        var paragraph = self.richText.compactMap{ value -> String? in
+            guard var text = value.text.content else { return nil }
             if text == "\u{fffc}"{
                 return nil
             }
             return text
         }
-        
-        
-        if t.last == "\n"{
-            t.removeLast()
-        }
-        return t
+        return paragraph
     }
     
     func getParagraphValue() -> String{
@@ -56,39 +51,39 @@ extension HeadingBlockValueObject: BlockValueType{
     
 }
 
-extension ChildPageBlockValueObject: BlockValueType{
-    var children: [BlockObject]? {
-        return nil  
-    }
-            
-    var richText: [RichTextObject]{
-        []
-    }
-    func getParagraphValue() -> String {
-        return self.title
-        
-    }
-}
-extension ToDoBlockValueObject: BlockValueType{
-    
- 
-}
-extension QuoteBlockValueObject: BlockValueType{
-
-}
-extension LinkToPageBlockValueObject: BlockValueType{
-    var children: [BlockObject]? {
-        return nil
-    }
-    
-    var richText: [RichTextObject]{
-        []
-    }
-    func getParagraphValue() -> String {
-        return self.page
-        
-    }
-}
-extension CalloutBlockValueObject: BlockValueType{
-}
+//extension ChildPageBlockValueObject: BlockValueType{
+//    var children: [BlockObject]? {
+//        return nil  
+//    }
+//            
+//    var richText: [RichTextObject]{
+//        []
+//    }
+//    func getParagraphValue() -> String {
+//        return self.title
+//        
+//    }
+//}
+//extension ToDoBlockValueObject: BlockValueType{
+//
+//
+//}
+//extension QuoteBlockValueObject: BlockValueType{
+//
+//}
+//extension LinkToPageBlockValueObject: BlockValueType{
+//    var children: [BlockObject]? {
+//        return nil
+//    }
+//
+//    var richText: [RichTextObject]{
+//        []
+//    }
+//    func getParagraphValue() -> String {
+//        return self.page
+//
+//    }
+//}
+//extension CalloutBlockValueObject: BlockValueType{
+//}
 

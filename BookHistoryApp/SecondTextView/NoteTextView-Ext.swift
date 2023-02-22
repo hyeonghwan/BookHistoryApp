@@ -119,7 +119,7 @@ extension SecondTextView{
         let paragraphRange = self.getParagraphRange(range)
         guard let index = self.contentViewModel?.paragraphTrackingUtility.ranges.firstIndex(where: { $0 == paragraphRange}) else {return}
         
-        var rng = NSRange(location: 34, length: 20){
+        var rng = NSRange() {
             didSet{
                 print("rng : \(rng)")
             }

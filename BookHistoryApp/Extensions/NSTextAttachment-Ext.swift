@@ -66,7 +66,7 @@ extension NSMutableAttributedString {
         let plainAttachmentString = NSAttributedString(attachment: attachment)
         
         var attributes: [NSAttributedString.Key : Any] = [:]
-        attributes = NSAttributedString.Key.defaultAttribute
+        attributes = NSAttributedString.Key.defaultParagraphAttribute
         attributes[.blockType] = type
         attributes[.paragraphStyle] = paragraphStyle
         

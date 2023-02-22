@@ -181,12 +181,11 @@ private extension BookPagingViewModel{
         guard let id = page.id else {return nil}
         
         guard let block = page.childBlock?.firstObject as? Page_ChildBlock,
-              let text = try? block.ownObject?.object?.e.getBlockValueType() as? TextAndChildrenBlockValueObject ,
+              let text = try? block.ownObject?.object?.e.getBlockValueType() as? BlockValueType,
               let title = text.richText.first?.text.content
         else{
             return PageModel(pageID: id, title: "제목 없음")
         }
-        
         
         return PageModel(pageID: id, title: title)
     }
@@ -195,6 +194,7 @@ private extension BookPagingViewModel{
         do {
             let childBlocks = try page.childBlock?.map({ element -> Page_ChildBlock in
                 if let childBlock = element as? Page_ChildBlock{
+                    print("childBlocksss : \(childBlock)")
                     return childBlock
                 }else{
                     throw CoreDataError.objectCastingError

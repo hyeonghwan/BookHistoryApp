@@ -85,6 +85,10 @@ extension UITextView{
         let restRange = NSRange(location: currentPosition.location, length: restLength)
         return restRange
     }
+    
+    func isLastLine(paragraph range: NSRange) -> Bool{
+        return range.max == self.getTextCount()
+    }
 }
 
 extension UITextView {

@@ -25,40 +25,46 @@ extension PageVCViewModel: PageVCValidDelegate{
     }
    
     
-    func resetParagraphToRestTextAttributes(inserted range: NSRange,
+    func resetParagraphTo_RestTextAttributes(inserted range: NSRange,
                                             title type: CustomBlockType.Base,
                                             replacement text: String,
                                             lastLine flag: Bool) -> Bool{
         guard let textView = pageVC?.textView else {return false}
         let paragraphRange = range
-        var text = text
+        let text = text
         
-        if flag == false{
-            text.append(String.newLineString())
-        }
- 
+        let mutable = NSMutableAttributedString()
+        
         let attributedString = NSAttributedString(string: text,
                                                   attributes: NSAttributedString.Key.getTitleAttributes(block: type,
                                                                                                         font: UIFont.preferredFont(block: type)))
+        mutable.append(attributedString)
+        
+        if flag == false{
+            mutable.append(NSAttributedString.newLineNSAttributed)
+        }
+        
         
         let locationDifference = textView.selectedRange.location - paragraphRange.location
         let length = paragraphRange.length - textView.selectedRange.length - locationDifference
         
+        
+        // 짝수 일때 글자수가 같기 때문에 paragraphTextKit이 change를 감지하지 못하는것 같다.
+        // 그래서 seletedRange를 전부 empty string으로 바꾸고
+        // seletedLocation 에 나머지 text insert
+        
+        let removeRange = NSRange(location: textView.selectedRange.location,
+                                  length: paragraphRange.length - locationDifference)
         textView.textStorage.beginEditing()
-        textView.textStorage.replaceCharacters(in: NSRange(location: textView.selectedRange.max,
-                                                           length: length),
-                                               with: String.emptyStr())
+        textView.textStorage.replaceCharacters(in: removeRange,
+                                               with: mutable)
         textView.textStorage.endEditing()
         
-        textView.textStorage.beginEditing()
-        textView.textStorage.replaceCharacters(in: textView.selectedRange, with: attributedString)
-        textView.textStorage.endEditing()
-        
-        textView.selectedRange = NSMakeRange(locationDifference + paragraphRange.location + length - 1, 0)
+        textView.selectedRange = NSMakeRange(locationDifference + paragraphRange.location + length , 0)
         return false
     }
     
-    func resetParagraphToPlaceHodlerAttribute(paragraphRange: NSRange,
+    func resetParagraphTo_PlaceHodlerAttribute(paragraphRange: NSRange,
                                               replacement type: CustomBlockType.Base,
                                               lastLine flag: Bool) -> Bool{
         guard let textView = pageVC?.textView else {return false}

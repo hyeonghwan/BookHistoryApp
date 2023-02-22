@@ -36,11 +36,30 @@ enum CustomBlockType{
             
             return result
         }
+        if let value = try? self.getBlockValueType() as? HeadingBlockValueObject{
+            for ob in value.richText{
+                result += " --- richText: \(ob.description), ----rich----"
+            }
+            if let children = value.children{
+                result += " ---- children: \(children) block ----"
+            }
+            
+            return result
+        }
         return "customBlock description failed"
     }
     
     func editAttributes(_ attributes: [[NSAttributedString.Key : Any]]){
         switch self {
+        case .title1(let headingBlockObject):
+            changeObjectAnnotaionValue(attributes, headingBlockObject)
+        
+        case .title2(let headingBlockObject):
+            changeObjectAnnotaionValue(attributes, headingBlockObject)
+            
+        case .title3(let headingBlockObject):
+            changeObjectAnnotaionValue(attributes, headingBlockObject)
+            
         case .paragraph(let textAndChildrenBlockValueObject):
             changeObjectAnnotaionValue(attributes, textAndChildrenBlockValueObject)
       
@@ -57,6 +76,15 @@ enum CustomBlockType{
     func editElement(_ str: [String], _ attributes: [[NSAttributedString.Key : Any]]){
         
         switch self {
+        case .title1(let headingBlockValueObject):
+            changeHeadingElementValue(str, attributes ,headingBlockValueObject)
+            
+        case .title2(let headingBlockValueObject):
+            changeHeadingElementValue(str, attributes ,headingBlockValueObject)
+            
+        case .title3(let headingBlockValueObject):
+            changeHeadingElementValue(str, attributes ,headingBlockValueObject)
+            
         case .paragraph(let textAndChildrenBlockValueObject):
             changeTextElementValue(str, attributes ,textAndChildrenBlockValueObject)
       
@@ -68,6 +96,38 @@ enum CustomBlockType{
             
         default:
             break
+        }
+    }
+    private func changeHeadingElementValue(_ str: [String],
+                                        _ attributes: [[NSAttributedString.Key : Any]],
+                                        _ object: HeadingBlockValueObject){
+        
+        if object.richText.count == str.count{
+            
+            object.richText
+            =
+            object
+                .richText
+                .enumerated()
+                .map{ index , value in
+                    if str[index] == value.plain_text{
+                        return value
+                    }else{
+                        value.text.content = str[index]
+                        value.plain_text = str[index]
+                        return value
+                    }
+                }
+        }else{
+            let anotations = getAnnotations(attributes)
+            object.richText
+            =
+            str
+                .enumerated()
+                .map{ index,string in
+                    let raw = RawTextElement(content: string, link: nil)
+                    return RichTextObject(text: raw, string, annotations: anotations[index])
+                }
         }
     }
     
@@ -112,7 +172,7 @@ enum CustomBlockType{
     ///   this func is occur when user change text Attributes
     ///    editAttributes -> changeObjectAnnotaionValue
     private func changeObjectAnnotaionValue(_ attributes: [[NSAttributedString.Key : Any]],
-                                   _ object: TextAndChildrenBlockValueObject){
+                                   _ object: BlockValueType){
         let annotations = getAnnotations(attributes)
         
         object.richText
@@ -181,6 +241,12 @@ enum CustomBlockType{
         switch self{
         case .paragraph(let value):
             return value
+        case .title1(let value):
+            return value
+        case .title2(let value):
+            return value
+        case .title3(let value):
+            return value
         case .textHeadSymbolList(let value):
             return value
         case .toggleList(let value):
@@ -199,28 +265,33 @@ enum CustomBlockType{
         case .toggleList:
             return NSAttributedString.Key.toggleAttributes
         default:
-            return NSAttributedString.Key.defaultAttribute
+            return NSAttributedString.Key.defaultParagraphAttribute
         }
     }
     
-    func getAttributes(_ object: TextAndChildrenBlockValueObject) -> [[NSAttributedString.Key : Any]]{
+    func getAttributes(_ object: BlockValueType) -> [[NSAttributedString.Key : Any]]{
         var attributes: [[NSAttributedString.Key : Any]] = []
         
         switch self{
+        case .title1:
+            return getHeadingBlockAttributes(type: .title1, object as! HeadingBlockValueObject)
+        case .title2:
+            return getHeadingBlockAttributes(type: .title2, object as! HeadingBlockValueObject)
+        case .title3:
+            return getHeadingBlockAttributes(type: .title3, object as! HeadingBlockValueObject)
         case .paragraph:
-
             let defalutAttributes = NSAttributedString.Key.defaultParagraphAttribute
-            return getBlockChildAttributes(defalutAttributes,object)
+            return getBlockChildAttributes(defalutAttributes,object as! TextAndChildrenBlockValueObject)
             
         case .textHeadSymbolList:
 
             let defalutAttributes = NSAttributedString.Key.textHeadSymbolListAttributes
-            return getBlockChildAttributes(defalutAttributes,object)
+            return getBlockChildAttributes(defalutAttributes,object as! TextAndChildrenBlockValueObject)
             
         case .toggleList:
 
             let defalutAttributes = NSAttributedString.Key.toggleAttributes
-            return getBlockChildAttributes(defalutAttributes,object)
+            return getBlockChildAttributes(defalutAttributes,object as! TextAndChildrenBlockValueObject)
             
         default:
             break
@@ -228,6 +299,49 @@ enum CustomBlockType{
       
         
         return attributes
+    }
+    
+    private func getHeadingBlockAttributes(type: CustomBlockType.Base ,
+                                           _ object: HeadingBlockValueObject) -> [[NSAttributedString.Key : Any]]{
+        var attributes: [[NSAttributedString.Key : Any]] = []
+        
+        object.richText.forEach{ value in
+            
+            var attribute: [NSAttributedString.Key : Any]  = NSAttributedString.Key.getTitleAttributes(block: type,
+                                                                                                       font: UIFont.preferredFont(block: type))
+            let annotations = value.annotations
+            
+            var font : UIFont = attribute[.font] as! UIFont
+            print("original font : \(font)")
+            if annotations.underline == true{
+                //append
+            }
+            if annotations.strikethrough == true{
+                //append
+            }
+            
+            if annotations.italic == true && annotations.bold == true {
+                font = font.setBoldItalic()
+            }else{
+                if annotations.italic == true{
+                    font = font.setItalic()
+                }
+                if annotations.bold == true{
+                    font = font.setBold()
+                }
+            }
+            print("original new font : \(font)")
+            attribute[.font] = font
+            if let base = Color.Base(rawValue: annotations.color),
+            let color = Color(rawValue: base.rawValue)?.create{
+                attribute[.foregroundColor] = color
+            }
+            
+            attributes.append(attribute)
+        }
+        
+        return attributes
+        
     }
     
     private func getBlockChildAttributes(_ defaultAtt : [NSAttributedString.Key : Any],
@@ -356,9 +470,9 @@ final class BlockTypeWrapping: NSObjCoding{
     }
     
     convenience init?(coder decoder: NSCoder) {
-        print("rawBase 123")
+        
         guard let rawBase =  decoder.decodeObject(forKey: Key.base.rawValue) as? String else {return nil}
-        print("rawBase : \(rawBase)")
+        
         guard let base =  CustomBlockType.Base(rawValue: rawBase) else {return nil}
         
         let e: CustomBlockType
@@ -380,17 +494,15 @@ final class BlockTypeWrapping: NSObjCoding{
             e = .todoList(value)
             
         case .title1:
-            guard let value = decoder.decodeObject(forKey: Key.value.rawValue) as? HeadingBlockValueObject else { return nil }
+            guard let value = decoder.decodeObject(of: HeadingBlockValueObject.self, forKey: Key.value.rawValue) else { return nil }
             e = .title1(value)
-            
         case .title2:
-            guard let value = decoder.decodeObject(forKey: Key.value.rawValue) as? HeadingBlockValueObject else { return nil }
+            guard let value = decoder.decodeObject(of: HeadingBlockValueObject.self, forKey: Key.value.rawValue) else { return nil }
             e = .title2(value)
             
         case .title3:
-            guard let value = decoder.decodeObject(forKey: Key.value.rawValue) as? HeadingBlockValueObject else { return nil }
+            guard let value = decoder.decodeObject(of: HeadingBlockValueObject.self, forKey: Key.value.rawValue) else { return nil }
             e = .title3(value)
-            
         case .graph:
             e = .graph
             

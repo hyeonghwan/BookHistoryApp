@@ -78,13 +78,14 @@ class BlockCreateHelper{
         
         let font = att[.font] as? UIFont
         if let fontTraits = font?.fontDescriptor.symbolicTraits{
-            
             if fontTraits.contains(.traitItalic){
-                bold = true
-            }
-            if fontTraits.contains(.traitBold){
                 italic = true
             }
+            
+            if fontTraits.contains(.traitBold){
+                bold = true
+            }
+            
         }
         
         return Anotations(bold: bold,

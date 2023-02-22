@@ -200,7 +200,7 @@ extension BlockObject{
     func getObjectAttributes() -> [[NSAttributedString.Key : Any]] {
         guard let wrappingObject = self.object else { return []}
         do {
-            guard let object = try wrappingObject.e.getBlockValueType() as? TextAndChildrenBlockValueObject else {return []}
+            guard let object = try wrappingObject.e.getBlockValueType() else {return []}
             
             if object.children == nil{
                 let attributes = wrappingObject.e.getAttributes(object)
@@ -220,6 +220,7 @@ extension BlockObject{
     
     func editAttributes(_ attributes: [[NSAttributedString.Key : Any]]){
         guard let wrappingObject = self.object else { return }
+        
         wrappingObject.e.editAttributes(attributes)
     }
     

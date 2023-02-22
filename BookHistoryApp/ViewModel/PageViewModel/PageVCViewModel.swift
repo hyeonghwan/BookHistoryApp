@@ -250,7 +250,9 @@ extension PageVCViewModel: PageVCViewModelInput{
         }
         
         viewModel.getChildBlocksOFPage(model)
+            .map{ $0.forEach{value in print("$0 : \(value.ownObject)")}; return $0}
             .map{ $0.compactMap{ page_block in page_block.ownObject} }
+            .map{ print("$$$$$$$$0 : \($0)"); return $0}
             .bind(to: self.contentViewModel.paragraphTrackingUtility.rx.blockObjects)
             .disposed(by: self.diposeBag)
 
