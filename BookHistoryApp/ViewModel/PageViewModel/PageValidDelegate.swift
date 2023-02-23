@@ -79,6 +79,10 @@ extension PageVCViewModel: PageVCValidDelegate{
             replaceAttributedText = NSAttributedString.textHeadSymbolList_placeHolderString
             textAttachmentOffset = 1
             lengthOffset += 1
+        }else if type == .todoList{
+            replaceAttributedText = NSAttributedString.todo_PlaceHolderString
+            textAttachmentOffset = 1
+            lengthOffset += 1
         }else if type == .toggleList{
             replaceAttributedText = NSAttributedString.toggle_placeHolderString
             textAttachmentOffset = 1

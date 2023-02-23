@@ -124,9 +124,9 @@ class HeadingBlockValueObject: NSObject,NSSecureCoding  {
         
         coder.encode(richText, forKey: Key.richText_heading.rawValue)
         
-//        if let color = color{
-//            coder.encode(color, forKey: Key.color_heading.rawValue)
-//        }
+        if let color = color{
+            coder.encode(color, forKey: Key.color_heading.rawValue)
+        }
     }
     
  
@@ -134,30 +134,80 @@ class HeadingBlockValueObject: NSObject,NSSecureCoding  {
         
         guard let richText = coder.decodeArrayOfObjects(ofClass: RichTextObject.self, forKey: Key.richText_heading.rawValue) else { return nil }
         
-//        let color = coder.decodeObject(forKey: Key.color_heading.rawValue) as? UIColor
+        let color = coder.decodeObject(forKey: Key.color_heading.rawValue) as? UIColor
         
         self.init(
             richText: richText,
-            color: .label
+            color: color
         )
     }
  
 }
 
 
-class ToDoBlockValueObject {
+class ToDoBlockValueObject: NSObjCoding {
+    static var supportsSecureCoding: Bool {
+        true
+    }
+    
     public var richText: [RichTextObject]
   
     public let checked: Bool?
-    public let color: UIColor
+    public let color: UIColor?
     // field used only for encoding for adding/appending new blocks
     public let children: [BlockObject]?
 
-    public init(richText: [RichTextObject], checked: Bool? = nil, color: UIColor, children: [BlockObject]? = nil) {
+    
+    public init(richText: [RichTextObject], checked: Bool? = nil, color: UIColor? = .label, children: [BlockObject]? = nil) {
         self.richText = richText
         self.checked = checked
         self.color = color
         self.children = children
+    }
+    enum Key: String{
+        case richText
+        case checked
+        case color
+        case childeren
+    }
+    
+    
+    func encode(with coder: NSCoder) {
+        
+        coder.encode(richText, forKey: Key.richText.rawValue)
+        
+        if let color = color{
+            coder.encode(color, forKey: Key.color.rawValue)
+        }
+        
+        if let checked = checked{
+            coder.encode(checked, forKey: Key.checked.rawValue)
+        }else{
+            coder.encode(false, forKey: Key.checked.rawValue)
+        }
+        
+        if let children = children{
+            coder.encode(children, forKey: Key.childeren.rawValue)
+        }
+    }
+    
+ 
+    required convenience init?(coder: NSCoder) {
+        
+        guard let richText = coder.decodeArrayOfObjects(ofClass: RichTextObject.self, forKey: Key.richText.rawValue) else { return nil }
+        
+        let color = coder.decodeObject(forKey: Key.color.rawValue) as? UIColor
+        
+        let checked = coder.decodeObject(forKey: Key.checked.rawValue) as? Bool
+        
+        let children = coder.decodeArrayOfObjects(ofClass: BlockObject.self, forKey: Key.childeren.rawValue)
+        
+        self.init(
+            richText: richText,
+            checked: checked,
+            color: color,
+            children: children
+        )
     }
 }
 

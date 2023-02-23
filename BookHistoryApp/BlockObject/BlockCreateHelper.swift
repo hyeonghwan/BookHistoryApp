@@ -19,11 +19,11 @@ class BlockCreateHelper{
     }
     
     func createBlock_to_array(_ separted: SeparatedNSAttributedString) -> BlockObject?{
-//        guard let rawText = rawText else {return nil}
+        //        guard let rawText = rawText else {return nil}
         let att = separted.0
         let rawTexts = separted.1
         let type = separted.2
-    
+        
         let separated: SeparatedNSAttributes_Strings = (att, rawTexts)
         
         
@@ -34,7 +34,7 @@ class BlockCreateHelper{
         case .page:
             break
         case .todoList:
-            break
+            return makeTodoBlockValueObject(block: type, tuple: separated)
         case .title1,.title2,.title3:
             return makeHedingBlockValueObject(type,separated)
         case .graph:
@@ -136,6 +136,45 @@ class BlockCreateHelper{
                                       object: blockWrapping,
                                       blockType: blockWrapping.e)
         return blockObject
+    }
+    
+    private func makeTodoBlockValueObject(block type: CustomBlockType.Base,
+                                          tuple separted: SeparatedNSAttributes_Strings) -> BlockObject? {
+        let att_s = separted.0
+        let str_s = separted.1
+        
+        let richTextObjects
+        =
+        str_s
+            .map{ value in RawTextElement(content: value , link: nil)}
+            .enumerated()
+            .map{ index, element in
+                let att = att_s[index]
+                let anotations = makeAnnotations(att)
+                return RichTextObject(text: element, element.content!, annotations: anotations)
+            }
+        
+        let value = ToDoBlockValueObject(richText: richTextObjects, checked: false, color: nil, children: nil)
+        
+        let blockType: CustomBlockType
+        
+        switch type {
+        case .todoList:
+            blockType = CustomBlockType.todoList(value)
+        default:
+            return nil
+        }
+        
+        let blockWrapping = BlockTypeWrapping(blockType)
+        
+        //make Block Info
+        let blockInfo = makeBlockInfo(type)
+        
+        let blockObject = BlockObject(blockInfo: blockInfo ,
+                                      object: blockWrapping,
+                                      blockType: blockWrapping.e)
+        return blockObject
+        
     }
 
     private func makeTextAndChildrenBlockValueObject(_ type: CustomBlockType.Base,

@@ -10,13 +10,14 @@ import RxSwift
 import RxRelay
 import RxCocoa
 
-protocol BlockToggleAction: AnyObject{
+protocol BlockAttachmentAction: AnyObject{
     func createToggleObservable(_ toggle: Driver<Bool>,_ button: BlockToggleButton)
+    func createTodoObservable(_ todo: Driver<Void>, _ button: TodoBlcokButton)
     var textContainerInset: UIEdgeInsets? { get }
     var layoutManager: NSLayoutManager? { get }
 }
 
-extension ParagraphTrackingUtility: BlockToggleAction{
+extension ParagraphTrackingUtility: BlockAttachmentAction{
     
     var textContainerInset: UIEdgeInsets? {
         guard let textView = self.paragrphTextView else {return nil}
@@ -25,6 +26,13 @@ extension ParagraphTrackingUtility: BlockToggleAction{
     var layoutManager: NSLayoutManager? {
         guard let textView = self.paragrphTextView else {return nil}
         return textView.layoutManager
+    }
+    
+    func createTodoObservable(_ todo: Driver<Void>, _ button: TodoBlcokButton) {
+        todo
+            .drive(onNext: { _ in
+                print("crated TodoObservable: \(button.checked)")
+            }).disposed(by: disposeBag)
     }
  
     func createToggleObservable(_ toggle: Driver<Bool>,_ button: BlockToggleButton) {

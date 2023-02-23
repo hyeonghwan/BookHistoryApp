@@ -303,7 +303,7 @@ extension BookContentViewModel{
             return self.paragraphTrackingUtility.replaceTitleAttributes(text, paragraphRange, .title3)
         case .graph:
             return true
-        case .textHeadSymbolList,.toggleList:
+        case .textHeadSymbolList,.toggleList, .todoList:
             return self.paragraphTrackingUtility.replaceToggleAttribues(text,paragraphRange,blockType)
         case .numberList:
             return true

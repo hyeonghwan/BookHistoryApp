@@ -196,49 +196,7 @@ extension PageVCViewModel: PageTextViewInput{
     }
     
 }
-//        if pageViewModel.replaceBlockAttribute(text,paragraphRange,.toggleList){
-//
-//            guard let restText = pageViewModel.getRestRangeAndText(paragraphRange) else {return false}
-//
-//            let textToValidData = TextToValidData(text: text,
-//                                                  restText: restText,
-//                                                  replaceMent: "토글",
-//                                                  paragraphRange: paragraphRange,
-//                                                  type: .toggleList)
-//
-//            return pageViewModel.resetParagraphToPlaceHodlerAttribute(textToValidData)
-//        }
 
-//func resetParagraphToPlaceHodlerAttribute(_ data: ParagraphValidator.TextToValidData) -> Bool{
-//    guard let textView = pageVC?.textView else {return false}
-//    
-//    let restText = data.restText
-//    let paragraphRange = data.paragraphRange
-//    let text = data.text
-//    let replacement = data.replaceMent
-//    let type = data.type
-//    
-//    var attributes: [NSAttributedString.Key : Any] = [:]
-//    
-//    if type == .textHeadSymbolList{
-//        attributes = NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes
-//    }else{
-//        attributes = NSAttributedString.Key.togglePlaceHolderAttributes
-//    }
-//    
-//    if (restText.length == 3 && text == ""){
-//        textView.textStorage.beginEditing()
-//        textView.textStorage.replaceCharacters(in: NSRange(location: paragraphRange.location + 1,
-//                                                           length: paragraphRange.length - 2),
-//                                               with: NSAttributedString(string: replacement,
-//                                                                        attributes: attributes))
-//        textView.textStorage.endEditing()
-//        
-//        textView.selectedRange = NSRange(location: paragraphRange.location + 1, length: 0)
-//        return false
-//    }
-//    return true
-//}
 
 extension PageVCViewModel: PageVCViewModelInput{
     func pageVC_Init(_ pageVC: PageVC) {
@@ -250,9 +208,7 @@ extension PageVCViewModel: PageVCViewModelInput{
         }
         
         viewModel.getChildBlocksOFPage(model)
-            .map{ $0.forEach{value in print("$0 : \(value.ownObject)")}; return $0}
             .map{ $0.compactMap{ page_block in page_block.ownObject} }
-            .map{ print("$$$$$$$$0 : \($0)"); return $0}
             .bind(to: self.contentViewModel.paragraphTrackingUtility.rx.blockObjects)
             .disposed(by: self.diposeBag)
 

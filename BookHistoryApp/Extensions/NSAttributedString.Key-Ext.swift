@@ -19,10 +19,6 @@ extension NSAttributedString.Key {
     
     static let blockType = NSAttributedString.Key("BlockType")
     
-//    static let defaultAttribute: [NSAttributedString.Key : Any] = [NSAttributedString.Key.backgroundColor : UIColor.clear,
-//                                                                   NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
-//                                                                   NSAttributedString.Key.foregroundColor : UIColor.label,
-//                                                                   .paragraphStyle : NSParagraphStyle.defaultParagraphStyle()]
     
     static let defaultParagraphAttribute: [NSAttributedString.Key : Any] =
     [NSAttributedString.Key.blockType : CustomBlockType.Base.paragraph,
@@ -36,12 +32,13 @@ extension NSAttributedString.Key {
     
     static let placeHolderColorAttribute: (NSAttributedString.Key,UIColor) =  (.foregroundColor, UIColor.placeHolderColor)
     
+    
     static let textHeadSymbolListPlaceHolderAttributes: [NSAttributedString.Key : Any] =
     [NSAttributedString.Key.blockType : CustomBlockType.Base.textHeadSymbolList,
      NSAttributedString.Key.backgroundColor : UIColor.clear,
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.placeHolderColor,
-     .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
+     .paragraphStyle : NSParagraphStyle.nsAttachmentHeadIndentParagraphStyle()]
     
     
     static let togglePlaceHolderAttributes: [NSAttributedString.Key : Any] =
@@ -49,7 +46,14 @@ extension NSAttributedString.Key {
      NSAttributedString.Key.backgroundColor : UIColor.clear,
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.placeHolderColor,
-     .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
+     .paragraphStyle : NSParagraphStyle.nsAttachmentHeadIndentParagraphStyle()]
+    
+    static let todoPlaceHolderAttributes: [NSAttributedString.Key : Any] =
+    [NSAttributedString.Key.blockType : CustomBlockType.Base.todoList,
+     NSAttributedString.Key.backgroundColor : UIColor.clear,
+     NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+     NSAttributedString.Key.foregroundColor : UIColor.placeHolderColor,
+     .paragraphStyle : NSParagraphStyle.nsAttachmentHeadIndentParagraphStyle()]
     
     
     static let togglePlaceHolderChildAttributes: [NSAttributedString.Key : Any] =
@@ -60,20 +64,27 @@ extension NSAttributedString.Key {
      .paragraphStyle : NSParagraphStyle.toggleChildIndentParagraphStyle()]
     
     
-    
     static let toggleAttributes: [NSAttributedString.Key : Any] =
     [NSAttributedString.Key.blockType : CustomBlockType.Base.toggleList,
      NSAttributedString.Key.backgroundColor : UIColor.clear,
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.label,
-     .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
+     .paragraphStyle : NSParagraphStyle.nsAttachmentHeadIndentParagraphStyle()]
     
     static let textHeadSymbolListAttributes: [NSAttributedString.Key : Any] =
     [NSAttributedString.Key.blockType : CustomBlockType.Base.textHeadSymbolList,
      NSAttributedString.Key.backgroundColor : UIColor.clear,
      NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
      NSAttributedString.Key.foregroundColor : UIColor.label,
-     .paragraphStyle : NSParagraphStyle.toggleHeadIndentParagraphStyle()]
+     .paragraphStyle : NSParagraphStyle.nsAttachmentHeadIndentParagraphStyle()]
+    
+    static let todoListAttributes: [NSAttributedString.Key : Any] =
+    [NSAttributedString.Key.blockType : CustomBlockType.Base.todoList,
+     NSAttributedString.Key.backgroundColor : UIColor.clear,
+     NSAttributedString.Key.font : UIFont.appleSDGothicNeo.regular.font(size: 16),
+     NSAttributedString.Key.foregroundColor : UIColor.label,
+     .paragraphStyle : NSParagraphStyle.nsAttachmentHeadIndentParagraphStyle()]
+    
     
     static let paragrphStyleInTogle: [NSAttributedString.Key : Any] =
     [NSAttributedString.Key.blockType : CustomBlockType.Base.paragraph,
@@ -129,6 +140,8 @@ extension NSAttributedString{
     
     static var textHeadSymbolList_placeHolderString = NSAttributedString(string: "리스트",
                                                              attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes)
+    static var todo_PlaceHolderString = NSAttributedString(string: "할 일",
+                                                           attributes: NSAttributedString.Key.todoPlaceHolderAttributes)
     
     static var paragraphNewLine: NSAttributedString{
         return NSAttributedString(string: String.newLineString(), attributes: NSAttributedString.Key.defaultParagraphAttribute)

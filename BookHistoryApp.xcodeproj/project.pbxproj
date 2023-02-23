@@ -23,6 +23,7 @@
 		9610266D29910F9400D286D1 /* BlockValueType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9610266C29910F9400D286D1 /* BlockValueType.swift */; };
 		9610266F299116D200D286D1 /* Error-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9610266E299116D200D286D1 /* Error-Ext.swift */; };
 		96102671299128CC00D286D1 /* Array-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96102670299128CC00D286D1 /* Array-Ext.swift */; };
+		9614EBF229A7245F00681FCB /* UIImage+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9614EBF129A7245F00681FCB /* UIImage+ext.swift */; };
 		9623C0F32959D90B00E3C3C6 /* allTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9623C0F22959D90B00E3C3C6 /* allTest.swift */; };
 		96284D552982FFEA00B05444 /* CustomBlockType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96284D542982FFEA00B05444 /* CustomBlockType.swift */; };
 		962AA0A92920BF2D00C2620B /* Attribute-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0A82920BF2D00C2620B /* Attribute-Ext.swift */; };
@@ -163,6 +164,7 @@
 		9610266C29910F9400D286D1 /* BlockValueType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockValueType.swift; sourceTree = "<group>"; };
 		9610266E299116D200D286D1 /* Error-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error-Ext.swift"; sourceTree = "<group>"; };
 		96102670299128CC00D286D1 /* Array-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array-Ext.swift"; sourceTree = "<group>"; };
+		9614EBF129A7245F00681FCB /* UIImage+ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+ext.swift"; sourceTree = "<group>"; };
 		9623C0F22959D90B00E3C3C6 /* allTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = allTest.swift; sourceTree = "<group>"; };
 		96284D542982FFEA00B05444 /* CustomBlockType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBlockType.swift; sourceTree = "<group>"; };
 		962AA0A82920BF2D00C2620B /* Attribute-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Attribute-Ext.swift"; sourceTree = "<group>"; };
@@ -371,6 +373,7 @@
 			isa = PBXGroup;
 			children = (
 				96622862295F0EA900E39FC3 /* UIView-Ext.swift */,
+				9614EBF129A7245F00681FCB /* UIImage+ext.swift */,
 				96029DEE29A105A30067D00A /* NSRange-Ext.swift */,
 				96102670299128CC00D286D1 /* Array-Ext.swift */,
 				9610266E299116D200D286D1 /* Error-Ext.swift */,
@@ -947,6 +950,7 @@
 				962AA0C7292233EE00C2620B /* SCTextView-Ext.swift in Sources */,
 				962AA0EA292E3C7500C2620B /* BookPagingViewModel.swift in Sources */,
 				96CAFA1D296400E100E6D107 /* AccessoryViewModel.swift in Sources */,
+				9614EBF229A7245F00681FCB /* UIImage+ext.swift in Sources */,
 				965BF35229805E81003A9644 /* Page_core.swift in Sources */,
 				9610266D29910F9400D286D1 /* BlockValueType.swift in Sources */,
 				9662285C295C697D00E39FC3 /* PlanMonthView.swift in Sources */,

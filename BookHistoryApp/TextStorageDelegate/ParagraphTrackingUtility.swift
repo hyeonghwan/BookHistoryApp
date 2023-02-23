@@ -137,6 +137,11 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 
                 var text = string
                 
+                // newLine 이 current paragraph의 속성을 가지고 있으면
+                // enter 입력 (line change)후 text 를 입력했을때 single character는 typingAttribute가 적용되지만,
+                // ㅇ -> 아 한글입력 에서 문자 'ㅇ' -> "아" 로 입력시 1. remove후 2. replace 의 과정이 생긴다.
+                // 이전range( -1 )의 attribute로 replace 된다.
+                // 그래서 firstinit시 사용하는 newParagraphTrackingUtility에서 \n 의 속성을 default로 해준다.
                 if text.removeLastIfEnter(){
                     let att = NSAttributedString(string: text, attributes: attributes)
                     attributedString.append(att)
@@ -160,6 +165,12 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
         switch blocktype {
         case .paragraph:
             return nil
+        case .todoList:
+            self.newParagraphs[index].insert("\u{fffc}", at: 0)
+            self.paragraphs[index].insert(Character("\u{fffc}"), at: self.paragraphs[index].startIndex)
+            return addTodoListWhenFirstInit(index,
+                                            self.paragraphs.count,
+                                            attributedString)
         case .toggleList:
             self.newParagraphs[index].insert("\u{fffc}", at: 0)
             self.paragraphs[index].insert(Character("\u{fffc}"), at: self.paragraphs[index].startIndex)
@@ -346,100 +357,3 @@ extension ParagraphTrackingUtility{
         
     }
 }
-
-
-
-//old logic
-//                if let blockType = allAttributes[.blockType] as? CustomBlockType.Base {
-//                    blockTypes.insert(blockType, at: index)
-//                    guard let blockObj = BlockCreateHelper.shared.createBlock(blockType, paragraphDescriptor.text) else {return}
-//                    blockObjects.insert(blockObj, at: index)
-//
-//                }else{
-//                    blockTypes.insert(.paragraph, at: index)
-//                    guard let blockObj = BlockCreateHelper.shared.createBlock(.paragraph,  paragraphDescriptor.text) else {return}
-//                    blockObjects.insert(blockObj, at: index)
-//                }
-
-
-//                old Logic
-//                if let blockType = allAttributes[.blockType] as? CustomBlockType.Base {
-//
-//                    blockTypes[index] = blockType
-//
-//                    guard let originalType = blockObjects[index]?.blockType?.base else {return}
-//
-//                    if originalType == blockType{
-//                        let value = try? blockObjects[index]?.object?.e.getBlockValueType() as? TextAndChildrenBlockValueObject
-//                        blockObjects[index]?.object?.e.editRawText(paragraphDescriptor.text)
-//                    }else{
-//                        blockObjects[index] = BlockCreateHelper.shared.createBlock(blockType, paragraphDescriptor.text)
-//                        blockTypes[index] = blockType
-//                    }
-//                }else{
-//                    blockTypes[index] = .paragraph
-//
-//
-//                    guard let originalType = blockObjects[index]?.blockType else {return}
-//
-//                    if originalType.base == .paragraph{
-//                        blockObjects[index]?.object?.e.editRawText(paragraphDescriptor.text)
-//                        print("is editRawText")
-//                    }else{
-//                        blockObjects[index] = BlockCreateHelper.shared.createBlock(.paragraph, paragraphDescriptor.text)
-//                        print("is editRawText not")
-//                    }
-//                }
-//switch change {
-//case .insertedParagraph(index: let index, descriptor: let paragraphDescriptor):
-//
-//    if firstInit {
-//        firstInit = false
-//    } else {
-//        insertions.append(index)
-//    }
-//
-//    let separatedNSAttString = attributesArray(from: paragraphDescriptor)
-//    newParagraphs.insert(separatedNSAttString.1, at: index)
-//    newAttributes.insert(separatedNSAttString.0, at: index)
-//
-//    let blockType = separatedNSAttString.2
-//    blockTypes.insert( blockType, at: index)
-//
-//
-//    guard let blockObj = BlockCreateHelper.shared.createBlock_to_array(separatedNSAttString) else {return}
-//    blockObjects.insert(blockObj, at: index)
-//
-//
-//    let allAttributes = attributes(from: paragraphDescriptor)
-//    paragraphs.insert(paragraphDescriptor.text, at: index)
-////                attributes.insert(allAttributes, at: index)
-//
-//
-//
-//case .removedParagraph(index: let index):
-//    newParagraphs.remove(at: index)
-//    newAttributes.remove(at: index)
-//
-//    paragraphs.remove(at: index)
-//    blockTypes.remove(at: index)
-//    blockObjects.remove(at: index)
-////                attributes.remove(at: index)
-//    removals.append(index)
-//
-//case .editedParagraph(index: let index, descriptor: let paragraphDescriptor):
-//    editObserver?.onNext(index)
-//
-//    // test separate
-//    let separatedNSAttString = attributesArray(from: paragraphDescriptor)
-//
-//    editBlock(from: separatedNSAttString, edited: index)
-//
-//    let allAttributes = attributes(from: paragraphDescriptor)
-//    paragraphs[index] = paragraphDescriptor.text
-////                attributes[index] = allAttributes
-//
-//    editions.append(index)
-//
-//}
-

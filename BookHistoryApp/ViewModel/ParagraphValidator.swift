@@ -98,7 +98,7 @@ class ParagraphValidator: ParagraphValidatorProtocol{
             
             let firstParagraphRange = textView.getParagraphRange(NSRange(location: paragraphRange.location, length: 0))
             // seletedRange가 singe Line만 포함하고 있을때 early return
-            if firstParagraphRange == paragraphRange{
+            if (firstParagraphRange == paragraphRange) && (seleted.length != paragraphRange.length - 1){
                 return true
             }
             
@@ -154,7 +154,7 @@ private extension ParagraphValidator{
                                 block: type,
                                 last: lastLine)
             
-        case .textHeadSymbolList,.toggleList:
+        case .textHeadSymbolList,.toggleList, .todoList:
             if difference > 2 {
                 return true
             }else{
@@ -170,14 +170,13 @@ private extension ParagraphValidator{
     
     private func checkValidBlock(_ text: String,_ paragraphRange: NSRange,_ blockType: CustomBlockType.Base) -> Bool{
         
-        
         switch blockType {
         case .paragraph:
             return paragraphTextValid(text, paragraphRange)
         case .page:
             break
         case .todoList:
-            break
+            return todoValid(input: text, paragraph: paragraphRange)
         case .title1:
             return titleValid(type:.title1,text: text, at: paragraphRange)
         case .title2:
@@ -226,7 +225,7 @@ private extension ParagraphValidator{
         }
     
             
-        if (blockType == .toggleList ) || (blockType == .textHeadSymbolList){
+        if (blockType == .toggleList ) || (blockType == .textHeadSymbolList) || blockType == .todoList{
             var nsRange = NSRange()
             nsRange = paragraphRange
             
@@ -347,7 +346,6 @@ extension ParagraphValidator{
     }
 }
 
-
 //MARK: - ParagraphValid
 extension ParagraphValidator{
     
@@ -442,6 +440,14 @@ extension ParagraphValidator{
         }
         textView.selectedRange = NSMakeRange(paragraphRange.max - 1 , 0)
         return false
+    }
+}
+
+//MARK: - TodoValid
+extension ParagraphValidator{
+    private func todoValid(input text: String, paragraph range: NSRange) -> Bool{
+        guard let pageViewModel = self.pageViewModel else {return false}
+        return pageViewModel.replaceBlockAttribute(text, range, .todoList)
     }
 }
 
