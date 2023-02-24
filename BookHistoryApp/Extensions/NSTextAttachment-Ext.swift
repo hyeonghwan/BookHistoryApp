@@ -80,7 +80,6 @@ extension NSMutableAttributedString {
 //            insertion.append(separatorString)
             insertion.append(attachmentString)
 //            insertion.append(separatorString)
-            print("separatorString  \(insertion)")
             self.insert(insertion, at: index)
         } else {
             self.insert(plainAttachmentString, at: index)

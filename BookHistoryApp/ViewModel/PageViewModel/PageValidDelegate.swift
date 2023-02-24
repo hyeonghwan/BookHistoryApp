@@ -41,7 +41,7 @@ extension PageVCViewModel: PageVCValidDelegate{
         mutable.append(attributedString)
         
         if flag == false{
-            mutable.append(NSAttributedString.newLineNSAttributed)
+            mutable.append(NSAttributedString.paragraphNewLine)
         }
         
         

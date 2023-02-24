@@ -10,6 +10,8 @@ import UIKit
 
 extension UIFont {
     static var appleFontFamiliyName = "AppleSDGothicNeo"
+
+    
     
     enum appleSDGothicNeo: String {
         

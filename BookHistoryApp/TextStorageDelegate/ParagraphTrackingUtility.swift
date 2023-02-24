@@ -145,7 +145,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 if text.removeLastIfEnter(){
                     let att = NSAttributedString(string: text, attributes: attributes)
                     attributedString.append(att)
-                    attributedString.append(NSAttributedString.newLineNSAttributed)
+                    attributedString.append(NSAttributedString.paragraphNewLine)
                 }else{
                     let att = NSAttributedString(string: text, attributes: attributes)
                     attributedString.append(att)
@@ -200,7 +200,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
             switch change {
             case .insertedParagraph(index: let index, descriptor: let paragraphDescriptor):
                 
-              
+                self.insertions.append(index)
                 if self.firstInit {
                     self.firstInit = false
                 } else {
@@ -219,14 +219,14 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 
                 guard let blockObj = BlockCreateHelper.shared.createBlock_to_array(separatedNSAttString) else {return}
                 self.blockObjects.insert(blockObj, at: index)
-                
+                print(self.blockObjects[index]?.object)
                 
                 let allAttributes = self.attributes(from: paragraphDescriptor)
                 self.paragraphs.insert(paragraphDescriptor.text, at: index)
                 //                attributes.insert(allAttributes, at: index)
                 
             case .removedParagraph(index: let index):
-                
+                self.removals.append(index)
                 self.newParagraphs.remove(at: index)
                 self.newAttributes.remove(at: index)
                 
@@ -239,8 +239,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 
             case .editedParagraph(index: let index, descriptor: let paragraphDescriptor):
                 
-                
-              
+                self.editions.append(index)
               
                 self.editObserver?.onNext(index)
                 
@@ -256,11 +255,8 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
                 self.editions.append(index)
             }
         }
-        print("newParagraph: \(newParagraphs)")
-        print("newParagraph: paragraphs: \(paragraphs)")
-        print("newParagraph: attributes: \(newAttributes.count)")
         
-        
+        print("last insertion : \(self.insertions) \n last edit: \(self.editions) \n last remove: \(self.removals) ")
     }
     
     func editBlock(from separated: SeparatedNSAttributedString, edited index: Int){

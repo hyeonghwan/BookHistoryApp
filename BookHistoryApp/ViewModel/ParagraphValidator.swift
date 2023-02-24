@@ -81,9 +81,9 @@ class ParagraphValidator: ParagraphValidatorProtocol{
             let attributedString = textView.textStorage.attributedSubstring(from: replaceRange)
             
             return self.isParagraphRemoveAction(replacement: attributedString,
-                                                              replaceRange: replaceRange,
-                                                              above: upParagraphRange,
-                                                              aboveBlock: blockType)
+                                                replaceRange: replaceRange,
+                                                above: upParagraphRange,
+                                                aboveBlock: blockType)
         }
         
         if let blockType = blockType,
@@ -204,6 +204,7 @@ private extension ParagraphValidator{
         }
         return true
     }
+    
     func checkSelectionRange(textView: UITextView ,_ paragraphRange: NSRange) {
         let attribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil)
         var blockAttribute: Any?
@@ -258,40 +259,15 @@ private extension ParagraphValidator{
                                     replaceRange range: NSRange,
                                     above paragraphRange: NSRange,
                                     aboveBlock type: CustomBlockType.Base) -> Bool  {
-        switch type {
-        case .paragraph:
-            return true
-        case .page:
-            return false
-        case .todoList:
-            return false
-        case .title1, .title2, .title3:
-            
-            return replaceToTitleAttributes(replaceRange: range,
+        
+        guard let currentBlockType = attString.attribute(.blockType, at: attString.range.location, effectiveRange: nil) as? CustomBlockType.Base else {return false}
+        
+        if currentBlockType != type{
+            return replace_To_upBlock_from_downBlock(replaceRange: range,
                                             replaceText: attString.string,
                                             to: paragraphRange,
                                             block: type)
-        case .graph:
-            break
-        case .textHeadSymbolList:
-            break
-        case .numberList:
-            break
-        case .toggleList:
-            break
-        case .quotation:
-            break
-        case .separatorLine:
-            break
-        case .pageLink:
-            break
-        case .callOut:
-            break
-        case .none:
-            break
         }
-        
-        
         return true
     }
     
@@ -362,22 +338,7 @@ extension ParagraphValidator{
         guard let textView = pageViewModel.pageVC?.textView else {return false}
         let lastLine = textView.isLastLine(paragraph: paragraphRange)
         if text.isNewLine(){
-            textView.textStorage.beginEditing()
-            textView.textStorage.insert(NSAttributedString.paragraphNewLine, at: paragraphRange.max)
-            textView.textStorage.endEditing()
-            
-            textView.textStorage.beginEditing()
-            textView.textStorage.setAttributes(NSAttributedString.Key.defaultParagraphAttribute, range: paragraphRange)
-            textView.textStorage.endEditing()
-            
-            
-            if lastLine {
-                textView.selectedRange = NSRange(location: paragraphRange.max + 1, length: 0)
-            }else{
-                textView.selectedRange = NSRange(location: paragraphRange.max  , length: 0)
-            }
-            
-            return false
+            return true
         }
         
         textView.typingAttributes = NSAttributedString.Key.defaultParagraphAttribute
@@ -386,23 +347,14 @@ extension ParagraphValidator{
     }
 }
 
-//MARK: - TitleValid
 extension ParagraphValidator{
-    private func titleValid(type: CustomBlockType.Base,text: String,at paragraphRange: NSRange) -> Bool{
-        guard let pageViewModel = self.pageViewModel else {return false}
-        if pageViewModel.replaceBlockAttribute(text, paragraphRange, type){
-            
-            return true
-        }
-        
-        return false
-    }
     
-    private func replaceToTitleAttributes(replaceRange range: NSRange,
+    private func replace_To_upBlock_from_downBlock(replaceRange range: NSRange,
                                           replaceText text: String,
                                           to paragraphRange: NSRange,
                                           block type: CustomBlockType.Base) -> Bool{
-        
+//        type -> 변화 시킬려는 타입
+        // original -> type 으로
         guard let pageViewModel = self.pageViewModel else {return false}
         guard let textView = pageViewModel.pageVC?.textView else {return false}
         
@@ -410,8 +362,7 @@ extension ParagraphValidator{
         var replaceText = text
         let paragraphRange = paragraphRange
         
-        let font = UIFont.preferredFont(block: type)
-        let titleAttributes = NSAttributedString.Key.getTitleAttributes(block: type,font: font)
+        let replaceAttributes = NSAttributedString.getCustomBlockTypeAttributes(block: type)
         
         if replaceText.endsWith_Newline{
             
@@ -419,11 +370,13 @@ extension ParagraphValidator{
             
             textView.textStorage.beginEditing()
             textView.textStorage.replaceCharacters(in: NSRange(location: replaceRange.location, length: replaceRange.length ),
-                                                   with: NSAttributedString(string: String.emptyStr(), attributes: textView.typingAttributes))
+                                                   with: NSAttributedString(string: String.emptyStr(),
+                                                                            attributes: textView.typingAttributes))
             textView.textStorage.endEditing()
             
             textView.textStorage.beginEditing()
-            textView.textStorage.insert(NSAttributedString(string: replaceText, attributes: titleAttributes),
+            textView.textStorage.insert(NSAttributedString(string: replaceText,
+                                                           attributes: replaceAttributes),
                                         at: paragraphRange.max - 1)
             textView.textStorage.endEditing()
         }else{
@@ -434,11 +387,26 @@ extension ParagraphValidator{
             textView.textStorage.endEditing()
             
             textView.textStorage.beginEditing()
-            textView.textStorage.insert(NSAttributedString(string: replaceText, attributes: titleAttributes),
+            textView.textStorage.insert(NSAttributedString(string: replaceText,
+                                                           attributes: replaceAttributes),
                                         at: paragraphRange.max - 1)
             textView.textStorage.endEditing()
         }
         textView.selectedRange = NSMakeRange(paragraphRange.max - 1 , 0)
+        return false
+    }
+}
+
+
+//MARK: - TItleValid
+extension ParagraphValidator{
+    private func titleValid(type: CustomBlockType.Base,text: String,at paragraphRange: NSRange) -> Bool{
+        guard let pageViewModel = self.pageViewModel else {return false}
+        if pageViewModel.replaceBlockAttribute(text, paragraphRange, type){
+            
+            return true
+        }
+        
         return false
     }
 }

@@ -127,6 +127,56 @@ extension NSAttributedString.Key {
 extension NSAttributedString{
 //    static var titleAttributeString = NSAttributedString(string: "제목을 입력해주세요",
 //                                                         attributes: NSAttributedString.Key.defaultAttribute)
+    static func getNumberTitleAttStr(_ font: UIFont.TextStyle) -> NSAttributedString {
+        if font == .title1{
+            return NSAttributedString.title1_placeHolderString
+        }else if font == .title2{
+            return NSAttributedString.title2_placeHolderString
+        }else if font == .title3{
+            return NSAttributedString.title3_placeHolderString
+        }else{
+            return NSAttributedString(string: String.emptyStr())
+        }
+    }
+    
+    
+    static func getCustomBlockTypeAttributes(block type: CustomBlockType.Base) -> [NSAttributedString.Key : Any]{
+        switch type {
+        case .paragraph:
+            return NSAttributedString.Key.defaultParagraphAttribute
+        case .page:
+            break
+        case .todoList:
+            return NSAttributedString.Key.todoListAttributes
+        case .title1:
+            return NSAttributedString.Key.getTitleAttributes(block: .title1, font: UIFont.preferredFont(block: .title1))
+        case .title2:
+            return NSAttributedString.Key.getTitleAttributes(block: .title2, font: UIFont.preferredFont(block: .title2))
+        case .title3:
+            return NSAttributedString.Key.getTitleAttributes(block: .title3, font: UIFont.preferredFont(block: .title3))
+        case .graph:
+            break
+        case .textHeadSymbolList:
+            return NSAttributedString.Key.textHeadSymbolListAttributes
+        case .numberList:
+            break
+        case .toggleList:
+            return NSAttributedString.Key.toggleAttributes
+        case .quotation:
+            break
+        case .separatorLine:
+            break
+        case .pageLink:
+            break
+        case .callOut:
+            break
+        case .none:
+            break
+        }
+        
+        return [:]
+        
+    }
     
     static var title1_placeHolderString = NSAttributedString(string: "제목없음1",
                                                             attributes: NSAttributedString.Key.getPlaceTitleAttribues(.title1))
@@ -147,16 +197,18 @@ extension NSAttributedString{
         return NSAttributedString(string: String.newLineString(), attributes: NSAttributedString.Key.defaultParagraphAttribute)
     }
     
+    static var doubleParagraphNewLine: NSAttributedString{
+        return NSAttributedString(string: "\(String.newLineString())\(String.newLineString())",
+                                  attributes: NSAttributedString.Key.defaultParagraphAttribute)
+    }
+    
     
     var allAttributes: [NSAttributedString.Key : Any]{
         get{
             self.attributes(at: self.range.location, effectiveRange: nil)
         }
     }
-    static var newLineNSAttributed: NSAttributedString{
-        return NSAttributedString(string: String.newLineString(), attributes: NSAttributedString.Key.defaultParagraphAttribute)
-    }
-    
+  
     var separatedAttributed: [[NSAttributedString.Key : Any]] {
         return separteParagraphAttributes()
     }

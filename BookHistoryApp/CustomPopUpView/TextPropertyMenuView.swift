@@ -310,9 +310,8 @@ class TextPropertyMenuView: UIView , KeyBoardStateType {
         undoButton.isEnabled = textViewUndoManager?.canUndo ?? false
         redoButton.isEnabled = textViewUndoManager?.canRedo ?? false
     }
-    
-    
 }
+
 private extension TextPropertyMenuView {
    
     
@@ -344,7 +343,6 @@ private extension TextPropertyMenuView {
             $0.trailing.equalTo(keyDownButton.snp.leading)
         }
         
-     
         stackView.snp.makeConstraints{
             $0.edges.equalToSuperview()
         }
