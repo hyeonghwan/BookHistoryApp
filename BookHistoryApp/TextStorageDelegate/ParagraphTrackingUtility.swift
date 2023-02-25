@@ -118,6 +118,7 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
         }
     }
     
+    //MARK: - ParagraphTextStorageDelegate property
     var presentedParagraphs: [NSAttributedString] {
         return newPresentedParagraphs
     }
@@ -155,8 +156,8 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
         }
     }
     
-    
-    func insertNSTextAttachMent(_ index: Int,
+    //MARK: - ParagraphTextStorageDelegate func
+    public func insertNSTextAttachMent(_ index: Int,
                                 _ attributedString: NSAttributedString) -> NSAttributedString?{
         
         guard let blocktype = attributedString.attribute(.blockType, at: 0, effectiveRange: nil) as? CustomBlockType.Base else {
@@ -188,11 +189,11 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
         }
     }
     
-    
+    //MARK: - ParagraphTextStorageDelegate func
     func textStorage(_ textStorage: ParagraphTextStorage, didChangeParagraphs changes: [ParagraphTextStorage.ParagraphChange]) {
         
         defer{
-            print("didChangeParagraphs : defer")
+            
         }
         
         for change in changes {
@@ -256,7 +257,9 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
             }
         }
         
-        print("last insertion : \(self.insertions) \n last edit: \(self.editions) \n last remove: \(self.removals) ")
+//        print("last insertion : \(self.insertions) \n last edit: \(self.editions) \n last remove: \(self.removals) ")
+        print("self.blockObject: \(self.blockObjects)")
+        print("self.blockObject type: \(self.blockTypes)")
     }
     
     func editBlock(from separated: SeparatedNSAttributedString, edited index: Int){

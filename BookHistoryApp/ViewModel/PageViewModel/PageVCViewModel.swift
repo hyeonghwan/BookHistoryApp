@@ -24,6 +24,7 @@ protocol PageVCViewModelInput{
     func pageVC_Init(_ pageVC: PageVC)
     
     func viewWillDissapear()
+    
     func pageSettupBinding()
     
     func keyboardWillShow()
@@ -215,7 +216,7 @@ extension PageVCViewModel: PageVCViewModelInput{
     }
     
     func viewWillDissapear() {
-        
+        self.contentViewModel.storeBlockValues()
     }
     
     func pageSettupBinding() {

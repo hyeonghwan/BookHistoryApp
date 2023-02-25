@@ -181,7 +181,10 @@ private extension BookPagingViewModel{
         guard let id = page.id else {return nil}
         
         guard let block = page.childBlock?.firstObject as? Page_ChildBlock,
-              let text = try? block.ownObject?.object?.e.getBlockValueType() as? BlockValueType,
+              let text =
+                try? BlockTypeBuilder()
+            .getBlockValueType(block: block.ownObject?.object?.e ?? .none)
+            .buildObject(),
               let title = text.richText.first?.text.content
         else{
             return PageModel(pageID: id, title: "제목 없음")

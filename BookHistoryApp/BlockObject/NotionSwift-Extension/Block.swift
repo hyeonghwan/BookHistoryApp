@@ -54,17 +54,20 @@ class TextAndChildrenBlockValueObject: NSObject,NSSecureCoding {
     public init(
         richText: [RichTextObject],
         children: [BlockObject]? = nil,
-        color: UIColor?
+        color: String
     ) {
         self.richText = richText
         self.children = children
-        self.color = color
+        
+        if let color = Color(rawValue: color){
+            self.color = color.create
+        }
     }
     
     enum Key: String{
         case richText
         case children
-        case color
+        case text_Color
     }
     
     func encode(with coder: NSCoder) {
@@ -74,9 +77,9 @@ class TextAndChildrenBlockValueObject: NSObject,NSSecureCoding {
         if let children = children{
             coder.encode(children, forKey: Key.children.rawValue)
         }
-        if let color = color{
-            coder.encode(color, forKey: Key.color.rawValue)
-        }
+        let color = Color.getColor(color)
+        coder.encode(color.rawValue , forKey: Key.text_Color.rawValue)
+    
         
     }
     
@@ -86,7 +89,7 @@ class TextAndChildrenBlockValueObject: NSObject,NSSecureCoding {
         
         let children = coder.decodeArrayOfObjects(ofClass: BlockObject.self, forKey: Key.children.rawValue)
         
-        let color = coder.decodeObject(forKey: Key.color.rawValue) as? UIColor
+        guard let color = coder.decodeObject(forKey: Key.text_Color.rawValue) as? String else {return nil}
         
         self.init(
             richText: richText ,
@@ -106,11 +109,14 @@ class HeadingBlockValueObject: NSObject,NSSecureCoding  {
     
     public var richText: [RichTextObject] 
   
-    public let color: UIColor?
+    public var color: UIColor?
   
-    public init(richText: [RichTextObject], color: UIColor? = .label) {
+    public init(richText: [RichTextObject], color: String) {
         self.richText = richText
-        self.color = color
+        
+        if let color = Color(rawValue: color){
+            self.color = color.create
+        }
     }
     
     
@@ -124,9 +130,8 @@ class HeadingBlockValueObject: NSObject,NSSecureCoding  {
         
         coder.encode(richText, forKey: Key.richText_heading.rawValue)
         
-        if let color = color{
-            coder.encode(color, forKey: Key.color_heading.rawValue)
-        }
+        let color = Color.getColor(color)
+        coder.encode(color.rawValue , forKey: Key.color_heading.rawValue)
     }
     
  
@@ -134,7 +139,7 @@ class HeadingBlockValueObject: NSObject,NSSecureCoding  {
         
         guard let richText = coder.decodeArrayOfObjects(ofClass: RichTextObject.self, forKey: Key.richText_heading.rawValue) else { return nil }
         
-        let color = coder.decodeObject(forKey: Key.color_heading.rawValue) as? UIColor
+        guard let color = coder.decodeObject(forKey: Key.color_heading.rawValue) as? String else {return nil}
         
         self.init(
             richText: richText,
@@ -198,7 +203,7 @@ class ToDoBlockValueObject: NSObjCoding {
         
         let color = coder.decodeObject(forKey: Key.color.rawValue) as? UIColor
         
-        let checked = coder.decodeObject(forKey: Key.checked.rawValue) as? Bool
+        let checked = coder.decodeBool(forKey: Key.checked.rawValue)
         
         let children = coder.decodeArrayOfObjects(ofClass: BlockObject.self, forKey: Key.childeren.rawValue)
         

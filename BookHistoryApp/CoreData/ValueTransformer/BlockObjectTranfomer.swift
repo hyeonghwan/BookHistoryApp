@@ -36,8 +36,7 @@ public class BlockObjectTransformer: ValueTransformer {
         guard let data = value as? Data else { return nil}
         
         do{
-            
-            
+             
             let blockObject = try NSKeyedUnarchiver.unarchivedObject(ofClass: BlockObject.self, from: data)
             
             return blockObject

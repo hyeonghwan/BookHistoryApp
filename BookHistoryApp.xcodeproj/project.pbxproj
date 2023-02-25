@@ -26,6 +26,8 @@
 		9614EBF229A7245F00681FCB /* UIImage+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9614EBF129A7245F00681FCB /* UIImage+ext.swift */; };
 		9614EBF429A8DC2500681FCB /* ParagraphTextStorageDelegate-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9614EBF329A8DC2500681FCB /* ParagraphTextStorageDelegate-Ext.swift */; };
 		9614EBF629A8FAEF00681FCB /* Int-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9614EBF529A8FAEF00681FCB /* Int-Ext.swift */; };
+		9614EBF829AA1C8A00681FCB /* CustomBlockTypeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9614EBF729AA1C8A00681FCB /* CustomBlockTypeBuilder.swift */; };
+		9614EBFA29AA3F7500681FCB /* BlockType(Edit)-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9614EBF929AA3F7500681FCB /* BlockType(Edit)-Ext.swift */; };
 		9623C0F32959D90B00E3C3C6 /* allTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9623C0F22959D90B00E3C3C6 /* allTest.swift */; };
 		96284D552982FFEA00B05444 /* CustomBlockType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96284D542982FFEA00B05444 /* CustomBlockType.swift */; };
 		962AA0A92920BF2D00C2620B /* Attribute-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962AA0A82920BF2D00C2620B /* Attribute-Ext.swift */; };
@@ -169,6 +171,8 @@
 		9614EBF129A7245F00681FCB /* UIImage+ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+ext.swift"; sourceTree = "<group>"; };
 		9614EBF329A8DC2500681FCB /* ParagraphTextStorageDelegate-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ParagraphTextStorageDelegate-Ext.swift"; sourceTree = "<group>"; };
 		9614EBF529A8FAEF00681FCB /* Int-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int-Ext.swift"; sourceTree = "<group>"; };
+		9614EBF729AA1C8A00681FCB /* CustomBlockTypeBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBlockTypeBuilder.swift; sourceTree = "<group>"; };
+		9614EBF929AA3F7500681FCB /* BlockType(Edit)-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlockType(Edit)-Ext.swift"; sourceTree = "<group>"; };
 		9623C0F22959D90B00E3C3C6 /* allTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = allTest.swift; sourceTree = "<group>"; };
 		96284D542982FFEA00B05444 /* CustomBlockType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBlockType.swift; sourceTree = "<group>"; };
 		962AA0A82920BF2D00C2620B /* Attribute-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Attribute-Ext.swift"; sourceTree = "<group>"; };
@@ -589,6 +593,8 @@
 				964F3553297D661700925229 /* Block.swift */,
 				9610266C29910F9400D286D1 /* BlockValueType.swift */,
 				96284D542982FFEA00B05444 /* CustomBlockType.swift */,
+				9614EBF929AA3F7500681FCB /* BlockType(Edit)-Ext.swift */,
+				9614EBF729AA1C8A00681FCB /* CustomBlockTypeBuilder.swift */,
 				965BF3632982381A003A9644 /* BlockTypeValue */,
 			);
 			path = "NotionSwift-Extension";
@@ -923,6 +929,7 @@
 				965E3BFB299A40010026A301 /* PageFlowCoordinator.swift in Sources */,
 				96622863295F0EA900E39FC3 /* UIView-Ext.swift in Sources */,
 				962AA0E6292E322C00C2620B /* BookPagingTableViewCell.swift in Sources */,
+				9614EBF829AA1C8A00681FCB /* CustomBlockTypeBuilder.swift in Sources */,
 				96477D20291A041D00830EFB /* ViewController.swift in Sources */,
 				9653C5542974124A00331143 /* Notion.swift in Sources */,
 				964F354B297C06DB00925229 /* TextHeadSymbolView.swift in Sources */,
@@ -1028,6 +1035,7 @@
 				9655FE322955FADA008991F1 /* BookData.xcdatamodeld in Sources */,
 				9662286729602C3000E39FC3 /* BlockOfAttachmentSettingVC.swift in Sources */,
 				962AA0B52920E90400C2620B /* NSLayoutManagerDelegate.swift in Sources */,
+				9614EBFA29AA3F7500681FCB /* BlockType(Edit)-Ext.swift in Sources */,
 				965E3BF12997B1630026A301 /* CustomTextContainer.swift in Sources */,
 				962AA0D62926351D00C2620B /* CALayer-Ext.swift in Sources */,
 				96477D1E291A041D00830EFB /* SceneDelegate.swift in Sources */,

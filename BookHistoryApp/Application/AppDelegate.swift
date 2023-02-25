@@ -14,7 +14,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     lazy var persistentContainer: NSPersistentContainer = {
         
-        ValueTransformer.setValueTransformer(NSAttributedStringTransformer(), forName: NSValueTransformerName( "NSAttributedStringTransformer"))
+        ValueTransformer.setValueTransformer(NSAttributedStringTransformer(),
+                                             forName: NSValueTransformerName( "NSAttributedStringTransformer"))
+        
+        ValueTransformer.setValueTransformer(UIColorTransformer(),
+                                             forName: NSValueTransformerName( "NSAttributedStringTransformer"))
+        
         
         ValueTransformer.setValueTransformer(BlockObjectTransformer(), forName: NSValueTransformerName( "BlockObjectTransformer"))
         

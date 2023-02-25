@@ -29,8 +29,11 @@ protocol ContentViewModelType: AnyObject {
                                _ paragraphRange: NSRange,
                                _ blockType: CustomBlockType.Base) -> Bool
     
-    //input to store blockData on COreData
+    //input to store blockData on COreData button tap
     func storeBlockValues(_ tap: Signal<Void>)
+    //input to store blockData on COreData view dissapear
+    func storeBlockValues()
+    
     
     // input
     func bindingBlocksToParagraphUtil(_ blocks: [BlockObject])
@@ -224,6 +227,14 @@ extension BookContentViewModel{
         self.paragraphTrackingUtility.rx.blockObjects.onNext(blocks)
     }
     
+    func storeBlockValues() {
+        self.paragraphTrackingUtility
+            .getBlockObjectObservable()
+            .flatMap(self.service!.rxAddBlockObjectDatas(_:))
+            .subscribe(onNext: { flag in
+                print("success : \(flag)")
+            }).disposed(by: disposeBag)
+    }
     func storeBlockValues(_ tap: Signal<Void>){
         
         let pipe = BehaviorSubject<[BlockObject?]>(value: [nil])

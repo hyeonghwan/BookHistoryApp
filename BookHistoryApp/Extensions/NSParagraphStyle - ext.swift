@@ -18,9 +18,7 @@ extension NSParagraphStyle{
     static func todoParagraphStyle() -> NSParagraphStyle{
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.firstLineHeadIndent = 0
-        
         paragraphStyle.headIndent = 35
-        paragraphStyle.alignment = .center
         return paragraphStyle
     }
     

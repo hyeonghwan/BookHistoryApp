@@ -24,6 +24,7 @@ extension BlockTextValueType{
         
         var paragraph = self.richText.compactMap{ value -> String? in
             guard var text = value.text.content else { return nil }
+            
             if text == "\u{fffc}"{
                 return nil
             }
@@ -50,6 +51,8 @@ extension HeadingBlockValueObject: BlockValueType{
     }
     
 }
+
+extension ToDoBlockValueObject: BlockValueType{}
 
 //extension ChildPageBlockValueObject: BlockValueType{
 //    var children: [BlockObject]? {

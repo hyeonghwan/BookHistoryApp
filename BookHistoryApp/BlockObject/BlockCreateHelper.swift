@@ -112,7 +112,7 @@ class BlockCreateHelper{
                 return RichTextObject(text: element, element.content!, annotations: anotations)
             }
         
-        let value = HeadingBlockValueObject(richText: richTextObjects, color: UIColor.label)
+        let value = HeadingBlockValueObject(richText: richTextObjects, color: Color.label.rawValue)
         
         let blockType: CustomBlockType
         
@@ -194,7 +194,7 @@ class BlockCreateHelper{
                 return RichTextObject(text: element, element.content!, annotations: anotations)
             }
         
-        let value = TextAndChildrenBlockValueObject(richText: richTextObjects, children: nil, color: nil)
+        let value = TextAndChildrenBlockValueObject(richText: richTextObjects, children: nil, color: Color.label.rawValue)
         
         let blockType: CustomBlockType
         

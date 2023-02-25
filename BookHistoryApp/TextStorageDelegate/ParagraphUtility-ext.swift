@@ -67,7 +67,7 @@ extension ParagraphTrackingUtility: BlockAttachmentAction{
                 
                 guard let object = button.object else {return}
                 
-                guard let toggleBlock = object.object?.e as? CustomBlockType  else {return}
+                guard let toggleBlock = object.object as? BlockObject  else {return}
                 guard let buttonRange = button.blockRange else {return}
                 let toggleTitleRange = textView.getParagraphRange(buttonRange)
                 
@@ -97,7 +97,7 @@ extension ParagraphTrackingUtility: BlockAttachmentAction{
 
                         toggleValue.children?.forEach{ blockObjects in
                             
-                            if let paragraphBlock = try? blockObjects.object?.e.getBlockValueType() as? TextAndChildrenBlockValueObject {
+                            if let paragraphBlock = try? blockObjects.getBlockValueType() as? TextAndChildrenBlockValueObject {
                                 let text = paragraphBlock.richText.first?.text.content ?? "\n"
                                 
                                 var attributes = NSAttributedString.Key.paragrphStyleInTogle

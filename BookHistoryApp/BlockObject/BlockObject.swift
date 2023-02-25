@@ -107,7 +107,6 @@ public final class BlockObject: NSObjCoding{
     
     private var _threeAttributes: [[[NSAttributedString.Key : Any]]] = []
     
-    
     public override var description: String {
         return "description,: \(self.blockType?.base ?? CustomBlockType.Base.none)  description,object: \(String(describing: self.object?.description)) \n-------------\n"
     }
@@ -178,6 +177,20 @@ public final class BlockObject: NSObjCoding{
     }
 }
 
+
+extension BlockObject {
+    func getBlockValueType() -> BlockValueType? {
+        do{
+            let value = try BlockTypeBuilder()
+                .getBlockValueType(block: self.object?.e ?? .none)
+                .buildObject()
+            return value
+        }catch{
+            print("error block error : \(error)")
+        }
+        return nil
+    }
+}
 extension BlockObject{
     
     var threeAttributes: [[[NSAttributedString.Key : Any]]] {
@@ -188,7 +201,7 @@ extension BlockObject{
             _threeAttributes = newValue
         }
     }
-    
+   
     func getAllObejctAttributes() -> [[[NSAttributedString.Key : Any]]]{
         let value = self.getObjectAttributes()
         if value.count == 0{
@@ -199,11 +212,29 @@ extension BlockObject{
     
     func getObjectAttributes() -> [[NSAttributedString.Key : Any]] {
         guard let wrappingObject = self.object else { return []}
+        
+        let builder = BlockTypeBuilder()
+        var type = CustomBlockType.Base.paragraph
+        
+        if let getType = self.object?.e.base{
+           type = getType
+        }
         do {
-            guard let object = try wrappingObject.e.getBlockValueType() else {return []}
+            guard let object
+                    =
+                    try builder
+                .getBlockValueType(block: wrappingObject.e)
+                .buildObject()
+            else {return []}
             
             if object.children == nil{
-                let attributes = wrappingObject.e.getAttributes(object)
+                let attributes
+                =
+                try builder
+                    .getBlockBaseType(type: type)
+                    .getDefaultAttributes()
+                    .buildAttributes()
+                    .build()
                 return attributes
             }
             
@@ -217,6 +248,7 @@ extension BlockObject{
             fatalError("fattal error occur")
         }
     }
+    
     
     func editAttributes(_ attributes: [[NSAttributedString.Key : Any]]){
         guard let wrappingObject = self.object else { return }

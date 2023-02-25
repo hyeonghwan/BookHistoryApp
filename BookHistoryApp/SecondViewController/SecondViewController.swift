@@ -124,6 +124,7 @@ class SecondViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         print("secondViewController : viewWillDisappear")
+        self.pageViewModel.viewWillDissapear()
         
     }
     override func viewDidDisappear(_ animated: Bool) {

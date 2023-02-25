@@ -137,7 +137,7 @@ extension ParagraphTrackingUtility{
         
         guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
         
-        let titleAttributes = NSAttributedString.Key.getPlaceTitleAttribues(textStyle)
+//        let titleAttributes = NSAttributedString.Key.getPlaceTitleAttribues(textStyle)
         
         let resultAttributedString = NSMutableAttributedString()
         
@@ -237,7 +237,7 @@ extension ParagraphTrackingUtility{
                                                      position: plusIndex - 1,
                                                      index: index)
         }else{
-            todoString.append(NSAttributedString(string: "할 일",
+            todoString.append(NSAttributedString(string:"할 일",
                                                  attributes: NSAttributedString.Key.todoPlaceHolderAttributes))
             
             resultString = insertTodoAttachment(attString: todoString,
@@ -295,7 +295,7 @@ extension ParagraphTrackingUtility{
         var result = attString.insertingAttachment(type: .todoList,
                                                    attachment: attachment,
                                                    at: position,
-                                                   with: NSParagraphStyle.todoParagraphStyle())
+                                                   with: NSParagraphStyle.nsAttachmentHeadIndentParagraphStyle())
         
         result = result.addingAttributes(newAttributes)
         
@@ -329,7 +329,7 @@ extension ParagraphTrackingUtility {
         let lastLine = self.isLastLine(index)
         let insertedRange = range
         
-        var togglString = NSMutableAttributedString()
+        let togglString = NSMutableAttributedString()
         var resultString: NSAttributedString
         
         if let text = text{

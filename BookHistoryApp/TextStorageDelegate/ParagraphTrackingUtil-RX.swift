@@ -74,15 +74,18 @@ extension Reactive where Base: ParagraphTrackingUtility{
             let paragraphsFromBlock
             =
             try blocks
-                .map{ block in  try block.object?.e.getBlockValueType()}
+                .map{ block in
+                    try BlockTypeBuilder()
+                        .getBlockValueType(block: block.object?.e ?? .none)
+                        .buildObject()
+                }
                 .compactMap{ blockType in blockType?.getParagraphsValues() }
 
             
             let sequence = paragraphsFromBlock.map{ sequence in
                 return sequence.joined()
             }
-            print("paragraphSFromBlock : \(paragraphsFromBlock)")
-            print("sequence : \(sequence)")
+            
             self.paragraphs.onNext(sequence)
             self.newParagraphs.onNext(paragraphsFromBlock)
         }catch{
