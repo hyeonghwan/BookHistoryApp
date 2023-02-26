@@ -20,10 +20,31 @@ typealias BlockValueType =  BlockTextValueType
 
 extension BlockTextValueType{
     
+    func searchChildToPreOrder(){
+        
+    }
+    
+    func getResultChild() -> [BlockValueType]{
+        
+        return []
+    }
+    
+    func getFlattenChildBlockValue(){
+        
+        if self.children == nil{
+            
+        }
+        
+        self.children?.forEach{ object in
+            
+            
+        }
+    }
+    
     func getParagraphsValues() -> [String] {
         
-        var paragraph = self.richText.compactMap{ value -> String? in
-            guard var text = value.text.content else { return nil }
+        let paragraph = self.richText.compactMap{ value -> String? in
+            guard let text = value.text.content else { return nil }
             
             if text == "\u{fffc}"{
                 return nil

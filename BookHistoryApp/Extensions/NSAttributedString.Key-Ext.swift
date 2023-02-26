@@ -193,6 +193,10 @@ extension NSAttributedString{
     static var todo_PlaceHolderString = NSAttributedString(string: "할 일",
                                                            attributes: NSAttributedString.Key.todoPlaceHolderAttributes)
     
+    
+    static var toggle_ChildPlaceHolderString = NSAttributedString(string: "빈 토글입니다. 내용을 입력하시거나 드래그해서 가져와 시발련아",
+                                                                  attributes: NSAttributedString.Key.togglePlaceHolderChildAttributes)
+    
     static var paragraphNewLine: NSAttributedString{
         return NSAttributedString(string: String.newLineString(), attributes: NSAttributedString.Key.defaultParagraphAttribute)
     }
@@ -201,6 +205,8 @@ extension NSAttributedString{
         return NSAttributedString(string: "\(String.newLineString())\(String.newLineString())",
                                   attributes: NSAttributedString.Key.defaultParagraphAttribute)
     }
+    
+    
     
     
     var allAttributes: [NSAttributedString.Key : Any]{
