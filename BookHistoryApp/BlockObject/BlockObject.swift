@@ -99,6 +99,13 @@ protocol BlockObjectType: NSObjCoding{
     var object: BlockTypeWrapping? { get }
 }
 
+class Node {
+    let node: [Node]
+    
+    init(node: [Node]) {
+        self.node = node
+    }
+}
 
 public final class BlockObject: NSObjCoding{
     var blockInfo: BlockInfo?
