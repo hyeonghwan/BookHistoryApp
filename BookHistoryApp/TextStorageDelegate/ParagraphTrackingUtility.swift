@@ -167,20 +167,14 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
         case .paragraph:
             return nil
         case .todoList:
-            self.newParagraphs[index].insert("\u{fffc}", at: 0)
-            self.paragraphs[index].insert(Character("\u{fffc}"), at: self.paragraphs[index].startIndex)
             return addTodoListWhenFirstInit(index,
                                             self.paragraphs.count,
                                             attributedString)
         case .toggleList:
-            self.newParagraphs[index].insert("\u{fffc}", at: 0)
-            self.paragraphs[index].insert(Character("\u{fffc}"), at: self.paragraphs[index].startIndex)
             return addToggleWhenFirstInit(index,
                                           self.paragraphs.count ,
                                           attributedString)
         case .textHeadSymbolList:
-            self.newParagraphs[index].insert("\u{fffc}", at: 0)
-            self.paragraphs[index].insert(Character("\u{fffc}"), at: self.paragraphs[index].startIndex)
             return addTextHeadSymbolWhenFirstInit(index,
                                                   self.paragraphs.count ,
                                                   attributedString)

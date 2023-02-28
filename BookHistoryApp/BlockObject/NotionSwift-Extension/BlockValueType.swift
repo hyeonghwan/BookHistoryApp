@@ -42,15 +42,20 @@ extension BlockTextValueType{
     }
     
     func getParagraphsValues() -> [String] {
+        var objectCount: Int = 0
         
-        let paragraph = self.richText.compactMap{ value -> String? in
-            guard let text = value.text.content else { return nil }
-            
-            if text == "\u{fffc}"{
-                return nil
+        var paragraph = self.richText.compactMap{ value -> String? in
+            guard var text = value.text.content else { return nil }
+            if text.length > 1,
+               text.contains("\u{fffc}"){
+                text.removeAll(where: {
+                    $0 == "\u{fffc}"
+                })
             }
+            
             return text
         }
+        
         return paragraph
     }
     
