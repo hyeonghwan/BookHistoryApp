@@ -232,6 +232,10 @@ private extension ParagraphValidator{
             
             guard let toggleFirstAttribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location , effectiveRange: &nsRange) as? UIColor else {return}
             let toggleParagraphattribute = textView.textStorage.attribute(.foregroundColor, at: nsRange.max , effectiveRange: &nsRange) as? UIColor
+            textView.textStorage.enumerateAttribute(.foregroundColor, in: paragraphRange, using: { ani , range, bool in
+                print("range: \(range)")
+                print("range ani: \(ani as? UIColor)")
+            })
             
             if toggleFirstAttribute.isPlaceHolder(),
                textView.selectedRange == NSRange(location: paragraphRange.location, length: 0){

@@ -292,8 +292,6 @@ final class ParagraphTrackingUtility: NSObject, ParagraphTextStorageDelegate{
         }
     }
     
-    
-    
     func attributesArray(index: Int,
                          from paragraphDescriptor: ParagraphTextStorage.ParagraphDescriptor) -> SeparatedNSAttributedString{
         

@@ -190,9 +190,9 @@ extension NSAttributedString{
     
     static var textHeadSymbolList_placeHolderString = NSAttributedString(string: "리스트",
                                                              attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes)
+    
     static var todo_PlaceHolderString = NSAttributedString(string: "할 일",
                                                            attributes: NSAttributedString.Key.todoPlaceHolderAttributes)
-    
     
     static var toggle_ChildPlaceHolderString = NSAttributedString(string: "빈 토글입니다. 내용을 입력하시거나 드래그해서 가져와 시발련아",
                                                                   attributes: NSAttributedString.Key.togglePlaceHolderChildAttributes)
@@ -205,9 +205,6 @@ extension NSAttributedString{
         return NSAttributedString(string: "\(String.newLineString())\(String.newLineString())",
                                   attributes: NSAttributedString.Key.defaultParagraphAttribute)
     }
-    
-    
-    
     
     var allAttributes: [NSAttributedString.Key : Any]{
         get{
@@ -257,24 +254,3 @@ extension NSAttributedString{
         return resultAttributes
     }
 }
-
-///* let 2nd tuple be an array of tuples itself */
-//extension NSAttributedString {
-//    func getAttributes() -> [(NSRange, [(String, AnyObject)])] {
-//        var attributesOverRanges : [(NSRange, [(String, AnyObject)])] = []
-//        var rng = NSRange()
-//        var idx = 0
-//
-//        while idx < self.length {
-//            let foo = self.attributes(at: idx, effectiveRange: &rng)
-//            var attributes : [(String, AnyObject)] = []
-//
-//            for (k, v) in foo { attributes.append(k, v) }
-//            attributesOverRanges.append((rng, attributes))
-//
-//            idx = max(idx + 1, rng.toRange()?.endIndex ?? 0)
-//        }
-//        return attributesOverRanges
-//    }
-//}
-//

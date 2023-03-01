@@ -36,7 +36,7 @@ extension NSAttributedString {
                              at index: Int,
                              with paragraphStyle: NSParagraphStyle? = NSParagraphStyle()) -> NSAttributedString {
         
-        let copy = self.mutableCopy() as! NSMutableAttributedString
+        var copy = self.mutableCopy() as! NSMutableAttributedString
         
         copy.insertAttachment(type: type,
                               attachment: attachment,

@@ -266,11 +266,23 @@ extension ParagraphTrackingUtility{
             newAttributes = att
         }else{
             
-            let (attributes_S,string_S, _): SeparatedNSAttributedString = attString.separatedNSAttributeString()
+            var (attributes_S,string_S, _): SeparatedNSAttributedString = attString.separatedNSAttributeString()
             let mutableString: NSMutableAttributedString = NSMutableAttributedString(string: "")
             
             string_S.enumerated().forEach{ index ,str in
-               let nsAttributedString: NSAttributedString = NSAttributedString(string: str, attributes: attributes_S[index])
+                var replaceString = str
+                
+                if str.isAttachmentSymbol(){
+                    return
+                }
+                
+                if let first = replaceString.first,
+                   first.isAttachment(){
+                    replaceString.removeFirst()
+                }
+                
+               let nsAttributedString: NSAttributedString = NSAttributedString(string: replaceString,
+                                                                               attributes: attributes_S[index])
                mutableString.append(nsAttributedString)
            }
             attString = mutableString
