@@ -24,6 +24,7 @@ protocol PageVCViewModelInput{
     func pageVC_Init(_ pageVC: PageVC)
     
     func viewWillDissapear()
+    
     func pageSettupBinding()
     
     func keyboardWillShow()
@@ -171,7 +172,7 @@ extension PageVCViewModel: PageTextViewInput{
         let paragraphRange = textView.getParagraphRange(range)
         
         if paragraphRange.length == 0 {
-            textView.typingAttributes = NSAttributedString.Key.defaultAttribute
+            textView.typingAttributes = NSAttributedString.Key.defaultParagraphAttribute
             return true
         }
         
@@ -185,28 +186,18 @@ extension PageVCViewModel: PageTextViewInput{
         // and current Paragraph change attribute and text when invalid block
         guard let paragraphValidator = self.paragraphValidator else {return false}
         
-        
         // is string removeAction or addAction?
         // remove action verify using isBackSpaceKey method( return type is bool )
         // and other cases are addAction so validCheck and add text
-        if text.isBackSpaceKey(),
-           textView.selectedRange.isLineChangeRange(compare: paragraphRange){
-            
-            let upParagraphRange = paragraphRange
-            let seletedRange = textView.selectedRange
-            let replaceRange = textView.getParagraphRange(seletedRange)
-            
-            let attributedString = textView.textStorage.attributedSubstring(from: replaceRange)
-            
-            return paragraphValidator.isParagraphRemoveAction(replacement: attributedString,
-                                                              replaceRange: replaceRange,
-                                                              above: upParagraphRange,
-                                                              aboveBlock: blockType)
+        if text.isBackSpaceKey(){
+            return paragraphValidator.replace_when_backKeyPressed(block: blockType, paragraph: paragraphRange)
         }else{
             return paragraphValidator.isValidBlock(text, paragraphRange, blockType)
         }
     }
+    
 }
+
 
 extension PageVCViewModel: PageVCViewModelInput{
     func pageVC_Init(_ pageVC: PageVC) {
@@ -225,7 +216,7 @@ extension PageVCViewModel: PageVCViewModelInput{
     }
     
     func viewWillDissapear() {
-        
+        self.contentViewModel.storeBlockValues()
     }
     
     func pageSettupBinding() {

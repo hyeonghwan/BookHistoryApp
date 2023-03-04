@@ -36,7 +36,7 @@ extension NSAttributedString {
                              at index: Int,
                              with paragraphStyle: NSParagraphStyle? = NSParagraphStyle()) -> NSAttributedString {
         
-        let copy = self.mutableCopy() as! NSMutableAttributedString
+        var copy = self.mutableCopy() as! NSMutableAttributedString
         
         copy.insertAttachment(type: type,
                               attachment: attachment,
@@ -66,7 +66,7 @@ extension NSMutableAttributedString {
         let plainAttachmentString = NSAttributedString(attachment: attachment)
         
         var attributes: [NSAttributedString.Key : Any] = [:]
-        attributes = NSAttributedString.Key.defaultAttribute
+        attributes = NSAttributedString.Key.defaultParagraphAttribute
         attributes[.blockType] = type
         attributes[.paragraphStyle] = paragraphStyle
         
@@ -80,7 +80,6 @@ extension NSMutableAttributedString {
 //            insertion.append(separatorString)
             insertion.append(attachmentString)
 //            insertion.append(separatorString)
-            print("separatorString  \(insertion)")
             self.insert(insertion, at: index)
         } else {
             self.insert(plainAttachmentString, at: index)

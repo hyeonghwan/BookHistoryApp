@@ -6,14 +6,6 @@
 //
 
 import UIKit
-// TextAndChildrenBlockValue ,
-//HeadingBlockValue
-//ChildPageBlockValue
-//TextAndChildrenBlockValue
-//ToDoBlockValue
-//QuoteBlockValue
-//LinkToPageBlockValue
-//CalloutBlockValue
 
 
 public final class BlockType_C: NSObject,NSSecureCoding{
@@ -62,44 +54,42 @@ class TextAndChildrenBlockValueObject: NSObject,NSSecureCoding {
     public init(
         richText: [RichTextObject],
         children: [BlockObject]? = nil,
-        color: UIColor?
+        color: String
     ) {
         self.richText = richText
         self.children = children
-        self.color = color
+        
+        if let color = Color(rawValue: color){
+            self.color = color.create
+        }
     }
     
     enum Key: String{
         case richText
         case children
-        case color
+        case text_Color
     }
     
     func encode(with coder: NSCoder) {
-        print(richText)
-        print(richText.first)
         
         coder.encode(richText, forKey: Key.richText.rawValue)
         
         if let children = children{
             coder.encode(children, forKey: Key.children.rawValue)
         }
-        if let color = color{
-            coder.encode(color, forKey: Key.color.rawValue)
-        }
-        print("texstsefasdfadf")
+        let color = Color.getColor(color)
+        coder.encode(color.rawValue , forKey: Key.text_Color.rawValue)
+    
+        
     }
     
     required convenience init?(coder: NSCoder) {
-        print("decdoe richText")
-        guard let richText = coder.decodeArrayOfObjects(ofClass: RichTextObject.self, forKey: Key.richText.rawValue) else {return nil}
-        print("richText: \(richText)")
         
+        guard let richText = coder.decodeArrayOfObjects(ofClass: RichTextObject.self, forKey: Key.richText.rawValue) else {return nil}
         
         let children = coder.decodeArrayOfObjects(ofClass: BlockObject.self, forKey: Key.children.rawValue)
-        print("richText children : \(children)")
         
-        let color = coder.decodeObject(forKey: Key.color.rawValue) as? UIColor
+        guard let color = coder.decodeObject(forKey: Key.text_Color.rawValue) as? String else {return nil}
         
         self.init(
             richText: richText ,
@@ -112,43 +102,117 @@ class TextAndChildrenBlockValueObject: NSObject,NSSecureCoding {
 }
 
 
-class HeadingBlockValueObject: NSObjCoding {
+class HeadingBlockValueObject: NSObject,NSSecureCoding  {
     static var supportsSecureCoding: Bool {
         true
     }
     
+    public var richText: [RichTextObject] 
+  
+    public var color: UIColor?
+  
+    public init(richText: [RichTextObject], color: String) {
+        self.richText = richText
+        
+        if let color = Color(rawValue: color){
+            self.color = color.create
+        }
+    }
+    
+    
+    enum Key: String{
+        case richText_heading
+        case color_heading
+    }
+    
+    
     func encode(with coder: NSCoder) {
         
+        coder.encode(richText, forKey: Key.richText_heading.rawValue)
+        
+        let color = Color.getColor(color)
+        coder.encode(color.rawValue , forKey: Key.color_heading.rawValue)
     }
     
+ 
     required convenience init?(coder: NSCoder) {
-        self.init(richText: [],color: UIColor.blue)
+        
+        guard let richText = coder.decodeArrayOfObjects(ofClass: RichTextObject.self, forKey: Key.richText_heading.rawValue) else { return nil }
+        
+        guard let color = coder.decodeObject(forKey: Key.color_heading.rawValue) as? String else {return nil}
+        
+        self.init(
+            richText: richText,
+            color: color
+        )
     }
-    
-    public let richText: [RichTextObject]
-  
-    public let color: UIColor
-  
-    public init(richText: [RichTextObject], color: UIColor) {
-        self.richText = richText
-        self.color = color
-    }
+ 
 }
 
 
-class ToDoBlockValueObject {
-    public let richText: [RichTextObject]
+class ToDoBlockValueObject: NSObjCoding {
+    static var supportsSecureCoding: Bool {
+        true
+    }
+    
+    public var richText: [RichTextObject]
   
     public let checked: Bool?
-    public let color: UIColor
+    public let color: UIColor?
     // field used only for encoding for adding/appending new blocks
     public let children: [BlockObject]?
 
-    public init(richText: [RichTextObject], checked: Bool? = nil, color: UIColor, children: [BlockObject]? = nil) {
+    
+    public init(richText: [RichTextObject], checked: Bool? = nil, color: UIColor? = .label, children: [BlockObject]? = nil) {
         self.richText = richText
         self.checked = checked
         self.color = color
         self.children = children
+    }
+    enum Key: String{
+        case richText
+        case checked
+        case color
+        case childeren
+    }
+    
+    
+    func encode(with coder: NSCoder) {
+        
+        coder.encode(richText, forKey: Key.richText.rawValue)
+        
+        if let color = color{
+            coder.encode(color, forKey: Key.color.rawValue)
+        }
+        
+        if let checked = checked{
+            coder.encode(checked, forKey: Key.checked.rawValue)
+        }else{
+            coder.encode(false, forKey: Key.checked.rawValue)
+        }
+        
+        if let children = children{
+            coder.encode(children, forKey: Key.childeren.rawValue)
+        }
+    }
+    
+ 
+    required convenience init?(coder: NSCoder) {
+        
+        guard let richText = coder.decodeArrayOfObjects(ofClass: RichTextObject.self, forKey: Key.richText.rawValue) else { return nil }
+        
+        let color = coder.decodeObject(forKey: Key.color.rawValue) as? UIColor
+        
+        let checked = coder.decodeBool(forKey: Key.checked.rawValue)
+        
+        let children = coder.decodeArrayOfObjects(ofClass: BlockObject.self, forKey: Key.childeren.rawValue)
+        
+        self.init(
+            richText: richText,
+            checked: checked,
+            color: color,
+            children: children
+        )
     }
 }
 

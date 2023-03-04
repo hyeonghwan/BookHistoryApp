@@ -24,14 +24,25 @@ protocol Add_Init_TextHeadSymbolType{
                                         _ attributesString: NSAttributedString) -> NSAttributedString
 }
 
+protocol Add_Init_TodoListType{
+    func addTodoListWhenFirstInit(_ insertIndex: Int,
+                                  _ count: Int,
+                                  _ attributesString: NSAttributedString) -> NSAttributedString
+}
+
+extension ParagraphTrackingUtility{
+    func isLastLine(_ index: Int) -> Bool{
+        let lastLine = index >= (self.paragraphs.count - 1)
+        return lastLine
+    }
+}
+
 //MARK: - Add_Init_ToggleActionType
 extension ParagraphTrackingUtility: Add_Init_ToggleActionType{
     public func addToggleWhenFirstInit(_ insertIndex: Int,
                                        _ count: Int,
                                        _ attributesString: NSAttributedString) -> NSAttributedString{
         
-        print("toggleWhenInit : \(attributesString.string)")
-        print("toggleWhenInit : \(attributesString.string.count)")
        return insertingToggleAttachment(attString: attributesString,
                                         attributes: nil,
                                         position: 0,
@@ -44,15 +55,21 @@ extension ParagraphTrackingUtility: Add_Init_TextHeadSymbolType{
     public func addTextHeadSymbolWhenFirstInit(_ insertIndex: Int,
                                                _ count: Int,
                                                _ attributesString: NSAttributedString) -> NSAttributedString{
-        
-        
-        print("textHeadWhenInit2 : \(attributesString.string)")
-        print("textHeadWhenInit2 : \(attributesString.string.count)")
-        
+    
         return insertingTextHeadSymbolListAttachment(attributesString,
                                                      attributes: nil,
                                                      0,
                                                      insertIndex)
+    }
+}
+
+//MARK: - Add_Init_TodoListType
+extension ParagraphTrackingUtility: Add_Init_TodoListType{
+    public func addTodoListWhenFirstInit(_ insertIndex: Int, _ count: Int, _ attributesString: NSAttributedString) -> NSAttributedString {
+        return insertTodoAttachment(attString: attributesString,
+                                    attributes: nil,
+                                    position: 0,
+                                    index: insertIndex)
     }
 }
 
@@ -65,7 +82,7 @@ extension ParagraphTrackingUtility{
         case .page:
             break
         case .todoList:
-            break
+            addTodoBlock(current: current, text)
         case .title1:
             addTitle(.title1, current)
         case .title2:
@@ -120,28 +137,29 @@ extension ParagraphTrackingUtility{
         
         guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
         
-        let titleAttributes = NSAttributedString.Key.getPlaceTitleAttribues(textStyle)
+//        let titleAttributes = NSAttributedString.Key.getPlaceTitleAttribues(textStyle)
         
         let resultAttributedString = NSMutableAttributedString()
         
-        let titleAttributeString = NSAttributedString(string: "제목1",attributes:titleAttributes )
+        let titleAttributeString = NSAttributedString.getNumberTitleAttStr(textStyle)
         
-        resultAttributedString.append(titleAttributeString)
-        
-        let titleEnterStyle = NSAttributedString.Key.defaultAttribute
-        
-        resultAttributedString.append(NSAttributedString(string: " \n", attributes: titleEnterStyle))
         
         let insertedRange = ranges[currentIndex]
-        if currentIndex == self.ranges.count - 1{
-            let lastInsertedString = NSAttributedString(string: "\n제목1",attributes: titleAttributes)
+        if self.isLastLine(currentIndex){
+            
+            resultAttributedString.append(NSAttributedString.paragraphNewLine)
+            resultAttributedString.append(titleAttributeString)
+            
             self.paragraphStorage?.beginEditing()
-            self.paragraphStorage?.insert(lastInsertedString,
+            self.paragraphStorage?.insert(resultAttributedString,
                                           at: insertedRange.max)
             self.paragraphStorage?.endEditing()
             return
         }
-
+        
+        resultAttributedString.append(titleAttributeString)
+        resultAttributedString.append(NSAttributedString.paragraphNewLine)
+        
         self.paragraphStorage?.beginEditing()
         self.paragraphStorage?.insert(resultAttributedString,
                                       at: insertedRange.max)
@@ -171,12 +189,12 @@ extension ParagraphTrackingUtility{
         var paragraphString: NSAttributedString
         
         if let text = text {
-            paragraphString = NSAttributedString(string: text, attributes: NSAttributedString.Key.defaultAttribute)
+            paragraphString = NSAttributedString(string: text, attributes: NSAttributedString.Key.defaultParagraphAttribute)
         }else{
             paragraphString = NSAttributedString(string: String.newLineString(),
-                                                 attributes: NSAttributedString.Key.defaultAttribute)
+                                                 attributes: NSAttributedString.Key.defaultParagraphAttribute)
         }
-        self.paragrphTextView?.typingAttributes = NSAttributedString.Key.defaultAttribute
+        self.paragrphTextView?.typingAttributes = NSAttributedString.Key.defaultParagraphAttribute
         
         self.paragraphStorage?.beginEditing()
         self.paragraphStorage?.insert(paragraphString, at: insertedRange.max)
@@ -188,15 +206,122 @@ extension ParagraphTrackingUtility{
     
 }
 
+//MARK: - add Todo Logic
+extension ParagraphTrackingUtility{
+    private func addTodoBlock(current range: NSRange, _ text: String? = nil){
+        guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
+        let insertedRange = ranges[currentIndex]
+        
+        if let restText = text{
+            createTodoListAttributedString(restText, currentIndex, insertedRange)
+            return
+        }
+        
+        createTodoListAttributedString(nil,currentIndex, insertedRange)
+    }
+    private func createTodoListAttributedString(_ text: String? = nil,
+                                              _ index: Int,
+                                              _ range: NSRange) {
+        
+        let plusIndex = 1
+        let lastLine = self.isLastLine(index)
+        let insertedRange = range
+        
+        let todoString = NSMutableAttributedString()
+        var resultString: NSAttributedString
+        
+        if let text = text{
+            todoString.append(NSAttributedString(string: "\(text)", attributes: NSAttributedString.Key.todoListAttributes))
+            resultString = insertingToggleAttachment(attString: todoString,
+                                                     attributes: NSAttributedString.Key.todoListAttributes,
+                                                     position: plusIndex - 1,
+                                                     index: index)
+        }else{
+            todoString.append(NSAttributedString(string:"할 일",
+                                                 attributes: NSAttributedString.Key.todoPlaceHolderAttributes))
+            
+            resultString = insertTodoAttachment(attString: todoString,
+                                                attributes: NSAttributedString.Key.todoPlaceHolderAttributes,
+                                                position: plusIndex - 1,
+                                                index: index)
+        }
+        
+        self.paragraphStorage?.insertedPlaceHolder(with: resultString,
+                                                   insert: insertedRange,
+                                                   last: lastLine)
+        
+        
+        self.paragrphTextView?.selectedRange = NSRange(location: insertedRange.max + plusIndex, length: 0)
+        
+    }
+    private func insertTodoAttachment(attString: NSAttributedString ,
+                                           attributes: [NSAttributedString.Key : Any]? = nil,
+                                           position: Int,
+                                           index : Int) -> NSAttributedString{
+        let blockObjectIndex = index + 1
+        var newAttributes: [NSAttributedString.Key : Any] = [:]
+        var attString = attString
+        
+        if let att = attributes{
+            newAttributes = att
+        }else{
+            
+            var (attributes_S,string_S, _): SeparatedNSAttributedString = attString.separatedNSAttributeString()
+            let mutableString: NSMutableAttributedString = NSMutableAttributedString(string: "")
+            
+            string_S.enumerated().forEach{ index ,str in
+                var replaceString = str
+                
+                if str.isAttachmentSymbol(){
+                    return
+                }
+                
+                if let first = replaceString.first,
+                   first.isAttachment(){
+                    replaceString.removeFirst()
+                }
+                
+               let nsAttributedString: NSAttributedString = NSAttributedString(string: replaceString,
+                                                                               attributes: attributes_S[index])
+               mutableString.append(nsAttributedString)
+           }
+            attString = mutableString
+        }
+    
+        
+        
+        let dependency = TodoBlcokButton.TodoBlockDependency(todoAction: self, firstInitIndex: nil)
+        
+        let button = TodoBlcokButton(frame: .zero, dependency: dependency)
+        
+        
+        let imageSize = CGSize(width: 35, height: 20)
+        let attachment = SubviewTextAttachment(view: button,
+                                               size: imageSize)
+        
+        let font = UIFont.appleSDGothicNeo.regular.font(size: 16)
+        let mid = font.descender + font.capHeight
+        let yOffset = mid - imageSize.height / 2
+        attachment.bounds = CGRect(x: 0, y: yOffset, width: imageSize.width, height: imageSize.height)
+        
+        var result = attString.insertingAttachment(type: .todoList,
+                                                   attachment: attachment,
+                                                   at: position,
+                                                   with: NSParagraphStyle.nsAttachmentHeadIndentParagraphStyle())
+        
+        result = result.addingAttributes(newAttributes)
+        
+        return result
+    }
+}
+
 //MARK: - add Toggle Logic
 extension ParagraphTrackingUtility {
     
     private func addToggle(_ range: NSRange,_ text: String? = nil){
-        print("self.ranges :\(self.ranges)")
-        print("currentParagraphRange range: \(range)")
+        
         guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
         
-       
         let insertedRange = ranges[currentIndex]
         
         if let restText = text{
@@ -212,24 +337,23 @@ extension ParagraphTrackingUtility {
                                               _ index: Int,
                                               _ range: NSRange) {
         
-        let plusIndex =  (index < (self.ranges.count - 1)) ? 1 : 2
+        let plusIndex = 1
+        let lastLine = self.isLastLine(index)
         let insertedRange = range
         
-        var togglString: NSAttributedString
+        let togglString = NSMutableAttributedString()
         var resultString: NSAttributedString
         
         if let text = text{
-            togglString = NSAttributedString(string: "\(text)", attributes: NSAttributedString.Key.toggleAttributes)
+            togglString.append(NSAttributedString(string: "\(text)", attributes: NSAttributedString.Key.toggleAttributes))
+            
             resultString = insertingToggleAttachment(attString: togglString,
                                                      attributes: NSAttributedString.Key.toggleAttributes,
                                                      position: plusIndex - 1,
                                                      index: index)
         }else{
-            if plusIndex == 1{
-                togglString = NSAttributedString(string: "토글\n", attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
-            }else{
-                togglString = NSAttributedString(string: "\n토글", attributes: NSAttributedString.Key.togglePlaceHolderAttributes)
-            }
+            
+            togglString.append(NSAttributedString(string: "토글", attributes: NSAttributedString.Key.togglePlaceHolderAttributes))
             
             resultString = insertingToggleAttachment(attString: togglString,
                                                      attributes: NSAttributedString.Key.togglePlaceHolderAttributes,
@@ -237,9 +361,10 @@ extension ParagraphTrackingUtility {
                                                      index: index)
         }
         
-        self.paragraphStorage?.beginEditing()
-        self.paragraphStorage?.insert(resultString, at: insertedRange.max)
-        self.paragraphStorage?.endEditing()
+        self.paragraphStorage?.insertedPlaceHolder(with: resultString,
+                                                   insert: insertedRange,
+                                                   last: lastLine)
+        
         
         self.paragrphTextView?.selectedRange = NSRange(location: insertedRange.max + plusIndex, length: 0)
         
@@ -251,10 +376,10 @@ extension ParagraphTrackingUtility {
         let blockObjectIndex = index + 1
         var newAttributes: [NSAttributedString.Key : Any] = [:]
         var attString = attString
+        
         if let att = attributes{
             newAttributes = att
         }else{
-//            newAttributes = attString.allAttributes
             
             let (attributes_S,string_S, _): SeparatedNSAttributedString = attString.separatedNSAttributeString()
             let mutableString: NSMutableAttributedString = NSMutableAttributedString(string: "")
@@ -264,13 +389,10 @@ extension ParagraphTrackingUtility {
                mutableString.append(nsAttributedString)
            }
             attString = mutableString
-            attributes_S.forEach{
-                print("$0[.blockType] : \($0[.blockType])")
-            }
         }
     
         
-        let dependency = BlockToggleDependency(toggleAction: self, firstInitIndex: blockObjectIndex)
+        let dependency = BlockToggleButton.BlockToggleDependency(toggleAction: self, firstInitIndex: blockObjectIndex)
         
         let button = BlockToggleButton(frame: .zero,
                                        dependency: dependency)
@@ -282,12 +404,10 @@ extension ParagraphTrackingUtility {
         var result = attString.insertingAttachment(type: .toggleList,
                                                    attachment: attachment,
                                                    at: position,
-                                                   with: NSParagraphStyle.toggleHeadIndentParagraphStyle())
+                                                   with: NSParagraphStyle.nsAttachmentHeadIndentParagraphStyle())
         
         result = result.addingAttributes(newAttributes)
-        print("resultString: \(result.string)")
-        print("resultString: \(result.string.count)")
-        print("resultString: \(result)")
+        
         return result
     }
 }
@@ -296,17 +416,6 @@ extension ParagraphTrackingUtility {
 extension ParagraphTrackingUtility{
     func addTextHeadSymbolList(_ range: NSRange, _ text: String? = nil) {
 
-        print("rangeS: \(self.ranges)")
-        print("seletedrange: \(range)")
-        print("self.paragraph: \(self.paragraphs)")
-        self.paragraphs.forEach{ va in
-            
-            print("vavavava: \(va.count)")
-            if va.contains(where: { $0 == "\u{fffc}"
-            }){
-                print("\(va) is contain ufffc")
-            }
-        }
         guard let currentIndex = self.ranges.firstIndex(of: range) else {return}
        
         let insertedRange = ranges[currentIndex]
@@ -315,7 +424,6 @@ extension ParagraphTrackingUtility{
             createTextHeadSymbolListAttributedString(restText, currentIndex, insertedRange)
             return
         }
-        
         createTextHeadSymbolListAttributedString(nil,currentIndex, insertedRange)
         
     }
@@ -323,59 +431,52 @@ extension ParagraphTrackingUtility{
                                                           _ index: Int,
                                                           _ range: NSRange) {
         
-        let plusIndex =  (index < (self.ranges.count - 1)) ? 1 : 2
+        let plusIndex =  1  //
+        let lastLine = self.isLastLine(index)
         let insertedRange = range
         
-        var togglString: NSAttributedString
+        let togglString = NSMutableAttributedString()
         var resultString: NSAttributedString
         
         if let text = text{
-            togglString = NSAttributedString(string: "\(text)", attributes: NSAttributedString.Key.toggleAttributes)
+            togglString.append(NSAttributedString(string: "\(text)", attributes: NSAttributedString.Key.toggleAttributes))
             resultString = insertingTextHeadSymbolListAttachment(togglString, attributes: NSAttributedString.Key.toggleAttributes, plusIndex - 1,index)
         }else{
-            if plusIndex == 1{
-                togglString = NSAttributedString(string: "리스트\n", attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes)
-            }else{
-                togglString = NSAttributedString(string: "\n리스트", attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes)
-            }
+            togglString.append(NSAttributedString(string: "리스트", attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes))
+            
             resultString = insertingTextHeadSymbolListAttachment(togglString,
                                                                  attributes: NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes,
                                                                  plusIndex - 1,
                                                                  index)
-            
         }
         
-        self.paragraphStorage?.beginEditing()
-        self.paragraphStorage?.insert(resultString, at: insertedRange.max)
-        self.paragraphStorage?.endEditing()
+        
+        self.paragraphStorage?.insertedPlaceHolder(with: resultString,
+                                                   insert: insertedRange,
+                                                   last: lastLine)
+        
         
         self.paragrphTextView?.selectedRange = NSRange(location: insertedRange.max + plusIndex, length: 0)
-        
     }
+    
     private func insertingTextHeadSymbolListAttachment(_ attString: NSAttributedString ,
                                            attributes: [NSAttributedString.Key : Any]?,
                                            _ position: Int,
                                            _ index : Int) -> NSAttributedString{
-//        let blockObjectIndex = index + 1
+
         var newAttributes: [NSAttributedString.Key : Any] = [:]
         var attString = attString
         
         if let att = attributes{
             newAttributes = att
         }else{
-//            newAttributes = attString.allAttributes
-            
             let (attributes_S,string_S, _): SeparatedNSAttributedString = attString.separatedNSAttributeString()
             let mutableString: NSMutableAttributedString = NSMutableAttributedString(string: "")
-            attributes_S.forEach{
-                print("$0[.paragraphStyle] : \($0[.paragraphStyle])")
-            }
+            
             string_S.enumerated().forEach{ index ,str in
-                
                let nsAttributedString: NSAttributedString = NSAttributedString(string: str, attributes: attributes_S[index])
                mutableString.append(nsAttributedString)
            }
-            
             attString = mutableString
         }
         
@@ -384,18 +485,14 @@ extension ParagraphTrackingUtility{
         let attachment = SubviewTextAttachment(view: textHeadSymbolView,
                                                size: CGSize(width: 35, height: 13))
         
-        print("attttttttt: \(attString)")
-        print("attString.string : \(attString.string)")
-        print("")
+        
         var result = attString.insertingAttachment(type: .textHeadSymbolList,
                                                    attachment: attachment,
                                                    at: position,
-                                                   with: NSParagraphStyle.toggleHeadIndentParagraphStyle())
-        print("result: \(result)")
+                                                   with: NSParagraphStyle.nsAttachmentHeadIndentParagraphStyle())
+        
         result = result.addingAttributes(newAttributes)
-        print("resultString: \(result.string)")
-        print("resultString: \(result.string.count)")
-        print("resultString: \(result)")
+        
         return result
     }
 }

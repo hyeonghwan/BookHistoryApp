@@ -12,8 +12,10 @@ protocol PageVCValidDelegate: AnyObject{
     func settingValidatorUseCaseDependency(_ validator: ParagraphValidatorProtocol)
     
     func getRestRangeAndText(_ paragraphRange: NSRange) -> String?
-    func resetParagraphToPlaceHodlerAttribute(_ data: ParagraphValidator.TextToValidData) -> Bool
     
+    func resetParagraphTo_PlaceHodlerAttribute(paragraphRange: NSRange,
+                                              replacement type: CustomBlockType.Base,
+                                              lastLine flag: Bool) -> Bool
     func replaceBlockAttribute(_ text: String,
                                _ paragraphRange: NSRange,
                                _ blockType: CustomBlockType.Base) -> Bool
@@ -22,6 +24,11 @@ protocol PageVCValidDelegate: AnyObject{
                                                   insertedRange inRange: NSRange,
                                                   replaceRange range: NSRange,
                                                   block type: CustomBlockType.Base) -> Bool
+    
+    func resetParagraphTo_RestTextAttributes(inserted range: NSRange,
+                                            title type: CustomBlockType.Base,
+                                            replacement text: String,
+                                            lastLine flag: Bool) -> Bool
 }
 
 protocol ParagraphValidInput{
@@ -31,11 +38,13 @@ protocol ParagraphValidInput{
     
     func isValidSelection(_ textView: UITextView, _ paragraphRange: NSRange)
     
+    func replace_when_backKeyPressed(block type: CustomBlockType.Base?, paragraph range: NSRange) -> Bool
     
-    func isParagraphRemoveAction(replacement attString: NSAttributedString,
-                                 replaceRange range: NSRange,
-                                 above paragraphRange: NSRange,
-                                 aboveBlock type: CustomBlockType.Base?) -> Bool
+    
+//    func isParagraphRemoveAction(replacement attString: NSAttributedString,
+//                                 replaceRange range: NSRange,
+//                                 above paragraphRange: NSRange,
+//                                 aboveBlock type: CustomBlockType.Base?) -> Bool
 }
 
 
@@ -57,6 +66,49 @@ class ParagraphValidator: ParagraphValidatorProtocol{
         
     }
     
+    
+    func replace_when_backKeyPressed(block type: CustomBlockType.Base?, paragraph range: NSRange) -> Bool{
+        guard let textView = self.pageViewModel?.pageVC?.textView else {return false}
+        let paragraphRange = range
+        let blockType = type
+        
+        if textView.selectedRange.length == 0,
+           textView.isLineChangeRange(compare: paragraphRange){
+            let upParagraphRange = paragraphRange
+            let seletedRange = textView.selectedRange
+            let replaceRange = textView.getParagraphRange(seletedRange)
+            
+            let attributedString = textView.textStorage.attributedSubstring(from: replaceRange)
+            
+            return self.isParagraphRemoveAction(replacement: attributedString,
+                                                replaceRange: replaceRange,
+                                                above: upParagraphRange,
+                                                aboveBlock: blockType)
+        }
+        
+        if let blockType = blockType,
+           blockType == .paragraph{
+            return true
+        }
+        
+        if let type = blockType{
+            let seleted = textView.selectedRange
+            // 어느 위치에서 삭제 되었는지
+            let difference = (seleted.location - paragraphRange.location)
+            
+            let firstParagraphRange = textView.getParagraphRange(NSRange(location: paragraphRange.location, length: 0))
+            // seletedRange가 singe Line만 포함하고 있을때 early return
+            if (firstParagraphRange == paragraphRange) && (seleted.length != paragraphRange.length - 1){
+                return true
+            }
+            
+            return backKeyPreesedAndResetPlaceHolder(paragraphRange: paragraphRange,
+                                                     difference: difference,
+                                                     replace: type)
+        }
+        return true
+    }
+    
     func isValidBlock(_ text: String,_ paragraphRange: NSRange,_ type: CustomBlockType.Base? = .paragraph) -> Bool {
         guard let blockType = type else {return true}
         return checkValidBlock(text, paragraphRange, blockType)
@@ -66,7 +118,7 @@ class ParagraphValidator: ParagraphValidatorProtocol{
         return self.checkSelectionRange(textView: textView, paragraphRange)
     }
     
-    func isParagraphRemoveAction(replacement attString: NSAttributedString,
+    private func isParagraphRemoveAction(replacement attString: NSAttributedString,
                                  replaceRange range: NSRange,
                                  above paragraphRange: NSRange,
                                  aboveBlock type: CustomBlockType.Base?) -> Bool {
@@ -78,19 +130,53 @@ class ParagraphValidator: ParagraphValidatorProtocol{
                                                aboveBlock: blockType)
     }
     
+    
   
 }
 
 //MARK: - link to private method
 private extension ParagraphValidator{
+    
+    func backKeyPreesedAndResetPlaceHolder(paragraphRange: NSRange,
+                                           difference: Int,
+                                           replace type: CustomBlockType.Base) -> Bool{
+        guard let pageViewModel = pageViewModel else {return false}
+        guard let textView = pageViewModel.pageVC?.textView else {return false}
+        let lastLine = textView.isLastLine(paragraph: paragraphRange) ? true : false
+        print("paragraphRange: \(paragraphRange.max)")
+        print("paragraphRange: \(textView.getTextCount())")
+        switch type{
+        case .title1,.title2,.title3:
+            
+            return titleReplace(textView: textView,
+                                paragraph: paragraphRange,
+                                difference: difference,
+                                block: type,
+                                last: lastLine)
+            
+        case .textHeadSymbolList,.toggleList, .todoList:
+            if difference > 2 {
+                return true
+            }else{
+                return pageViewModel.resetParagraphTo_PlaceHodlerAttribute(paragraphRange: paragraphRange,
+                                                                          replacement: type,
+                                                                          lastLine: lastLine)
+            }
+        default:
+            return true
+        }
+        
+    }
+    
     private func checkValidBlock(_ text: String,_ paragraphRange: NSRange,_ blockType: CustomBlockType.Base) -> Bool{
+        
         switch blockType {
         case .paragraph:
             return paragraphTextValid(text, paragraphRange)
         case .page:
             break
         case .todoList:
-            break
+            return todoValid(input: text, paragraph: paragraphRange)
         case .title1:
             return titleValid(type:.title1,text: text, at: paragraphRange)
         case .title2:
@@ -118,6 +204,7 @@ private extension ParagraphValidator{
         }
         return true
     }
+    
     func checkSelectionRange(textView: UITextView ,_ paragraphRange: NSRange) {
         let attribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location, effectiveRange: nil)
         var blockAttribute: Any?
@@ -139,13 +226,16 @@ private extension ParagraphValidator{
         }
     
             
-        if (blockType == .toggleList ) || (blockType == .textHeadSymbolList){
+        if (blockType == .toggleList ) || (blockType == .textHeadSymbolList) || blockType == .todoList{
             var nsRange = NSRange()
             nsRange = paragraphRange
             
             guard let toggleFirstAttribute = textView.textStorage.attribute(.foregroundColor, at: paragraphRange.location , effectiveRange: &nsRange) as? UIColor else {return}
             let toggleParagraphattribute = textView.textStorage.attribute(.foregroundColor, at: nsRange.max , effectiveRange: &nsRange) as? UIColor
-            
+            textView.textStorage.enumerateAttribute(.foregroundColor, in: paragraphRange, using: { ani , range, bool in
+                print("range: \(range)")
+                print("range ani: \(ani as? UIColor)")
+            })
             
             if toggleFirstAttribute.isPlaceHolder(),
                textView.selectedRange == NSRange(location: paragraphRange.location, length: 0){
@@ -158,6 +248,7 @@ private extension ParagraphValidator{
                 textView.selectedRange = NSMakeRange(paragraphRange.location + 1, 0)
                 return
             }
+            return
         }
 
         if seletedForeGround == UIColor.placeHolderColor{
@@ -165,52 +256,75 @@ private extension ParagraphValidator{
             return
             
         }
+
     }
     
     func checkParagraphRemoveAction(replacement attString: NSAttributedString,
                                     replaceRange range: NSRange,
                                     above paragraphRange: NSRange,
                                     aboveBlock type: CustomBlockType.Base) -> Bool  {
-        switch type {
-        case .paragraph:
-            return true
-        case .page:
-            return false
-        case .todoList:
-            return false
-        case .title1, .title2, .title3:
-            
-            return replaceToTitleAttributes(replaceRange: range,
+        
+        guard let currentBlockType = attString.attribute(.blockType, at: attString.range.location, effectiveRange: nil) as? CustomBlockType.Base else {return false}
+        
+        if currentBlockType != type{
+            return replace_To_upBlock_from_downBlock(replaceRange: range,
                                             replaceText: attString.string,
                                             to: paragraphRange,
                                             block: type)
-        case .graph:
-            break
-        case .textHeadSymbolList:
-            break
-        case .numberList:
-            break
-        case .toggleList:
-            break
-        case .quotation:
-            break
-        case .separatorLine:
-            break
-        case .pageLink:
-            break
-        case .callOut:
-            break
-        case .none:
-            break
         }
-        
-        
         return true
     }
+    
 }
 
 
-
+//MARK: - Titlte Block back Key
+extension ParagraphValidator{
+    func titleReplace(textView: UITextView,
+                      paragraph range: NSRange,
+                      difference value: Int,
+                      block type: CustomBlockType.Base,
+                      last line: Bool) -> Bool{
+        
+        let paragraphRange = range
+        let text = textView.selectedSeparatedText(paragraph: paragraphRange)
+        let difference = value
+        
+        guard let pageViewModel = self.pageViewModel else { return false}
+        
+        if difference == 0{
+            if let text = text,
+               text.isEmpty{
+                return pageViewModel.resetParagraphTo_PlaceHodlerAttribute(paragraphRange: paragraphRange,
+                                                                          replacement: type,
+                                                                          lastLine: line)
+            }else{
+                guard let text = text else {return false}
+                return pageViewModel.resetParagraphTo_RestTextAttributes(inserted: paragraphRange,
+                                                                        title: type,
+                                                                        replacement: text,
+                                                                        lastLine: line)
+            }
+        }else{
+            if let text = text,
+               text.isEmpty{
+                if difference == 1{
+                    return pageViewModel.resetParagraphTo_PlaceHodlerAttribute(paragraphRange: paragraphRange,
+                                                                               replacement: type,
+                                                                               lastLine: line)
+                }
+                return true
+                
+            }else{
+                guard let text = text else {return false}
+                return pageViewModel.resetParagraphTo_RestTextAttributes(inserted: paragraphRange,
+                                                                        title: type,
+                                                                        replacement: text,
+                                                                        lastLine: line)
+            }
+        }
+    }
+}
 
 //MARK: - ParagraphValid
 extension ParagraphValidator{
@@ -225,27 +339,26 @@ extension ParagraphValidator{
     
     private func paragraphTextValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
         guard let pageViewModel = self.pageViewModel else {return false}
+        guard let textView = pageViewModel.pageVC?.textView else {return false}
+        let lastLine = textView.isLastLine(paragraph: paragraphRange)
+        if text.isNewLine(){
+            return true
+        }
+        
+        textView.typingAttributes = NSAttributedString.Key.defaultParagraphAttribute
+        
         return true
     }
 }
 
-//MARK: - TitleValid
 extension ParagraphValidator{
-    private func titleValid(type: CustomBlockType.Base,text: String,at paragraphRange: NSRange) -> Bool{
-        guard let pageViewModel = self.pageViewModel else {return false}
-        if pageViewModel.replaceBlockAttribute(text, paragraphRange, type){
-            
-            return true
-        }
-        
-        return false
-    }
     
-    private func replaceToTitleAttributes(replaceRange range: NSRange,
+    private func replace_To_upBlock_from_downBlock(replaceRange range: NSRange,
                                           replaceText text: String,
                                           to paragraphRange: NSRange,
                                           block type: CustomBlockType.Base) -> Bool{
-        
+//        type -> 변화 시킬려는 타입
+        // original -> type 으로
         guard let pageViewModel = self.pageViewModel else {return false}
         guard let textView = pageViewModel.pageVC?.textView else {return false}
         
@@ -253,8 +366,7 @@ extension ParagraphValidator{
         var replaceText = text
         let paragraphRange = paragraphRange
         
-        let font = UIFont.preferredFont(block: type)
-        let titleAttributes = NSAttributedString.Key.getTitleAttributes(block: type,font: font)
+        let replaceAttributes = NSAttributedString.getCustomBlockTypeAttributes(block: type)
         
         if replaceText.endsWith_Newline{
             
@@ -262,11 +374,13 @@ extension ParagraphValidator{
             
             textView.textStorage.beginEditing()
             textView.textStorage.replaceCharacters(in: NSRange(location: replaceRange.location, length: replaceRange.length ),
-                                                   with: NSAttributedString(string: String.emptyStr(), attributes: textView.typingAttributes))
+                                                   with: NSAttributedString(string: String.emptyStr(),
+                                                                            attributes: textView.typingAttributes))
             textView.textStorage.endEditing()
             
             textView.textStorage.beginEditing()
-            textView.textStorage.insert(NSAttributedString(string: replaceText, attributes: titleAttributes),
+            textView.textStorage.insert(NSAttributedString(string: replaceText,
+                                                           attributes: replaceAttributes),
                                         at: paragraphRange.max - 1)
             textView.textStorage.endEditing()
         }else{
@@ -277,7 +391,8 @@ extension ParagraphValidator{
             textView.textStorage.endEditing()
             
             textView.textStorage.beginEditing()
-            textView.textStorage.insert(NSAttributedString(string: replaceText, attributes: titleAttributes),
+            textView.textStorage.insert(NSAttributedString(string: replaceText,
+                                                           attributes: replaceAttributes),
                                         at: paragraphRange.max - 1)
             textView.textStorage.endEditing()
         }
@@ -286,23 +401,33 @@ extension ParagraphValidator{
     }
 }
 
+
+//MARK: - TItleValid
+extension ParagraphValidator{
+    private func titleValid(type: CustomBlockType.Base,text: String,at paragraphRange: NSRange) -> Bool{
+        guard let pageViewModel = self.pageViewModel else {return false}
+        if pageViewModel.replaceBlockAttribute(text, paragraphRange, type){
+            
+            return true
+        }
+        
+        return false
+    }
+}
+
+//MARK: - TodoValid
+extension ParagraphValidator{
+    private func todoValid(input text: String, paragraph range: NSRange) -> Bool{
+        guard let pageViewModel = self.pageViewModel else {return false}
+        return pageViewModel.replaceBlockAttribute(text, range, .todoList)
+    }
+}
+
 //MARK: - TextHeadSymbolListValid
 extension ParagraphValidator{
     private func textHeadSymbolListValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
         guard let pageViewModel = self.pageViewModel else {return false}
-        if pageViewModel.replaceBlockAttribute(text,paragraphRange,.textHeadSymbolList){
-            
-            guard let restText = pageViewModel.getRestRangeAndText(paragraphRange) else {return false}
-            
-            let textToValidData = TextToValidData(text: text,
-                                                  restText: restText,
-                                                  replaceMent:"리스트",
-                                                  paragraphRange: paragraphRange,
-                                                  type: .textHeadSymbolList)
-            
-            return pageViewModel.resetParagraphToPlaceHodlerAttribute(textToValidData)
-        }
-        return false
+        return pageViewModel.replaceBlockAttribute(text, paragraphRange, .textHeadSymbolList)
     }
 }
 
@@ -310,18 +435,6 @@ extension ParagraphValidator{
 extension ParagraphValidator{
     private func toggleValid(_ text: String, _ paragraphRange: NSRange) -> Bool{
         guard let pageViewModel = self.pageViewModel else {return false}
-        if pageViewModel.replaceBlockAttribute(text,paragraphRange,.toggleList){
-            
-            guard let restText = pageViewModel.getRestRangeAndText(paragraphRange) else {return false}
-            
-            let textToValidData = TextToValidData(text: text,
-                                                  restText: restText,
-                                                  replaceMent: "토글",
-                                                  paragraphRange: paragraphRange,
-                                                  type: .toggleList)
-            
-            return pageViewModel.resetParagraphToPlaceHodlerAttribute(textToValidData)
-        }
-        return false
+        return pageViewModel.replaceBlockAttribute(text, paragraphRange, .toggleList)
     }
 }

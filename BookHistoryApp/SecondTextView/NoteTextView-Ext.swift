@@ -78,9 +78,25 @@ extension SecondTextView{
     func blockRemove(_ range: NSRange){
         let paragraphRange = self.getParagraphRange(range)
         
+        let newAttributedString = NSAttributedString(string: String.emptyStr(),
+                                                     attributes: NSAttributedString.Key.defaultParagraphAttribute)
+    
         self.textStorage.beginEditing()
-        self.textStorage.replaceCharacters(in: paragraphRange, with: NSAttributedString(string: "", attributes: self.typingAttributes))
+        self.textStorage.setAttributes(NSAttributedString.Key.defaultParagraphAttribute, range: paragraphRange)
         self.textStorage.endEditing()
+        
+        self.textStorage.beginEditing()
+        self.textStorage.replaceCharacters(in: paragraphRange, with: newAttributedString)
+        self.textStorage.endEditing()
+        
+        
+        if (range.location - 1) > 0{
+            self.selectedRange = NSMakeRange(paragraphRange.location - 1, 0)
+        }else{
+            self.selectedRange = NSMakeRange(0, 0)
+        }
+        
+        self.typingAttributes = NSAttributedString.Key.defaultParagraphAttribute
     }
     
     /// Current blockUp
@@ -103,7 +119,7 @@ extension SecondTextView{
         let paragraphRange = self.getParagraphRange(range)
         guard let index = self.contentViewModel?.paragraphTrackingUtility.ranges.firstIndex(where: { $0 == paragraphRange}) else {return}
         
-        var rng = NSRange(location: 34, length: 20){
+        var rng = NSRange() {
             didSet{
                 print("rng : \(rng)")
             }

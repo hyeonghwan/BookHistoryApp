@@ -9,7 +9,13 @@ import UIKit
 
 extension NSParagraphStyle{
     
-    static func toggleHeadIndentParagraphStyle() -> NSParagraphStyle{
+    static func nsAttachmentHeadIndentParagraphStyle() -> NSParagraphStyle{
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.firstLineHeadIndent = 0
+        paragraphStyle.headIndent = 35
+        return paragraphStyle
+    }
+    static func todoParagraphStyle() -> NSParagraphStyle{
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.firstLineHeadIndent = 0
         paragraphStyle.headIndent = 35

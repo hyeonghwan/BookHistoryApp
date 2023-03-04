@@ -23,36 +23,98 @@ extension PageVCViewModel: PageVCValidDelegate{
         guard let restText = pageVC?.textView.text(in: restRange) else {return nil}
         return restText
     }
+   
     
-    func resetParagraphToPlaceHodlerAttribute(_ data: ParagraphValidator.TextToValidData) -> Bool{
+    func resetParagraphTo_RestTextAttributes(inserted range: NSRange,
+                                            title type: CustomBlockType.Base,
+                                            replacement text: String,
+                                            lastLine flag: Bool) -> Bool{
+        guard let textView = pageVC?.textView else {return false}
+        let paragraphRange = range
+        let text = text
+        
+        let mutable = NSMutableAttributedString()
+        
+        let attributedString = NSAttributedString(string: text,
+                                                  attributes: NSAttributedString.Key.getTitleAttributes(block: type,
+                                                                                                        font: UIFont.preferredFont(block: type)))
+        mutable.append(attributedString)
+        
+        if flag == false{
+            mutable.append(NSAttributedString.paragraphNewLine)
+        }
+        
+        
+        let locationDifference = textView.selectedRange.location - paragraphRange.location
+        let length = paragraphRange.length - textView.selectedRange.length - locationDifference
+        
+        
+        // 짝수 일때 글자수가 같기 때문에 paragraphTextKit이 change를 감지하지 못하는것 같다.
+        // 그래서 seletedRange를 전부 empty string으로 바꾸고
+        // seletedLocation 에 나머지 text insert
+        
+        let removeRange = NSRange(location: textView.selectedRange.location,
+                                  length: paragraphRange.length - locationDifference)
+        textView.textStorage.beginEditing()
+        textView.textStorage.replaceCharacters(in: removeRange,
+                                               with: mutable)
+        textView.textStorage.endEditing()
+        
+        textView.selectedRange = NSMakeRange(locationDifference + paragraphRange.location + length , 0)
+        return false
+    }
+    
+    func resetParagraphTo_PlaceHodlerAttribute(paragraphRange: NSRange,
+                                              replacement type: CustomBlockType.Base,
+                                              lastLine flag: Bool) -> Bool{
         guard let textView = pageVC?.textView else {return false}
         
-        let restText = data.restText
-        let paragraphRange = data.paragraphRange
-        let text = data.text
-        let replacement = data.replaceMent
-        let type = data.type
+        var replaceAttributedText: NSAttributedString
+        var paragraphRange = paragraphRange
         
-        var attributes: [NSAttributedString.Key : Any] = [:]
+        var textAttachmentOffset: Int = 0
+        var lengthOffset: Int = 1
         
         if type == .textHeadSymbolList{
-            attributes = NSAttributedString.Key.textHeadSymbolListPlaceHolderAttributes
-        }else{
-            attributes = NSAttributedString.Key.togglePlaceHolderAttributes
+            replaceAttributedText = NSAttributedString.textHeadSymbolList_placeHolderString
+            textAttachmentOffset = 1
+            lengthOffset += 1
+        }else if type == .todoList{
+            replaceAttributedText = NSAttributedString.todo_PlaceHolderString
+            textAttachmentOffset = 1
+            lengthOffset += 1
+        }else if type == .toggleList{
+            replaceAttributedText = NSAttributedString.toggle_placeHolderString
+            textAttachmentOffset = 1
+            lengthOffset += 1
+        }else if type == .title1{
+            replaceAttributedText = NSAttributedString.title1_placeHolderString
+        }else if type == .title2{
+            replaceAttributedText = NSAttributedString.title2_placeHolderString
         }
-        
-        if (restText.length == 3 && text == ""){
-            textView.textStorage.beginEditing()
-            textView.textStorage.replaceCharacters(in: NSRange(location: paragraphRange.location + 1,
-                                                               length: paragraphRange.length - 2),
-                                                   with: NSAttributedString(string: replacement,
-                                                                            attributes: attributes))
-            textView.textStorage.endEditing()
-            
-            textView.selectedRange = NSRange(location: paragraphRange.location + 1, length: 0)
+        else if type == .title3{
+            replaceAttributedText = NSAttributedString.title3_placeHolderString
+        }
+        else{
             return false
         }
-        return true
+
+        if flag {
+            paragraphRange = NSMakeRange(paragraphRange.location + textAttachmentOffset,
+                                         paragraphRange.length - (lengthOffset - 1))
+        }else{
+            paragraphRange = NSMakeRange(paragraphRange.location + textAttachmentOffset,
+                                         paragraphRange.length - lengthOffset)
+        }
+        
+        
+        textView.textStorage.beginEditing()
+        textView.textStorage.replaceCharacters(in: paragraphRange,
+                                               with: replaceAttributedText)
+        textView.textStorage.endEditing()
+        
+        textView.selectedRange = NSRange(location: paragraphRange.location, length: 0)
+        return false
     }
     
     func replaceBlockAttribute_WhenBackKeyPressed(replace text: String,

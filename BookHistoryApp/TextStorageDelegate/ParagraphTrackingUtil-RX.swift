@@ -33,12 +33,9 @@ extension Reactive where Base: ParagraphTrackingUtility{
     var blockObjects: Binder<[BlockObject]>{
         return Binder(self.base) { paragraphTUtil , blocks in
             paragraphTUtil.blockObjects = blocks
-            print("blocks : \(blocks)")
             onBlockType(blocks)
             onParagraph(blocks)
             onAttributes(blocks)
-            print("-dsfasdf")
-            print(self.paragraphs)
         }
     }
     
@@ -56,16 +53,9 @@ extension Reactive where Base: ParagraphTrackingUtility{
     
     private func onAttributes(_ blocks: [BlockObject]){
         var attributeArray: [[[NSAttributedString.Key : Any]]] = []
-        blocks.forEach{ block in
-//            block.getObjectAttributes()
-            attributeArray += block.getAllObejctAttributes()
-        }
         
-        attributeArray.forEach{ value in
-            print("value[0][.blockType] : \(value[0][.blockType])")
-            print("value[0][.blockType] : \((value[0][.paragraphStyle] as! NSParagraphStyle).headIndent)")
-            print("value[0][.blockType] : \((value[0][.foregroundColor] as! UIColor))")
-            print("--------------------------------------------")
+        blocks.forEach{ block in
+            attributeArray += block.getAllObejctAttributes()
         }
         
         self.newAttributes.onNext(attributeArray)
@@ -73,6 +63,7 @@ extension Reactive where Base: ParagraphTrackingUtility{
     
     private func onBlockType(_ blocks: [BlockObject]){
         let types = blocks.compactMap{ $0.object?.e.base }
+        
         blockTypes.onNext(types)
     }
     
@@ -83,17 +74,19 @@ extension Reactive where Base: ParagraphTrackingUtility{
             let paragraphsFromBlock
             =
             try blocks
-                .map{ block in  try block.object?.e.getBlockValueType()}
+                .map{ block in
+                    try BlockTypeBuilder()
+                        .getBlockValueType(block: block.object?.e ?? .none)
+                        .buildObject()
+                }
                 .compactMap{ blockType in blockType?.getParagraphsValues() }
-            
-            print("paragraphsFromBlock: \(paragraphsFromBlock)")
 
-            let t = paragraphsFromBlock.map{ sequence in
+            
+            let sequence = paragraphsFromBlock.map{ sequence in
                 return sequence.joined()
             }
-            print("paragraphsFromBlock.map | \(t)")
             
-            self.paragraphs.onNext(t)
+            self.paragraphs.onNext(sequence)
             self.newParagraphs.onNext(paragraphsFromBlock)
         }catch{
             print("\(#function) , \(#line)")

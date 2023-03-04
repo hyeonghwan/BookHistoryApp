@@ -7,6 +7,12 @@
 
 import Foundation
 
+extension Character{
+    
+    func isAttachment() -> Bool{
+        return self == "\u{fffc}"
+    }
+}
 extension String {
     
     var endsWith_Newline: Bool {
@@ -36,6 +42,17 @@ extension String {
 
     func removingAllWhitespaces() -> String {
         return removingCharacters(from: .whitespaces)
+    }
+    func isAttachmentSymbol() -> Bool{
+        if self == "\u{fffc}"{
+            return true
+        }else{
+            return false
+        }
+    }
+    
+    static var attachmentSymbol: String{
+        return "\u{fffc}"
     }
     
     mutating func removeLastIfEnter() -> Bool {

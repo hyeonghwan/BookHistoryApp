@@ -58,7 +58,7 @@ enum Color: String {
         case .systemCyan:
             return .systemCyan
         default:
-            return .clear
+            return .label
         }
     }
     

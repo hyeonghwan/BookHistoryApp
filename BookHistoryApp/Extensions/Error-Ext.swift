@@ -19,4 +19,5 @@ enum CoreDataError: Error{
 
 enum BlockError: Error{
     case blockValueNilError
+    case blockObjectNilError
 }
